@@ -12,7 +12,7 @@ class FakultetController extends Controller
     public function index()
     {
         $fakulteti = Fakultet::with('univerzitet')->get();
-        $univerziteti = Univerzitet::all(); // For the dropdown in modal
+        $univerziteti = Univerzitet::all();
         return view('fakultet.index', compact('fakulteti', 'univerziteti'));
     }
 
@@ -25,10 +25,12 @@ class FakultetController extends Controller
             'web' => 'nullable|string|max:255',
             'uputstvo_za_ocjene' => 'nullable|string',
             'univerzitet_id' => 'required|exists:univerziteti,id',
-        ], [
-            'email.unique' => 'Fakultet sa ovim emailom već postoji.',
-            'univerzitet_id.exists' => 'Izabrani univerzitet ne postoji.',
         ]);
+
+        if ($request->hasFile('uputstvo_file')) {
+            $path = $request->file('uputstvo_file')->store('fakulteti', 'public');
+            $validated['uputstvo_file'] = $path;
+        }
 
         Fakultet::create($validated);
 
@@ -51,13 +53,16 @@ class FakultetController extends Controller
             'web' => 'nullable|string|max:255',
             'uputstvo_za_ocjene' => 'nullable|string',
             'univerzitet_id' => 'required|exists:univerziteti,id',
-        ], [
-            'email.unique' => 'Fakultet sa ovim emailom već postoji.',
         ]);
+
+        if ($request->hasFile('uputstvo_file')) {
+            $path = $request->file('uputstvo_file')->store('fakulteti', 'public');
+            $validated['uputstvo_file'] = $path;
+        }
 
         $fakultet->update($validated);
 
-        return redirect()->route('fakulteti.index')->with('success', 'Fakultet uspješno ažuriran!');
+        return redirect()->back()->with('success', 'Fakultet uspješno ažuriran!');
     }
 
     public function destroy($id)
@@ -65,6 +70,6 @@ class FakultetController extends Controller
         $fakultet = Fakultet::findOrFail($id);
         $fakultet->delete();
 
-        return redirect()->route('fakulteti.index')->with('success', 'Fakultet uspješno obrisan!');
+        return redirect()->back()->with('success', 'Fakultet uspješno obrisan!');
     }
 }

@@ -56,7 +56,16 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">FIT Predmeti</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Strani Predmeti</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ECTS</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ocjena</th>
+
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Ocjena
+                                    <!-- Tooltip iznad kolone Grade -->
+                                    @if($mobilnost->fakultet->uputstvo_file)
+                                        <a href="{{ asset('storage/' . $mobilnost->fakultet->uputstvo_file) }}" target="_blank" title="Uputstvo za ocjene" class="text-red-600 font-bold cursor-pointer ml-1">!</a>
+                                    @elseif($mobilnost->fakultet->uputstvo_za_ocjene)
+                                        <span class="text-red-600 font-bold cursor-pointer ml-1" title="{{ $mobilnost->fakultet->uputstvo_za_ocjene }}">!</span>
+                                    @endif
+                                </th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -72,8 +81,8 @@
                                         {{ $la->straniPredmet ? $la->straniPredmet->ects : '-' }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    <select name="grades[{{ $la->id }}]" {{ $mobilnost->is_locked ? 'disabled' : '' }}
-                                            class="w-24 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm {{ $mobilnost->is_locked ? 'bg-gray-100 cursor-not-allowed' : '' }}">
+                                        <select name="grades[{{ $la->id }}]" {{ $mobilnost->is_locked ? 'disabled' : '' }}
+                                                class="w-24 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm {{ $mobilnost->is_locked ? 'bg-gray-100 cursor-not-allowed' : '' }}">
                                             <option value="">-</option>
                                             @foreach(['A', 'B', 'C', 'D', 'E', 'F'] as $grade)
                                                 <option value="{{ $grade }}" {{ $la->ocjena == $grade ? 'selected' : '' }}>
@@ -101,7 +110,6 @@
 
                         @endif
 
-                           
                     </div>
                 </form>
             </div>

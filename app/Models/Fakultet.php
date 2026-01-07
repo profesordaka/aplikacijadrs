@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Fakultet extends Model
 {
+    use HasFactory;
     protected $table = 'fakulteti';
-    protected $fillable = ['naziv', 'email', 'telefon', 'web', 'uputstvo_za_ocjene', 'univerzitet_id'];
-
+protected $fillable = [
+    'naziv', 'email', 'telefon', 'web', 'univerzitet_id', 'uputstvo_za_ocjene', 'uputstvo_file'
+];
     public function univerzitet()
     {
         return $this->belongsTo(Univerzitet::class);
