@@ -70,6 +70,10 @@
                                         data-univerzitet="{{ $f->univerzitet_id }}">
                                         Izmijeni
                                     </button>
+                                    <a href="{{ route('fakulteti.predmeti.index', $f->id) }}"
+   class="text-green-600 bg-green-50 px-3 py-1 rounded-md">
+   Predmeti
+</a>
 
                                     <form action="{{ route('fakulteti.destroy', $f->id) }}" method="POST" onsubmit="return confirm('Da li ste sigurni?')">
                                         @csrf
