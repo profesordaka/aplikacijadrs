@@ -475,7 +475,7 @@
                 if (matchedCount > 0) {
                     render();
                 } else {
-                    alert('No matching subjects found in the currently available lists.');
+                    alert('Nema predmeta za mačovanje na ovoj listi');
                 }
             }
 
