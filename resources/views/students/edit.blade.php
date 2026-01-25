@@ -239,15 +239,31 @@
                   </div>
               </div>
 
-              <div class="mb-6">
-                  <label class="block text-sm font-medium text-gray-700 mb-2">Posalji Word Document (.doc, .docx)</label>
-                  <input type="file" x-ref="torFile" accept=".doc,.docx" class="block w-full text-sm text-gray-500
-                      file:mr-4 file:py-2 file:px-4
-                      file:rounded-full file:border-0
-                      file:text-sm file:font-semibold
-                      file:bg-green-50 file:text-green-700
-                      hover:file:bg-green-100">
-              </div>
+<div class="mb-6">
+    <label class="block text-sm font-medium text-gray-700 mb-2">
+        Pošalji Word dokument (.doc, .docx)
+    </label>
+
+    <label for="torFile"
+        class="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-semibold
+               rounded-full cursor-pointer hover:bg-green-700 transition">
+        Izaberi fajl
+    </label>
+
+    <input
+        type="file"
+        id="torFile"
+        x-ref="torFile"
+        accept=".doc,.docx"
+        class="hidden"
+    >
+
+
+    <p x-text="$refs.torFile?.files[0]?.name ?? 'Nijedan fajl nije izabran'"
+       class="mt-2 text-sm text-gray-500">
+    </p>
+</div>
+
 
               <div class="flex justify-end space-x-2">
                   <button @click="open = false" type="button"
