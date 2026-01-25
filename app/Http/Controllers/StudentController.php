@@ -66,7 +66,7 @@ class StudentController extends Controller
     }
 
     return redirect()->route('students.index')
-      ->with('success', 'Student created successfully!');
+      ->with('success', 'Student dodat usjpešno!');
   }
 
   public function edit($id)
@@ -130,7 +130,7 @@ class StudentController extends Controller
     }
 
     return redirect()->route('students.index')
-      ->with('success', 'Student updated successfully!');
+      ->with('success', 'Student izmijenjen uspješno!');
   }
 
   public function destroy($id)
@@ -139,7 +139,7 @@ class StudentController extends Controller
     $student->delete();
 
     return redirect()->route('students.index')
-      ->with('success', 'Student deleted successfully!');
+      ->with('success', 'Student obrisan!');
   }
 
   public function uploadTor(Request $request, int $id, TorImportService $importService)

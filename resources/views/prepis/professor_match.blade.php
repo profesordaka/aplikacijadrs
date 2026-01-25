@@ -416,7 +416,7 @@
                 els.sendBtn.addEventListener('click', async () => {
                     if (state.linkedPairs.length === 0) return;
                     
-                    if (!confirm('Are you sure you want to send these matches to the professors?')) return;
+                    if (!confirm('Jeste li sigurni da želite da pošaljete ovo mačovanje Profesoru?')) return;
 
                     const matches = state.linkedPairs.map(p => ({
                         professor_id: p.prof.id,
@@ -437,7 +437,7 @@
                         });
 
                         if (response.ok) {
-                            alert('Requests sent successfully!');
+                            alert('Zahtjev poslat uspješno!');
                             state.linkedPairs = [];
                             render();
                         } else {

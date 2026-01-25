@@ -30,7 +30,7 @@ class UserController extends Controller
         User::create($validated);
 
         return redirect()->route('users.index')
-            ->with('success', 'User created successfully!');
+            ->with('success', 'Korinik kreiran uspješno!');
     }
 
     public function update(Request $request, $id)
@@ -52,7 +52,7 @@ class UserController extends Controller
 
         $user->update($validated);
 
-        return redirect()->route('users.index')->with('success', 'User updated successfully!');
+        return redirect()->route('users.index')->with('success', 'Korisnik uspješno izmijenjen!');
     }
 
     public function destroy($id)

@@ -92,7 +92,7 @@ class PrepisController extends Controller
             }
         }
 
-        return redirect()->route('prepis.index')->with('success', 'Prepis updated successfully.');
+        return redirect()->route('prepis.index')->with('success', 'Prepis ažuriran uspješno.');
     }
 
     public function destroy($id)
@@ -100,7 +100,7 @@ class PrepisController extends Controller
         $prepis = Prepis::findOrFail($id);
         $prepis->agreements()->delete();
         $prepis->delete();
-        return redirect()->route('prepis.index')->with('success', 'Prepis deleted successfully.');
+        return redirect()->route('prepis.index')->with('success', 'Prepis izbrisan uspješno.');
     }
 
     public function show($id)
@@ -304,7 +304,7 @@ class PrepisController extends Controller
                 ]);
         }
 
-        return response()->json(['message' => "$count subjects added successfully."]);
+        return response()->json(['message' => "$count predmeta dodato uspješno."]);
     }
 
     public function updateMappingRequestSubject(Request $request, $id)

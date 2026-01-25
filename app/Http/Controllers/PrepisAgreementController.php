@@ -12,7 +12,7 @@ class PrepisAgreementController extends Controller
         $agreement = PrepisAgreement::findOrFail($id);
         $agreement->update(['status' => 'odobren']);
 
-        return redirect()->back()->with('success', 'Agreement accepted successfully.');
+        return redirect()->back()->with('success', 'Zahtjev uspješno prihvaćen.');
     }
 
     public function reject($id)
@@ -20,6 +20,6 @@ class PrepisAgreementController extends Controller
         $agreement = PrepisAgreement::findOrFail($id);
         $agreement->update(['status' => 'odbijen']);
 
-        return redirect()->back()->with('success', 'Agreement rejected successfully.');
+        return redirect()->back()->with('success', 'Zahtjev odbijen.');
     }
 }

@@ -145,7 +145,7 @@ class PredmetController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', "Successfully imported $count new subjects!");
+        return redirect()->back()->with('success', "Uspješno importovano $count novih predmeta!");
     }
     
     public function getSubjectsByFaculty(Fakultet $fakultet)
