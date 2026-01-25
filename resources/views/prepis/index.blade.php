@@ -60,9 +60,9 @@
                                                 @if($subject->fitPredmet)
                                                      <span class="text-green-600 font-bold">-> {{ $subject->fitPredmet->naziv }}</span>
                                                 @elseif($subject->is_rejected)
-                                                     <span class="text-red-500 font-bold">-> (Rejected)</span>
+                                                     <span class="text-red-500 font-bold">-> (Odbijeno)</span>
                                                 @else
-                                                     <span class="text-yellow-500 italic">-> (Pending Match)</span>
+                                                     <span class="text-yellow-500 italic">-> (Mačovanje na čekanju)</span>
                                                 @endif
                                             </li>
                                         @endforeach
@@ -99,7 +99,7 @@
                                         @elseif($allProcessed)
                                             <div class="text-xs text-green-600 mt-1 font-bold">Spremno za reviziju</div>
                                         @else
-                                            <div class="text-xs text-yellow-600 mt-1">Waiting for Professor ({{ $processedSubjects }}/{{ $totalSubjects }})</div>
+                                            <div class="text-xs text-yellow-600 mt-1">Čeka se profesor({{ $processedSubjects }}/{{ $totalSubjects }})</div>
                                         @endif
                                     @endif
                                 </td>
