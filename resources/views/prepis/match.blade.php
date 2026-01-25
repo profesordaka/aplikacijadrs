@@ -623,7 +623,7 @@
                         return;
                     }
                     
-                    if (!confirm('Are you sure you want to send these matches to the professors?')) return;
+                    if (!confirm('Jeste li sigurni da želite da posašaljete ovo mačovanje Profesoru?')) return;
 
                     const matches = state.linkedPairs.map(p => ({
                         professor_id: p.prof.id,

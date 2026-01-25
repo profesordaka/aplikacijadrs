@@ -185,7 +185,7 @@ class PrepisController extends Controller
         }
 
 
-        return response()->json(['message' => 'Mapping requests sent successfully.']);
+        return response()->json(['message' => 'Zahtjev za mačovanje poslat uspješno.']);
     }
 
     public function getStudentSubjects($studentId)
@@ -375,7 +375,7 @@ class PrepisController extends Controller
 
         $mappingRequest->update(['status' => 'accepted']);
 
-        return redirect()->back()->with('success', 'Mapping request accepted and Prepis created.');
+        return redirect()->back()->with('success', 'Zahtjev za mačovanje prihvaćen i prepis kreiran.');
     }
 
     public function rejectMappingRequest($id)
@@ -383,18 +383,18 @@ class PrepisController extends Controller
         $mappingRequest = \App\Models\MappingRequest::findOrFail($id);
         
         if (!in_array($mappingRequest->status, ['pending', 'completed'])) {
-            return redirect()->back()->with('error', 'Request is not pending.');
+            return redirect()->back()->with('error', 'Zahtjev nije na čekanju.');
         }
 
         $mappingRequest->update(['status' => 'rejected']);
 
-        return redirect()->back()->with('success', 'Mapping request rejected.');
+        return redirect()->back()->with('success', 'Zahtjev za mačovanje nije prihvaćen.');
     }
 
     public function destroyMappingRequest($id)
     {
         $mappingRequest = \App\Models\MappingRequest::findOrFail($id);
         $mappingRequest->delete();
-        return redirect()->back()->with('success', 'Mapping request deleted successfully.');
+        return redirect()->back()->with('success', 'Zahtjev za mačovanje obrisan.');
     }
 }
