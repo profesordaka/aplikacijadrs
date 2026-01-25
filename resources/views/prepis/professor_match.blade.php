@@ -79,7 +79,7 @@
                                 <h4 class="font-semibold text-gray-700 mb-2">Available Subjects</h4>
                                 <input type="text" id="search-subject" placeholder="Search Subject..." class="mb-2 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" disabled>
                                 <div id="subject-list" class="h-[500px] overflow-y-auto space-y-2 p-1 border border-gray-100 rounded bg-gray-50">
-                                    <p class="text-gray-500 text-sm text-center mt-4">Select a faculty to view subjects</p>
+                                    <p class="text-gray-500 text-sm text-center mt-4">Selektuj fakultet da vidiš predmete</p>
                                 </div>
                             </div>
                         </div>
@@ -175,7 +175,7 @@
                 els.subjectList.innerHTML = '';
                 
                 if (!state.selectedFacultyId) {
-                    els.subjectList.innerHTML = '<p class="text-gray-500 text-sm text-center mt-4">Select a faculty to view subjects</p>';
+                    els.subjectList.innerHTML = '<p class="text-gray-500 text-sm text-center mt-4">Selektuj fakultet da vidiš predmetes</p>';
                     els.searchSubject.disabled = true;
                     return;
                 }

@@ -201,7 +201,7 @@
                 els.subjectList.innerHTML = '';
                 
                 if (!state.selectedStudentId) {
-                    els.subjectList.innerHTML = '<p class="text-gray-500 text-sm text-center mt-4">Select a student to view subjects</p>';
+                    els.subjectList.innerHTML = '<p class="text-gray-500 text-sm text-center mt-4">Selektuj studenta da vidiš predmete</p>';
                     els.searchSubject.disabled = true;
                     return;
                 }
