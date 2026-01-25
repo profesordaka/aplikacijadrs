@@ -56,7 +56,7 @@
                                         class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 px-3 py-1 rounded-md transition-colors">
                                         Pregledaj
                                     </a>
-                                    <form action="{{ route('admin.mobility.destroy', $mobilnost->id) }}" method="POST" class="inline-block ml-2" onsubmit="return confirm('Are you sure you want to delete this record?');">
+                                    <form action="{{ route('admin.mobility.destroy', $mobilnost->id) }}" method="POST" class="inline-block ml-2" onsubmit="return confirm('Jeste li sigurni da želite obrisati ovaj zapis?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 px-3 py-1 rounded-md transition-colors">

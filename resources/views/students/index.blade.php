@@ -85,7 +85,7 @@
                     </a>
 
                     <form action="{{ route('students.destroy', $student->id) }}" method="POST"
-                      onsubmit="return confirm('Are you sure you want to delete this student?')">
+                      onsubmit="return confirm('Jeste li sigurni da želite obrisati studenta?')">
                       @csrf
                       @method('DELETE')
                       <button type="submit"

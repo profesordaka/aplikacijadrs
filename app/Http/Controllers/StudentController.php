@@ -206,7 +206,7 @@ class StudentController extends Controller
               $student->predmeti()->syncWithoutDetaching($syncData);
           }
 
-          $msg = "ToR processed. Matched $matchedCount out of $totalCount courses.";
+          $msg = "ToR poslan. Mačovano $matchedCount predmeta od ukupno $totalCount .";
           if (count($missedSubjects) > 0) {
               $msg .= " Missed: " . count($missedSubjects) . ". Check logs for details.";
           }
@@ -216,7 +216,7 @@ class StudentController extends Controller
 
       } catch (\Exception $e) {
           Log::error('ToR Upload Error: ' . $e->getMessage());
-          return back()->with('error', 'Failed to process ToR file: ' . $e->getMessage());
+          return back()->with('error', 'Neuspješno poslat TOR fajl: ' . $e->getMessage());
       }
   }
 

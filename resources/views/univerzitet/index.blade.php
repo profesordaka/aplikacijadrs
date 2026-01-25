@@ -63,7 +63,7 @@
     data-email="{{ $u->email }}">
     Izmijeni
 </button>
-                                    <form action="{{ route('univerzitet.destroy', $u->id) }}" method="POST" onsubmit="return confirm('Are you sure?')">
+                                    <form action="{{ route('univerzitet.destroy', $u->id) }}" method="POST" onsubmit="return confirm('Jeste li sigurni?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" 
