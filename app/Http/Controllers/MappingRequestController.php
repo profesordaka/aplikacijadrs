@@ -77,8 +77,8 @@ class MappingRequestController extends Controller
             }
         }
 
-        session()->flash('success', 'Mappings saved successfully.');
+        session()->flash('success', 'Mačovanje uspješno sačuvano.');
 
-        return response()->json(['message' => 'Mappings saved successfully.']);
+        return response()->json(['message' => 'Mačovanje uspješno sačuvano.']);
     }
 }

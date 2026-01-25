@@ -146,7 +146,7 @@
                    <div x-data="{ visible: false }" @faculty-changed.window="visible = ($event.detail === 'FIT')" x-show="visible" style="display: none;">
                       <button type="button" @click="$dispatch('open-tor-modal')"
                           class="bg-green-600 hover:bg-green-700 text-white text-sm font-semibold px-3 py-1 rounded shadow transform transition hover:scale-105">
-                          Pošalji ToR
+                          Uploaduj ToR
                       </button>
                   </div>
               </x-subject-selector>

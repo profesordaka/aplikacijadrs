@@ -425,14 +425,14 @@
             <!-- Global Actions -->
             @if(in_array($mappingRequest->status, ['pending', 'completed']))
             <div class="flex justify-end space-x-4 pt-4 border-t border-gray-200">
-                <form action="{{ route('prepis.mapping-request.reject', $mappingRequest->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to REJECT this entire request?');">
+                <form action="{{ route('prepis.mapping-request.reject', $mappingRequest->id) }}" method="POST" onsubmit="return confirm('Jeste li sigurni da želite da odbijete ovaj zahtjev?');">
                     @csrf
                     <button type="submit" class="bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 font-semibold px-4 py-2 rounded-lg shadow-sm transition-colors">
                         Reject Request
                     </button>
                 </form>
                 
-                <form action="{{ route('prepis.mapping-request.accept', $mappingRequest->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to ACCEPT this request and create a Prepis?');">
+                <form action="{{ route('prepis.mapping-request.accept', $mappingRequest->id) }}" method="POST" onsubmit="return confirm('Jeste  li sigurni da želite da prohvatite ovaj zahtjev za Prepis?');">
                     @csrf
                     <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-lg shadow-lg transform transition hover:scale-105">
                         Accept Request

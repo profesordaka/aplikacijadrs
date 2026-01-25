@@ -33,7 +33,7 @@ class ProfesorPredmetController extends Controller
             $user->predmeti()->attach($request->predmet_id);
         }
 
-        return redirect()->route('users.subjects.index', $userId)->with('success', 'Subject assigned successfully');
+        return redirect()->route('users.subjects.index', $userId)->with('success', 'Predmet uspješno dodijeljen.');
     }
 
     public function destroy($userId, $predmetId)
@@ -41,6 +41,6 @@ class ProfesorPredmetController extends Controller
         $user = User::findOrFail($userId);
         $user->predmeti()->detach($predmetId);
 
-        return redirect()->route('users.subjects.index', $userId)->with('success', 'Subject removed successfully');
+        return redirect()->route('users.subjects.index', $userId)->with('success', 'Predmet uspješno izbrisan.');
     }
 }
