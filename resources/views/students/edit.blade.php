@@ -4,7 +4,7 @@
       <div class="flex items-center justify-between mb-6">
         <h1 class="text-2xl font-bold text-gray-900">Edit Student</h1>
         <a href="{{ route('students.index') }}" class="text-blue-600 hover:text-blue-800 font-semibold">
-          &larr; Back to Student Management
+          &larr; Nazad na listu studenata
         </a>
       </div>
 
@@ -262,7 +262,7 @@
                               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                           </svg>
                       </span>
-                      <span x-text="uploading ? 'Processing...' : 'Upload & Process'"></span>
+                      <span x-text="uploading ? 'Processing...' : 'Pošalji'"></span>
                   </button>
               </div>
           </div>
