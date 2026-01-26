@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Fakultet;
 use App\Models\Univerzitet;
 use Illuminate\Validation\Rule;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Cloudinary\Cloudinary;
 
 class FakultetController extends Controller
 {
@@ -28,14 +28,11 @@ class FakultetController extends Controller
             'univerzitet_id' => 'required|exists:univerziteti,id',
         ]);
 
-        // Upload dokumenta na Cloudinary
+        // Upload dokumenta na Cloudinary (nova sintaksa)
         if ($request->hasFile('uputstvo_file')) {
-            $uploadedFileUrl = Cloudinary::upload($request->file('uputstvo_file')->getRealPath(), [
-                'folder' => 'fakulteti'
-            ])->getSecureUrl(); // Ispravno koristi getSecureUrl()
-            
-            // Dodaj URL fajla u validirane podatke
-            $validated['uputstvo_file'] = $uploadedFileUrl;
+            $cloudinary = new Cloudinary();
+            $uploadedFile = $cloudinary->uploadApi()->upload($request->file('uputstvo_file')->getRealPath());
+            $validated['uputstvo_file'] = $uploadedFile['secure_url'];
         }
 
         Fakultet::create($validated);
@@ -61,14 +58,11 @@ class FakultetController extends Controller
             'univerzitet_id' => 'required|exists:univerziteti,id',
         ]);
 
-        // Upload dokumenta na Cloudinary
+        // Upload dokumenta na Cloudinary (nova sintaksa)
         if ($request->hasFile('uputstvo_file')) {
-            $uploadedFileUrl = Cloudinary::upload($request->file('uputstvo_file')->getRealPath(), [
-                'folder' => 'fakulteti'
-            ])->getSecureUrl(); // Ispravno koristi getSecureUrl()
-            
-            // Dodaj URL fajla u validirane podatke
-            $validated['uputstvo_file'] = $uploadedFileUrl;
+            $cloudinary = new Cloudinary();
+            $uploadedFile = $cloudinary->uploadApi()->upload($request->file('uputstvo_file')->getRealPath());
+            $validated['uputstvo_file'] = $uploadedFile['secure_url'];
         }
 
         $fakultet->update($validated);
