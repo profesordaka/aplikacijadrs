@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Cloudinary\Cloudinary;
+use Illuminate\Support\Facades\App;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,13 +20,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Inicijalizuj Cloudinary sa ENV varijablama
-        if (config('app.env') !== 'testing') {
-            \Cloudinary::config([
-                'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
-                'api_key' => env('CLOUDINARY_API_KEY'),
-                'api_secret' => env('CLOUDINARY_API_SECRET'),
-            ]);
+        // Ne učitavaj Cloudinary u artisan komandama
+        if (App::runningInConsole()) {
+            return;
         }
+
+        \Cloudinary::config([
+            'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+            'api_key' => env('CLOUDINARY_API_KEY'),
+            'api_secret' => env('CLOUDINARY_API_SECRET'),
+        ]);
     }
 }
