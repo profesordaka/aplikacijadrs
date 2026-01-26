@@ -136,8 +136,8 @@
                     <textarea name="uputstvo_za_ocjene" class="w-full border rounded"></textarea>
                 </div>
                 <div class="mb-4">
-                    <label>Upload dokument</label>
-                    <input type="file" name="uputstvo_file" class="w-full border rounded">
+                    <label>Upload dokument (PDF)</label>
+                    <input type="file" name="uputstvo_file" class="w-full border rounded" accept=".pdf">
                 </div>
                 <div class="mb-4">
                     <label>Upload Sliku</label>
@@ -189,8 +189,8 @@
                     <textarea id="editInstructions" name="uputstvo_za_ocjene" class="w-full border rounded"></textarea>
                 </div>
                 <div class="mb-4">
-                    <label>Upload dokument</label>
-                    <input type="file" name="uputstvo_file" class="w-full border rounded">
+                    <label>Upload dokument (PDF)</label>
+                    <input type="file" name="uputstvo_file" class="w-full border rounded" accept=".pdf">
                 </div>
                 <div class="mb-4">
                     <label>Upload Sliku</label>
@@ -255,5 +255,4 @@
     });
     </script>
 </x-app-layout>
-
 

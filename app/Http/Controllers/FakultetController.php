@@ -26,25 +26,25 @@ class FakultetController extends Controller
             'web' => 'nullable|string|max:255',
             'uputstvo_za_ocjene' => 'nullable|string',
             'univerzitet_id' => 'required|exists:univerziteti,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',  // Dodajemo pravilo za sliku
-            'pdf' => 'nullable|mimes:pdf|max:10240',  // Dodajemo pravilo za PDF
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'uputstvo_file' => 'nullable|mimes:pdf|max:10240',
         ]);
 
         // Upload slike na Cloudinary, ako postoji
         if ($request->hasFile('image')) {
             $image = $request->file('image')->storeOnCloudinary([
-                'folder' => 'fakulteti/images', // Specifikuj folder
+                'folder' => 'fakulteti/images',
             ]);
-            $validated['image_url'] = $image['secure_url'];  // Sačuvaj URL u bazi
+            $validated['image_url'] = $image['secure_url'];
         }
 
         // Upload PDF-a na Cloudinary, ako postoji
-        if ($request->hasFile('pdf')) {
-            $pdf = $request->file('pdf')->storeOnCloudinary([
-                'folder' => 'fakulteti/pdfs',  // Specifikuj folder
-                'resource_type' => 'auto',     // Cloudinary automatski prepoznaje tip
+        if ($request->hasFile('uputstvo_file')) {
+            $pdf = $request->file('uputstvo_file')->storeOnCloudinary([
+                'folder' => 'fakulteti/pdfs',
+                'resource_type' => 'auto',
             ]);
-            $validated['pdf_url'] = $pdf['secure_url'];  // Sačuvaj URL u bazi
+            $validated['uputstvo_file'] = $pdf['secure_url'];
         }
 
         Fakultet::create($validated);
@@ -68,8 +68,8 @@ class FakultetController extends Controller
             'web' => 'nullable|string|max:255',
             'uputstvo_za_ocjene' => 'nullable|string',
             'univerzitet_id' => 'required|exists:univerziteti,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',  // Dodajemo pravilo za sliku
-            'pdf' => 'nullable|mimes:pdf|max:10240',  // Dodajemo pravilo za PDF
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'uputstvo_file' => 'nullable|mimes:pdf|max:10240',
         ]);
 
         // Ako postoji nova slika, uploaduj je na Cloudinary
@@ -77,16 +77,16 @@ class FakultetController extends Controller
             $image = $request->file('image')->storeOnCloudinary([
                 'folder' => 'fakulteti/images',
             ]);
-            $validated['image_url'] = $image['secure_url'];  // Sačuvaj URL u bazi
+            $validated['image_url'] = $image['secure_url'];
         }
 
         // Ako postoji novi PDF, uploaduj ga na Cloudinary
-        if ($request->hasFile('pdf')) {
-            $pdf = $request->file('pdf')->storeOnCloudinary([
+        if ($request->hasFile('uputstvo_file')) {
+            $pdf = $request->file('uputstvo_file')->storeOnCloudinary([
                 'folder' => 'fakulteti/pdfs',
                 'resource_type' => 'auto',
             ]);
-            $validated['pdf_url'] = $pdf['secure_url'];  // Sačuvaj URL u bazi
+            $validated['uputstvo_file'] = $pdf['secure_url'];
         }
 
         $fakultet->update($validated);
@@ -104,8 +104,9 @@ class FakultetController extends Controller
             Cloudinary::destroy($imageId);
         }
 
-        if ($fakultet->pdf_url) {
-            $pdfId = basename(parse_url($fakultet->pdf_url, PHP_URL_PATH));
+        if ($fakultet->uputstvo_file && strpos($fakultet->uputstvo_file, 'http') !== false) {
+            // Ako je URL na Cloudinary
+            $pdfId = basename(parse_url($fakultet->uputstvo_file, PHP_URL_PATH));
             Cloudinary::destroy($pdfId);
         }
 

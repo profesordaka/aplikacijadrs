@@ -9,9 +9,9 @@ class Fakultet extends Model
 {
     use HasFactory;
     protected $table = 'fakulteti';
-protected $fillable = [
-    'naziv', 'email', 'telefon', 'web', 'univerzitet_id', 'uputstvo_za_ocjene', 'uputstvo_file'
-];
+    protected $fillable = [
+        'naziv', 'email', 'telefon', 'web', 'univerzitet_id', 'uputstvo_za_ocjene', 'uputstvo_file', 'image_url'
+    ];
     public function univerzitet()
     {
         return $this->belongsTo(Univerzitet::class);

@@ -65,7 +65,7 @@
                                     Ocjena
                                     <!-- Tooltip za uputstvo -->
                                     @if($mobilnost->fakultet->uputstvo_file)
-                                        <a href="{{ asset('storage/' . $mobilnost->fakultet->uputstvo_file) }}" 
+                                        <a href="{{ $mobilnost->fakultet->uputstvo_file }}" 
                                            target="_blank" 
                                            title="Preuzmite uputstvo za ocjene" 
                                            class="text-red-600 font-bold cursor-pointer ml-1">
