@@ -58,13 +58,9 @@
                             </tr>
                         @empty
                             <tr>
-<<<<<<< HEAD
                                 <td colspan="4" class="px-6 py-10 text-center text-gray-500">
                                     Nema dostupnih mobilnosti.
-=======
-                                <td colspan="5" class="px-6 py-10 text-center text-gray-500">
-                                    No mobility records found.
->>>>>>> 336023f (Tooltip+test)
+
                                 </td>
                             </tr>
                         @endforelse
