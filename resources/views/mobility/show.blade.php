@@ -16,7 +16,6 @@
         <div class="flex items-center justify-between mb-6">
             <h1 class="text-2xl font-bold text-gray-800">Detalji o Mobilnosti</h1>
             <div class="flex gap-2">
-            
                 <form action="{{ route('admin.mobility.export-word', $mobilnost->id) }}" method="POST">
                     @csrf
                     <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-lg shadow-lg transform transition hover:scale-105">
@@ -59,11 +58,18 @@
 
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Ocjena
-                                    <!-- Tooltip iznad kolone Grade -->
+                                    <!-- Tooltip za uputstvo -->
                                     @if($mobilnost->fakultet->uputstvo_file)
-                                        <a href="{{ asset('storage/' . $mobilnost->fakultet->uputstvo_file) }}" target="_blank" title="Uputstvo za ocjene" class="text-red-600 font-bold cursor-pointer ml-1">!</a>
+                                        <a href="{{ asset('storage/' . $mobilnost->fakultet->uputstvo_file) }}" 
+                                           target="_blank" 
+                                           title="Preuzmite uputstvo za ocjene" 
+                                           class="text-red-600 font-bold cursor-pointer ml-1">
+                                            !
+                                        </a>
                                     @elseif($mobilnost->fakultet->uputstvo_za_ocjene)
-                                        <span class="text-red-600 font-bold cursor-pointer ml-1" title="{{ $mobilnost->fakultet->uputstvo_za_ocjene }}">!</span>
+                                        <span class="text-red-600 font-bold cursor-pointer ml-1" title="{{ $mobilnost->fakultet->uputstvo_za_ocjene }}">
+                                            !
+                                        </span>
                                     @endif
                                 </th>
                             </tr>
@@ -98,7 +104,6 @@
                     <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end items-center gap-4">
                         <span id="saveMessage" class="text-sm font-medium"></span>
                         @if(!$mobilnost->is_locked)
-                            
                             <button type="button" onclick="openDisableModal()" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg shadow-lg transform transition hover:scale-105">
                                 Onemogući Unos
                             </button>
@@ -107,9 +112,7 @@
                                 class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow-lg transform transition hover:scale-105 duration-150 ease-in-out">
                                 Sačuvaj Sve Ocjene
                             </button>
-
                         @endif
-
                     </div>
                 </form>
             </div>
