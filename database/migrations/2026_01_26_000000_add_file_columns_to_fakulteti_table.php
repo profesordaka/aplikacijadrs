@@ -9,8 +9,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('fakulteti', function (Blueprint $table) {
-            $table->string('uputstvo_file')->nullable()->after('uputstvo_za_ocjene');
-            $table->string('image_url')->nullable()->after('uputstvo_file');
+            if (!Schema::hasColumn('fakulteti', 'uputstvo_file')) {
+                $table->string('uputstvo_file')->nullable()->after('uputstvo_za_ocjene');
+            }
+            if (!Schema::hasColumn('fakulteti', 'image_url')) {
+                $table->string('image_url')->nullable()->after('uputstvo_file');
+            }
         });
     }
 
