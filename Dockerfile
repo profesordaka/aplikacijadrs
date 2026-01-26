@@ -31,6 +31,9 @@ COPY . .
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
+# Install Cloudinary Laravel package
+RUN composer require cloudinary-labs/cloudinary-laravel
+
 # Install JS dependencies + build Vite assets
 RUN npm ci && npm run build
 
@@ -78,4 +81,5 @@ RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 80
+
 

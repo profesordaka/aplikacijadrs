@@ -42,6 +42,7 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Telefon</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Web</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Univerzitet</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Dokument</th>
                             <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Akcije</th>
                         </tr>
                     </thead>
@@ -57,6 +58,11 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4">{{ $f->univerzitet->naziv }}</td>
+                            <td class="px-6 py-4">
+                                @if($f->uputstvo_file)
+                                    <a href="{{ $f->uputstvo_file }}" target="_blank" class="text-blue-600 hover:underline">Preuzmi dokument</a>
+                                @endif
+                            </td>
                             <td class="px-6 py-4 text-center">
                                 <div class="flex justify-center space-x-2">
                                     <button class="openEditModal text-indigo-600 bg-indigo-50 px-3 py-1 rounded-md"
@@ -235,3 +241,4 @@
     });
     </script>
 </x-app-layout>
+

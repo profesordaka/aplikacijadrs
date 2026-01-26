@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Fakultet;
 use App\Models\Univerzitet;
 use Illuminate\Validation\Rule;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class FakultetController extends Controller
 {
@@ -27,9 +28,12 @@ class FakultetController extends Controller
             'univerzitet_id' => 'required|exists:univerziteti,id',
         ]);
 
+        // Upload dokumenta na Cloudinary
         if ($request->hasFile('uputstvo_file')) {
-            $path = $request->file('uputstvo_file')->store('fakulteti', 'public');
-            $validated['uputstvo_file'] = $path;
+            $uploadedFileUrl = Cloudinary::upload($request->file('uputstvo_file')->getRealPath(), [
+                'folder' => 'fakulteti'
+            ])->getSecurePath();
+            $validated['uputstvo_file'] = $uploadedFileUrl;
         }
 
         Fakultet::create($validated);
@@ -55,9 +59,12 @@ class FakultetController extends Controller
             'univerzitet_id' => 'required|exists:univerziteti,id',
         ]);
 
+        // Upload dokumenta na Cloudinary
         if ($request->hasFile('uputstvo_file')) {
-            $path = $request->file('uputstvo_file')->store('fakulteti', 'public');
-            $validated['uputstvo_file'] = $path;
+            $uploadedFileUrl = Cloudinary::upload($request->file('uputstvo_file')->getRealPath(), [
+                'folder' => 'fakulteti'
+            ])->getSecurePath();
+            $validated['uputstvo_file'] = $uploadedFileUrl;
         }
 
         $fakultet->update($validated);
