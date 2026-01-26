@@ -32,7 +32,9 @@ class FakultetController extends Controller
         if ($request->hasFile('uputstvo_file')) {
             $uploadedFileUrl = Cloudinary::upload($request->file('uputstvo_file')->getRealPath(), [
                 'folder' => 'fakulteti'
-            ])->getSecurePath();
+            ])->getSecureUrl(); // Ispravno koristi getSecureUrl()
+            
+            // Dodaj URL fajla u validirane podatke
             $validated['uputstvo_file'] = $uploadedFileUrl;
         }
 
@@ -63,7 +65,9 @@ class FakultetController extends Controller
         if ($request->hasFile('uputstvo_file')) {
             $uploadedFileUrl = Cloudinary::upload($request->file('uputstvo_file')->getRealPath(), [
                 'folder' => 'fakulteti'
-            ])->getSecurePath();
+            ])->getSecureUrl(); // Ispravno koristi getSecureUrl()
+            
+            // Dodaj URL fajla u validirane podatke
             $validated['uputstvo_file'] = $uploadedFileUrl;
         }
 
@@ -80,3 +84,4 @@ class FakultetController extends Controller
         return redirect()->back()->with('success', 'Fakultet uspješno obrisan!');
     }
 }
+
