@@ -213,8 +213,6 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('addFacultyBtn').onclick = () => { addModal.classList.remove('hidden'); addModal.classList.add('flex'); };
     document.getElementById('cancelAddModal').onclick = () => { addModal.classList.add('hidden'); addModal.classList.remove('flex'); };
 
-<<<<<<< HEAD
-<<<<<<< HEAD
                 <div class="mb-4">
                     <label for="editEmail" class="block text-gray-700 font-medium mb-1">Email</label>
                     <input type="email" id="editEmail" name="email" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
@@ -257,62 +255,23 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
     </div>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Add Modal Logic
-        const addModal = document.getElementById('addFacultyModal');
-        const addBtn = document.getElementById('addFacultyBtn');
-        const cancelAdd = document.getElementById('cancelAddModal');
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const addModal = document.getElementById('addFacultyModal');
+    const editModal = document.getElementById('editFacultyModal');
 
-        addBtn.addEventListener('click', () => {
-            addModal.classList.remove('hidden');
-            addModal.classList.add('flex');
-        });
+    // ADD MODAL
+    document.getElementById('addFacultyBtn').onclick = () => {
+        addModal.classList.remove('hidden');
+        addModal.classList.add('flex');
+    };
 
-        cancelAdd.addEventListener('click', () => {
-            addModal.classList.add('hidden');
-            addModal.classList.remove('flex');
-        });
+    document.getElementById('cancelAddModal').onclick = () => {
+        addModal.classList.add('hidden');
+        addModal.classList.remove('flex');
+    };
 
-        // Edit Modal Logic
-        const editModal = document.getElementById('editFacultyModal');
-        const cancelEdit = document.getElementById('cancelEditModal');
-        const editForm = document.getElementById('editFacultyForm');
-
-        document.querySelectorAll('.openEditModal').forEach(button => {
-            button.addEventListener('click', () => {
-                const id = button.getAttribute('data-id');
-                document.getElementById('editFacultyId').value = id;
-                document.getElementById('editName').value = button.getAttribute('data-naziv');
-                document.getElementById('editEmail').value = button.getAttribute('data-email');
-                document.getElementById('editPhone').value = button.getAttribute('data-telefon');
-                document.getElementById('editWeb').value = button.getAttribute('data-web');
-                document.getElementById('editInstructions').value = button.getAttribute('data-uputstvo');
-                document.getElementById('editUniversity').value = button.getAttribute('data-univerzitet');
-
-                editForm.action = `{{ route('fakulteti.index') }}/${id}`;
-                editModal.classList.remove('hidden');
-                editModal.classList.add('flex');
-            });
-        });
-
-        cancelEdit.addEventListener('click', () => {
-            editModal.classList.add('hidden');
-            editModal.classList.remove('flex');
-        });
-
-        // Search Logic
-        const searchInput = document.getElementById('searchFaculty');
-        const rows = document.querySelectorAll('.faculty-row');
-
-        searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase().trim();
-=======
-            // ISPRAVLJENA RUTA ZA UPDATE
-            editForm.action = `/admin/fakulteti/${button.getAttribute('data-id')}`;
->>>>>>> 336023f (Tooltip+test)
-            
-=======
+    // EDIT MODAL
     document.querySelectorAll('.openEditModal').forEach(btn => {
         btn.onclick = () => {
             document.getElementById('editFacultyId').value = btn.dataset.id;
@@ -323,21 +282,32 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('editInstructions').value = btn.dataset.uputstvo;
             document.getElementById('editUniversity').value = btn.dataset.univerzitet;
 
-            document.getElementById('editFacultyForm').action = `/admin/fakulteti/${btn.dataset.id}`;
->>>>>>> 9c2ab26 (Izmjena fronta)
-            editModal.classList.remove('hidden'); editModal.classList.add('flex');
+            // ✅ ISPRAVLJENA RUTA
+            document.getElementById('editFacultyForm').action =
+                `/admin/fakulteti/${btn.dataset.id}`;
+
+            editModal.classList.remove('hidden');
+            editModal.classList.add('flex');
         };
     });
 
-    document.getElementById('cancelEditModal').onclick = () => { editModal.classList.add('hidden'); editModal.classList.remove('flex'); };
+    document.getElementById('cancelEditModal').onclick = () => {
+        editModal.classList.add('hidden');
+        editModal.classList.remove('flex');
+    };
 
+    // SEARCH
     const searchInput = document.getElementById('searchFaculty');
     const rows = document.querySelectorAll('.faculty-row');
 
     searchInput.addEventListener('input', function () {
         const term = this.value.toLowerCase();
-        rows.forEach(r => r.style.display = r.dataset.search.includes(term) ? '' : 'none');
+        rows.forEach(r => {
+            r.style.display = r.dataset.search.includes(term) ? '' : 'none';
+        });
     });
 });
 </script>
+
+
 </x-app-layout>
