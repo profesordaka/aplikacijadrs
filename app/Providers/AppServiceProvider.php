@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\App;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -12,7 +13,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Ovde možemo registrovati dodatne servise, ako bude potrebe
     }
 
     /**
@@ -20,14 +21,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Ne učitavaj Cloudinary u artisan komandama
+        // Ne učitavaj Cloudinary prilikom Artisan komandi (npr. migrate, tinker)
         if (App::runningInConsole()) {
             return;
         }
 
-        \Cloudinary::config([
+        // Opcionalno: konfiguracija putem .env fajla
+        Cloudinary::config([
             'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
-            'api_key' => env('CLOUDINARY_API_KEY'),
+            'api_key'    => env('CLOUDINARY_API_KEY'),
             'api_secret' => env('CLOUDINARY_API_SECRET'),
         ]);
     }

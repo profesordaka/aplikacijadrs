@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Fakultet;
 use App\Models\Univerzitet;
 use Illuminate\Validation\Rule;
-use Cloudinary\Cloudinary;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class FakultetController extends Controller
 {
@@ -30,21 +30,21 @@ class FakultetController extends Controller
             'uputstvo_file' => 'nullable|mimes:pdf|max:10240',
         ]);
 
-        // Upload slike na Cloudinary, ako postoji
+        // Upload slike na Cloudinary
         if ($request->hasFile('image')) {
-            $image = $request->file('image')->storeOnCloudinary([
-                'folder' => 'fakulteti/images',
+            $uploadedImage = Cloudinary::uploadFile($request->file('image')->getRealPath(), [
+                'folder' => 'fakulteti/images'
             ]);
-            $validated['image_url'] = $image['secure_url'];
+            $validated['image_url'] = $uploadedImage->getSecurePath();
         }
 
-        // Upload PDF-a na Cloudinary, ako postoji
+        // Upload PDF-a na Cloudinary
         if ($request->hasFile('uputstvo_file')) {
-            $pdf = $request->file('uputstvo_file')->storeOnCloudinary([
+            $uploadedPdf = Cloudinary::uploadFile($request->file('uputstvo_file')->getRealPath(), [
                 'folder' => 'fakulteti/pdfs',
-                'resource_type' => 'auto',
+                'resource_type' => 'auto'
             ]);
-            $validated['uputstvo_file'] = $pdf['secure_url'];
+            $validated['uputstvo_file'] = $uploadedPdf->getSecurePath();
         }
 
         Fakultet::create($validated);
@@ -72,21 +72,21 @@ class FakultetController extends Controller
             'uputstvo_file' => 'nullable|mimes:pdf|max:10240',
         ]);
 
-        // Ako postoji nova slika, uploaduj je na Cloudinary
+        // Ako postoji nova slika
         if ($request->hasFile('image')) {
-            $image = $request->file('image')->storeOnCloudinary([
-                'folder' => 'fakulteti/images',
+            $uploadedImage = Cloudinary::uploadFile($request->file('image')->getRealPath(), [
+                'folder' => 'fakulteti/images'
             ]);
-            $validated['image_url'] = $image['secure_url'];
+            $validated['image_url'] = $uploadedImage->getSecurePath();
         }
 
-        // Ako postoji novi PDF, uploaduj ga na Cloudinary
+        // Ako postoji novi PDF
         if ($request->hasFile('uputstvo_file')) {
-            $pdf = $request->file('uputstvo_file')->storeOnCloudinary([
+            $uploadedPdf = Cloudinary::uploadFile($request->file('uputstvo_file')->getRealPath(), [
                 'folder' => 'fakulteti/pdfs',
-                'resource_type' => 'auto',
+                'resource_type' => 'auto'
             ]);
-            $validated['uputstvo_file'] = $pdf['secure_url'];
+            $validated['uputstvo_file'] = $uploadedPdf->getSecurePath();
         }
 
         $fakultet->update($validated);
@@ -98,21 +98,9 @@ class FakultetController extends Controller
     {
         $fakultet = Fakultet::findOrFail($id);
 
-        // Prvo ukloniti slike i PDF-ove sa Cloudinary, ako postoji
-        if ($fakultet->image_url) {
-            $imageId = basename(parse_url($fakultet->image_url, PHP_URL_PATH));
-            Cloudinary::destroy($imageId);
-        }
-
-        if ($fakultet->uputstvo_file && strpos($fakultet->uputstvo_file, 'http') !== false) {
-            // Ako je URL na Cloudinary
-            $pdfId = basename(parse_url($fakultet->uputstvo_file, PHP_URL_PATH));
-            Cloudinary::destroy($pdfId);
-        }
-
+        // Samo brišemo iz baze, fajlovi ostaju na Cloudinary
         $fakultet->delete();
 
         return redirect()->back()->with('success', 'Fakultet uspješno obrisan!');
     }
 }
-

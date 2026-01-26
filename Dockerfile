@@ -28,11 +28,8 @@ WORKDIR /app
 # Copy project files
 COPY . .
 
-# Install PHP dependencies
+# Install PHP dependencies from composer.json (uključujući Cloudinary)
 RUN composer install --no-dev --optimize-autoloader
-
-# Install Cloudinary Laravel package
-RUN composer require cloudinary-labs/cloudinary-laravel
 
 # Install JS dependencies + build Vite assets
 RUN npm ci && npm run build
@@ -77,9 +74,10 @@ RUN chmod -R 775 storage bootstrap/cache \
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# Use entrypoint to run migrations automatically
+# Entrypoint will run migrations & start server
 ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 80
+
 
 
