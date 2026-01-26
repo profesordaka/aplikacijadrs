@@ -32,7 +32,7 @@ class FakultetController extends Controller
 
         // Upload slike na Cloudinary
         if ($request->hasFile('image')) {
-            $uploadedImage = Cloudinary::uploadFile($request->file('image')->getRealPath(), [
+            $uploadedImage = Cloudinary::upload($request->file('image')->getRealPath(), [
                 'folder' => 'fakulteti/images'
             ]);
             $validated['image_url'] = $uploadedImage->getSecurePath();
@@ -40,7 +40,7 @@ class FakultetController extends Controller
 
         // Upload PDF-a na Cloudinary
         if ($request->hasFile('uputstvo_file')) {
-            $uploadedPdf = Cloudinary::uploadFile($request->file('uputstvo_file')->getRealPath(), [
+            $uploadedPdf = Cloudinary::upload($request->file('uputstvo_file')->getRealPath(), [
                 'folder' => 'fakulteti/pdfs',
                 'resource_type' => 'auto'
             ]);
@@ -74,7 +74,7 @@ class FakultetController extends Controller
 
         // Ako postoji nova slika
         if ($request->hasFile('image')) {
-            $uploadedImage = Cloudinary::uploadFile($request->file('image')->getRealPath(), [
+            $uploadedImage = Cloudinary::upload($request->file('image')->getRealPath(), [
                 'folder' => 'fakulteti/images'
             ]);
             $validated['image_url'] = $uploadedImage->getSecurePath();
@@ -82,7 +82,7 @@ class FakultetController extends Controller
 
         // Ako postoji novi PDF
         if ($request->hasFile('uputstvo_file')) {
-            $uploadedPdf = Cloudinary::uploadFile($request->file('uputstvo_file')->getRealPath(), [
+            $uploadedPdf = Cloudinary::upload($request->file('uputstvo_file')->getRealPath(), [
                 'folder' => 'fakulteti/pdfs',
                 'resource_type' => 'auto'
             ]);
@@ -104,3 +104,4 @@ class FakultetController extends Controller
         return redirect()->back()->with('success', 'Fakultet uspješno obrisan!');
     }
 }
+

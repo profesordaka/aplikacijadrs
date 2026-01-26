@@ -1,30 +1,29 @@
 <?php
 
-namespace App\Providers;
+namespace App\Models;
 
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\App;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class AppServiceProvider extends ServiceProvider
+class Fakultet extends Model
 {
-    public function register(): void
+    use HasFactory;
+    protected $table = 'fakulteti';
+protected $fillable = [
+    'naziv', 'email', 'telefon', 'web', 'univerzitet_id', 'uputstvo_za_ocjene', 'uputstvo_file'
+];
+    public function univerzitet()
     {
-        //
+        return $this->belongsTo(Univerzitet::class);
     }
 
-    public function boot(): void
+    public function predmeti()
     {
-        // Ne učitavaj Cloudinary u artisan komandama
-        if (App::runningInConsole()) {
-            return;
-        }
+        return $this->hasMany(Predmet::class);
+    }
 
-        Cloudinary::config([
-            'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
-            'api_key' => env('CLOUDINARY_API_KEY'),
-            'api_secret' => env('CLOUDINARY_API_SECRET'),
-        ]);
+    public function studenti()
+    {
+        return $this->belongsToMany(Student::class, 'student_fakultet', 'fakultet_id', 'student_id');
     }
 }
-
