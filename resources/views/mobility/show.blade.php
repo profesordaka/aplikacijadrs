@@ -39,6 +39,11 @@
                     <h2 class="text-lg font-semibold text-gray-700">Informacije o mobilnosti</h2>
                     <p class="mt-2 text-gray-600"><span class="font-medium">Fakultet:</span> {{ $mobilnost->fakultet->naziv }}</p>
                     <p class="text-gray-600"><span class="font-medium">Period:</span> {{ \Carbon\Carbon::parse($mobilnost->datum_pocetka)->format('d.m.Y') }} - {{ \Carbon\Carbon::parse($mobilnost->datum_kraja)->format('d.m.Y') }}</p>
+                    @if($mobilnost->fakultet->image_url)
+                        <div class="mt-4">
+                            <img src="{{ $mobilnost->fakultet->image_url }}" alt="Fakultet Slika" class="w-32 h-32 object-cover rounded-md shadow-lg">
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

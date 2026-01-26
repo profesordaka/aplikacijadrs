@@ -62,6 +62,12 @@
                                 @if($f->uputstvo_file)
                                     <a href="{{ $f->uputstvo_file }}" target="_blank" class="text-blue-600 hover:underline">Preuzmi dokument</a>
                                 @endif
+
+                                @if($f->image_url)
+                                    <div>
+                                        <img src="{{ $f->image_url }}" alt="Slika Fakulteta" style="max-width: 100px;">
+                                    </div>
+                                @endif
                             </td>
                             <td class="px-6 py-4 text-center">
                                 <div class="flex justify-center space-x-2">
@@ -133,6 +139,10 @@
                     <label>Upload dokument</label>
                     <input type="file" name="uputstvo_file" class="w-full border rounded">
                 </div>
+                <div class="mb-4">
+                    <label>Upload Sliku</label>
+                    <input type="file" name="image" class="w-full border rounded">
+                </div>
                 <div class="flex justify-end space-x-2">
                     <button type="button" id="cancelAddModal" class="border px-4 py-2">Otkaži</button>
                     <button type="submit" class="bg-blue-600 text-white px-4 py-2">Sačuvaj</button>
@@ -181,6 +191,10 @@
                 <div class="mb-4">
                     <label>Upload dokument</label>
                     <input type="file" name="uputstvo_file" class="w-full border rounded">
+                </div>
+                <div class="mb-4">
+                    <label>Upload Sliku</label>
+                    <input type="file" name="image" class="w-full border rounded">
                 </div>
                 <div class="flex justify-end space-x-2">
                     <button type="button" id="cancelEditModal" class="border px-4 py-2">Otkaži</button>
@@ -241,4 +255,5 @@
     });
     </script>
 </x-app-layout>
+
 
