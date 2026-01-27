@@ -10,6 +10,7 @@ use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class FakultetController extends Controller
 {
+    // Prikaz svih fakulteta
     public function index()
     {
         $fakulteti = Fakultet::with('univerzitet')->get();
@@ -17,6 +18,7 @@ class FakultetController extends Controller
         return view('fakultet.index', compact('fakulteti', 'univerziteti'));
     }
 
+    // Dodavanje novog fakulteta
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -28,18 +30,27 @@ class FakultetController extends Controller
             'univerzitet_id' => 'required|exists:univerziteti,id',
         ]);
 
-        // Ako postoji PDF fajl, upload na Cloudinary kao raw
         if ($request->hasFile('uputstvo_file')) {
+            // Upload PDF
             $uploadedPdf = Cloudinary::uploadApi()->upload(
                 $request->file('uputstvo_file')->getRealPath(),
                 [
                     'folder' => 'fakulteti/pdf',
-                    'resource_type' => 'raw', // OBAVEZNO za PDF
-                    'public_id' => pathinfo($request->file('uputstvo_file')->getClientOriginalName(), PATHINFO_FILENAME),
-                    'overwrite' => true
+                    'resource_type' => 'raw' // PDF se tretira kao raw
                 ]
             );
             $validated['uputstvo_file'] = $uploadedPdf['secure_url'];
+
+            // Generiši preview slike prve strane PDF-a
+            $previewImage = Cloudinary::uploadApi()->upload(
+                $request->file('uputstvo_file')->getRealPath(),
+                [
+                    'folder' => 'fakulteti/pdf_preview',
+                    'resource_type' => 'image',
+                    'pages' => 1
+                ]
+            );
+            $validated['uputstvo_preview'] = $previewImage['secure_url'];
         }
 
         Fakultet::create($validated);
@@ -47,6 +58,7 @@ class FakultetController extends Controller
         return redirect()->back()->with('success', 'Fakultet uspješno dodat!');
     }
 
+    // Ažuriranje fakulteta
     public function update(Request $request, $id)
     {
         $fakultet = Fakultet::findOrFail($id);
@@ -65,18 +77,27 @@ class FakultetController extends Controller
             'univerzitet_id' => 'required|exists:univerziteti,id',
         ]);
 
-        // Ako postoji PDF fajl, upload na Cloudinary kao raw
         if ($request->hasFile('uputstvo_file')) {
+            // Upload PDF
             $uploadedPdf = Cloudinary::uploadApi()->upload(
                 $request->file('uputstvo_file')->getRealPath(),
                 [
                     'folder' => 'fakulteti/pdf',
-                    'resource_type' => 'raw', // OBAVEZNO za PDF
-                    'public_id' => pathinfo($request->file('uputstvo_file')->getClientOriginalName(), PATHINFO_FILENAME),
-                    'overwrite' => true
+                    'resource_type' => 'raw'
                 ]
             );
             $validated['uputstvo_file'] = $uploadedPdf['secure_url'];
+
+            // Generiši preview slike prve strane PDF-a
+            $previewImage = Cloudinary::uploadApi()->upload(
+                $request->file('uputstvo_file')->getRealPath(),
+                [
+                    'folder' => 'fakulteti/pdf_preview',
+                    'resource_type' => 'image',
+                    'pages' => 1
+                ]
+            );
+            $validated['uputstvo_preview'] = $previewImage['secure_url'];
         }
 
         $fakultet->update($validated);
@@ -84,6 +105,7 @@ class FakultetController extends Controller
         return redirect()->back()->with('success', 'Fakultet uspješno ažuriran!');
     }
 
+    // Brisanje fakulteta
     public function destroy($id)
     {
         $fakultet = Fakultet::findOrFail($id);
@@ -92,3 +114,4 @@ class FakultetController extends Controller
         return redirect()->back()->with('success', 'Fakultet uspješno obrisan!');
     }
 }
+
