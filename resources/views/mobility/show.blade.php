@@ -61,22 +61,25 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Strani Predmeti</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ECTS</th>
 
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Ocjena
-                                    <!-- Tooltip za uputstvo -->
-                                    @if($mobilnost->fakultet->uputstvo_file)
-                                        <a href="{{ $mobilnost->fakultet->uputstvo_file }}" 
-                                           target="_blank" 
-                                           title="Preuzmite uputstvo za ocjene" 
-                                           class="text-red-600 font-bold cursor-pointer ml-1">
-                                            !
-                                        </a>
-                                    @elseif($mobilnost->fakultet->uputstvo_za_ocjene)
-                                        <span class="text-red-600 font-bold cursor-pointer ml-1" title="{{ $mobilnost->fakultet->uputstvo_za_ocjene }}">
-                                            !
-                                        </span>
-                                    @endif
-                                </th>
+<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+    Ocjena
+    <!-- Tooltip / PDF Preview -->
+    @if($mobilnost->fakultet->uputstvo_file)
+        <div class="relative inline-block group ml-1">
+            <a href="{{ $mobilnost->fakultet->uputstvo_file }}" target="_blank" class="text-red-600 font-bold cursor-pointer">!</a>
+            
+            @if($mobilnost->fakultet->uputstvo_preview)
+                <!-- Hover preview -->
+                <div class="absolute left-0 top-full mt-1 w-64 opacity-0 group-hover:opacity-100 transition-opacity border rounded shadow-lg z-50 bg-white">
+                    <img src="{{ $mobilnost->fakultet->uputstvo_preview }}" alt="PDF Preview" class="w-full h-auto rounded">
+                </div>
+            @endif
+        </div>
+    @elseif($mobilnost->fakultet->uputstvo_za_ocjene)
+        <span class="text-red-600 font-bold cursor-pointer ml-1" title="{{ $mobilnost->fakultet->uputstvo_za_ocjene }}">!</span>
+    @endif
+</th>
+
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
