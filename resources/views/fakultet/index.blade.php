@@ -140,7 +140,7 @@
                     <textarea name="uputstvo_za_ocjene" class="w-full border rounded"></textarea>
                 </div>
                 <div class="mb-4">
-                    <label>Upload dokument(PDF)</label>
+                    <label>Upload dokument (PDF)</label>
                     <input type="file" name="uputstvo_file" class="w-full border rounded" accept=".pdf">
                 </div>
 
@@ -193,10 +193,7 @@
                     <label>Upload dokument (PDF)</label>
                     <input type="file" name="uputstvo_file" class="w-full border rounded" accept=".pdf">
                 </div>
-                <div class="mb-4">
-                    <label>Upload Sliku</label>
-                    <input type="file" name="image" class="w-full border rounded">
-                </div>
+
                 <div class="flex justify-end space-x-2">
                     <button type="button" id="cancelEditModal" class="border px-4 py-2">Otkaži</button>
                     <button type="submit" class="bg-blue-600 text-white px-4 py-2">Sačuvaj Izmjene</button>
