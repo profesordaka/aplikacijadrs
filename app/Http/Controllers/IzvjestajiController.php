@@ -425,8 +425,8 @@ return view('izvjestaji.index', compact(
                     $r->total,
                     $r->musko,
                     $r->zensko,
-                    $r->procetat_musko,
-                    $r->procetat_zensko,
+                    $r->procenat_musko,
+                    $r->procenat_zensko,
                 ];
             })->toArray();
 
