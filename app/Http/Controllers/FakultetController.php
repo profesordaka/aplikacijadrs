@@ -28,10 +28,16 @@ class FakultetController extends Controller
             'univerzitet_id' => 'required|exists:univerziteti,id',
         ]);
 
+        // Ako postoji PDF fajl, upload na Cloudinary kao raw
         if ($request->hasFile('uputstvo_file')) {
             $uploadedPdf = Cloudinary::uploadApi()->upload(
                 $request->file('uputstvo_file')->getRealPath(),
-                ['folder' => 'fakulteti/pdf']
+                [
+                    'folder' => 'fakulteti/pdf',
+                    'resource_type' => 'raw', // OBAVEZNO za PDF
+                    'public_id' => pathinfo($request->file('uputstvo_file')->getClientOriginalName(), PATHINFO_FILENAME),
+                    'overwrite' => true
+                ]
             );
             $validated['uputstvo_file'] = $uploadedPdf['secure_url'];
         }
@@ -59,10 +65,16 @@ class FakultetController extends Controller
             'univerzitet_id' => 'required|exists:univerziteti,id',
         ]);
 
+        // Ako postoji PDF fajl, upload na Cloudinary kao raw
         if ($request->hasFile('uputstvo_file')) {
             $uploadedPdf = Cloudinary::uploadApi()->upload(
                 $request->file('uputstvo_file')->getRealPath(),
-                ['folder' => 'fakulteti/pdf']
+                [
+                    'folder' => 'fakulteti/pdf',
+                    'resource_type' => 'raw', // OBAVEZNO za PDF
+                    'public_id' => pathinfo($request->file('uputstvo_file')->getClientOriginalName(), PATHINFO_FILENAME),
+                    'overwrite' => true
+                ]
             );
             $validated['uputstvo_file'] = $uploadedPdf['secure_url'];
         }
