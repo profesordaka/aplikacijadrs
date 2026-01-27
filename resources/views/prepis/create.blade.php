@@ -475,7 +475,7 @@
                 if (matchedCount > 0) {
                     render();
                 } else {
-                    alert('Nema predmeta za mačovanje na ovoj listi');
+                    alert('Nema predmeta za usklađivanje na ovoj listi');
                 }
             }
 

@@ -206,7 +206,7 @@ class StudentController extends Controller
               $student->predmeti()->syncWithoutDetaching($syncData);
           }
 
-          $msg = "ToR poslan. Mačovano $matchedCount predmeta od ukupno $totalCount .";
+          $msg = "ToR poslan. Usklađeno $matchedCount predmeta od ukupno $totalCount .";
           if (count($missedSubjects) > 0) {
               $msg .= " Missed: " . count($missedSubjects) . ". Check logs for details.";
           }
