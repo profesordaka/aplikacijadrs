@@ -143,10 +143,7 @@
                     <label>Upload dokument (PDF)</label>
                     <input type="file" name="uputstvo_file" class="w-full border rounded" accept=".pdf">
                 </div>
-                <div class="mb-4">
-                    <label>Upload Sliku</label>
-                    <input type="file" name="image" class="w-full border rounded">
-                </div>
+
                 <div class="flex justify-end space-x-2">
                     <button type="button" id="cancelAddModal" class="border px-4 py-2">Otkaži</button>
                     <button type="submit" class="bg-blue-600 text-white px-4 py-2">Sačuvaj</button>
