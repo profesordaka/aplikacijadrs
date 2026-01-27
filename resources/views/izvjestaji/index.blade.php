@@ -8,6 +8,38 @@
     table {
       margin-top: 30px; /* Razmak između tabele i svega što je iznad nje */
     }
+
+  <style>
+    #tab-content-mobilnost .flex.gap-6 {
+      margin-bottom: 20px; /* Razmak između grafikona i tabele */
+    }
+
+    table {
+      margin-top: 30px; /* Razmak između tabele i svega što je iznad nje */
+    }
+
+    
+    .tab-btn {
+      border: 2px solid transparent; /* Podesi početni okvir na transparentan */
+      border-radius: 5px; /* Dodaj zaobljene ivice */
+      padding: 8px 16px; /* Proširi malo dugme za bolju vidljivost */
+    }
+
+    .tab-btn:hover {
+      border-color: #2563eb; /* Plavi okvir pri hoveru */
+    }
+
+    .tab-btn[data-tab="prepisi"]:not(.active),
+    .tab-btn[data-tab="mobilnost"]:not(.active) {
+      border-color: #2563eb; /* Plavi okvir za neaktivnu karticu */
+    }
+  </style>
+
+
+
+
+
+
   </style>
   <div class="py-10 max-w-7xl mx-auto px-6">
 
