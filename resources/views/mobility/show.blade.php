@@ -60,17 +60,15 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">FIT Predmeti</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Strani Predmeti</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ECTS</th>
-
 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
     Ocjena
-    <!-- Tooltip / PDF Preview -->
     @if($mobilnost->fakultet->uputstvo_file)
-        <div class="relative inline-block group ml-1">
+        <div class="relative inline-block">
             <a href="{{ $mobilnost->fakultet->uputstvo_file }}" target="_blank" class="text-red-600 font-bold cursor-pointer">!</a>
             
             @if($mobilnost->fakultet->uputstvo_preview)
                 <!-- Hover preview -->
-                <div class="absolute left-0 top-full mt-1 w-64 opacity-0 group-hover:opacity-100 transition-opacity border rounded shadow-lg z-50 bg-white">
+                <div class="absolute left-0 top-full mt-1 w-64 opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-all duration-200 border rounded shadow-lg bg-white z-50">
                     <img src="{{ $mobilnost->fakultet->uputstvo_preview }}" alt="PDF Preview" class="w-full h-auto rounded">
                 </div>
             @endif
