@@ -140,7 +140,7 @@
                     <textarea name="uputstvo_za_ocjene" class="w-full border rounded"></textarea>
                 </div>
                 <div class="mb-4">
-                    <label>Upload dokument (PDF)</label>
+                    <label>Upload dokument(PDF)</label>
                     <input type="file" name="uputstvo_file" class="w-full border rounded" accept=".pdf">
                 </div>
 
