@@ -77,8 +77,8 @@ class MappingRequestController extends Controller
             }
         }
 
-        session()->flash('success', 'Mačovanje uspješno sačuvano.');
+        session()->flash('success', 'Uskčađivanje predmeta uspješno sačuvano.');
 
-        return response()->json(['message' => 'Mačovanje uspješno sačuvano.']);
+        return response()->json(['message' => 'Usklađivanje predmeta uspješno sačuvano.']);
     }
 }

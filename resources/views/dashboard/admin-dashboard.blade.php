@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="py-10 max-w-7xl mx-auto px-6">
         <div class="flex items-center justify-between mb-8">
-            <h1 class="text-3xl font-bold text-gray-900">Mobilnost Kontrolna Tabla</h1>
+            <h1 class="text-3xl font-bold text-gray-900">Mobilnost kontrolna tabla</h1>
         </div>
 
         <div class="bg-white shadow-sm rounded-xl overflow-hidden border border-gray-200">

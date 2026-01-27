@@ -416,7 +416,7 @@
                 els.sendBtn.addEventListener('click', async () => {
                     if (state.linkedPairs.length === 0) return;
                     
-                    if (!confirm('Jeste li sigurni da želite da pošaljete ovo mačovanje Profesoru?')) return;
+                    if (!confirm('Jeste li sigurni da želite da pošaljete ovo usklađivanje Profesoru?')) return;
 
                     const matches = state.linkedPairs.map(p => ({
                         professor_id: p.prof.id,

@@ -185,7 +185,7 @@ class PrepisController extends Controller
         }
 
 
-        return response()->json(['message' => 'Zahtjev za mačovanje poslat uspješno.']);
+        return response()->json(['message' => 'Zahtjev za usklađivanje poslat uspješno.']);
     }
 
     public function getStudentSubjects($studentId)
@@ -375,7 +375,7 @@ class PrepisController extends Controller
 
         $mappingRequest->update(['status' => 'accepted']);
 
-        return redirect()->back()->with('success', 'Zahtjev za mačovanje prihvaćen i prepis kreiran.');
+        return redirect()->back()->with('success', 'Zahtjev za usklađivanje prihvaćen i prepis kreiran.');
     }
 
     public function rejectMappingRequest($id)
@@ -388,13 +388,13 @@ class PrepisController extends Controller
 
         $mappingRequest->update(['status' => 'rejected']);
 
-        return redirect()->back()->with('success', 'Zahtjev za mačovanje nije prihvaćen.');
+        return redirect()->back()->with('success', 'Zahtjev za usklađivanje nije prihvaćen.');
     }
 
     public function destroyMappingRequest($id)
     {
         $mappingRequest = \App\Models\MappingRequest::findOrFail($id);
         $mappingRequest->delete();
-        return redirect()->back()->with('success', 'Zahtjev za mačovanje obrisan.');
+        return redirect()->back()->with('success', 'Zahtjev za usklađivanje obrisan.');
     }
 }

@@ -62,7 +62,7 @@
                                                 @elseif($subject->is_rejected)
                                                      <span class="text-red-500 font-bold">-> (Odbijeno)</span>
                                                 @else
-                                                     <span class="text-yellow-500 italic">-> (Mačovanje na čekanju)</span>
+                                                     <span class="text-yellow-500 italic">-> (Usklađivanje predmeta na čekanju)</span>
                                                 @endif
                                             </li>
                                         @endforeach
@@ -108,7 +108,7 @@
                                         <a href="{{ route('prepis.mapping-request.show', $request->id) }}" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 px-3 py-1 rounded-md transition-colors">
                                             Pregledaj zahtjev
                                         </a>
-                                        <form action="{{ route('prepis.mapping-request.destroy', $request->id) }}" method="POST" onsubmit="return confirm('Jeste li sigurni da želite da obrišete mačovanje predmeta?');">
+                                        <form action="{{ route('prepis.mapping-request.destroy', $request->id) }}" method="POST" onsubmit="return confirm('Jeste li sigurni da želite da obrišete usklađivanje predmeta?');">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 px-3 py-1 rounded-md transition-colors">
