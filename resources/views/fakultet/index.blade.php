@@ -63,10 +63,11 @@
                             <td class="px-6 py-4 text-sm text-gray-500">{{ $f->univerzitet->naziv }}</td>
                             <td class="px-6 py-4 text-sm text-gray-500">
                                 @if($f->uputstvo_file)
-                                    <a href="{{ $f->uputstvo_file }}" 
-                                       download="{{ $f->naziv }}.pdf" 
-                                       class="text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-xs font-medium transition-colors">
-                                       Preuzmi
+                                    <a href="{{ route('fakulteti.view-pdf', $f->id) }}" 
+                                       target="_blank"
+                                       rel="noopener noreferrer"
+                                       class="text-white bg-blue-600 whitespace-nowrap hover:bg-blue-700 px-3 py-2 rounded text-xs font-medium transition-colors">
+                                       Otvori PDF
                                     </a>
                                 @else
                                     <span class="text-gray-400 text-xs">-</span>

@@ -91,8 +91,7 @@ Route::middleware('adminAuth')->prefix('admin')->group(function () {
     Route::post('/fakulteti', [\App\Http\Controllers\FakultetController::class, 'store'])->name('fakulteti.store');
     Route::put('/fakulteti/{id}', [\App\Http\Controllers\FakultetController::class, 'update'])->name('fakulteti.update');
     Route::delete('/fakulteti/{id}', [\App\Http\Controllers\FakultetController::class, 'destroy'])->name('fakulteti.destroy');
-    Route::get('/fakulteti/{fakultet}/download', [\App\Http\Controllers\FakultetController::class, 'download'])->name('fakulteti.download');
-    Route::get('/fakulteti/{fakultet}/pdf-preview', [\App\Http\Controllers\FakultetController::class, 'pdfPreview'])->name('fakulteti.pdf-preview');
+    Route::get('/fakulteti/{fakultet}/view-pdf', [\App\Http\Controllers\FakultetController::class, 'viewPdf'])->name('fakulteti.view-pdf');
     Route::get('/fakulteti/{fakultet}/pdf-proxy', [\App\Http\Controllers\FakultetController::class, 'pdfProxy'])->name('fakulteti.pdf-proxy');
     Route::get('/fakulteti/{fakultet}/pdf-pages', [\App\Http\Controllers\FakultetController::class, 'pdfPages'])->name('fakulteti.pdf-pages');
 

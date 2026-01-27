@@ -146,23 +146,15 @@
     <div id="pdfTooltip-{{ $mobilnost->fakultet->id }}" class="pdf-preview-tooltip w-[500px] h-[600px] bg-white border-2 border-gray-300 rounded-lg shadow-2xl opacity-0 invisible transition-all duration-200 overflow-hidden" style="display: none;">
         <div class="bg-gray-100 px-3 py-2 border-b border-gray-300 flex justify-between items-center">
             <span class="text-sm font-semibold text-gray-700 truncate">{{ $mobilnost->fakultet->naziv }} - PDF Uputstvo</span>
-            <a href="{{ $mobilnost->fakultet->uputstvo_file }}" target="_blank" class="text-blue-600 hover:text-blue-800 text-xs underline whitespace-nowrap ml-2">Otvori u novom prozoru</a>
+            <a href="{{ route('fakulteti.view-pdf', $mobilnost->fakultet->id) }}" target="_blank" class="text-blue-600 hover:text-blue-800 text-xs underline whitespace-nowrap ml-2">Otvori u novom prozoru</a>
         </div>
         <div id="pdfPagesContainer-{{ $mobilnost->fakultet->id }}" class="w-full h-[calc(100%-45px)] overflow-y-auto bg-gray-50 p-4" style="display: none;">
-            @if($mobilnost->fakultet->uputstvo_preview)
-                {{-- Koristi postojeći preview URL --}}
-                <img src="{{ $mobilnost->fakultet->uputstvo_preview }}" 
-                     alt="PDF Preview" 
-                     class="w-full h-auto shadow-md rounded border border-gray-200 mb-4"
-                     onerror="this.parentElement.innerHTML='<div class=\'p-4 text-center text-gray-500\'><p>Preview nije dostupan.</p><a href=\'{{ $mobilnost->fakultet->uputstvo_file }}\' target=\'_blank\' class=\'text-blue-600 underline\'>Otvori PDF direktno</a></div>'">
-            @else
-                {{-- Fallback na direktan PDF URL --}}
-                <iframe src="{{ $mobilnost->fakultet->uputstvo_file }}" 
-                        class="w-full h-full border-0"
-                        frameborder="0"
-                        onerror="this.parentElement.innerHTML='<div class=\'p-4 text-center text-gray-500\'><p>PDF se ne može prikazati.</p><a href=\'{{ $mobilnost->fakultet->uputstvo_file }}\' target=\'_blank\' class=\'text-blue-600 underline\'>Otvori PDF direktno</a></div>'">
-                </iframe>
-            @endif
+            {{-- Koristi view-pdf rutu koja servuje PDF sa inline disposition --}}
+            <iframe src="{{ route('fakulteti.view-pdf', $mobilnost->fakultet->id) }}" 
+                    class="w-full h-full border-0"
+                    frameborder="0"
+                    title="PDF Preview">
+            </iframe>
         </div>
         <script>
         (function() {
