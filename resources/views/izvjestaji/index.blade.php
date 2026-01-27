@@ -9,31 +9,49 @@
       margin-top: 30px; /* Razmak između tabele i svega što je iznad nje */
     }
 
-  <style>
-    #tab-content-mobilnost .flex.gap-6 {
-      margin-bottom: 20px; /* Razmak između grafikona i tabele */
-    }
 
-    table {
-      margin-top: 30px; /* Razmak između tabele i svega što je iznad nje */
-    }
+/* Početni stil za sve tabove */
+.tab-btn {
+  border: 2px solid transparent; /* Transparentan okvir kao početni */
+  border-radius: 5px; /* Zaobljeni uglovi */
+  padding: 8px 16px; /* Prošireni prostor oko teksta */
+  transition: border-color 0.3s ease, color 0.3s ease; /* Animacija za glatke promene */
+  color: #374151; /* Početna boja teksta za neaktivne tabove */
+  position: relative; /* Za pozicioniranje linije ispod taba */
+}
 
-    
-    .tab-btn {
-      border: 2px solid transparent; /* Podesi početni okvir na transparentan */
-      border-radius: 5px; /* Dodaj zaobljene ivice */
-      padding: 8px 16px; /* Proširi malo dugme za bolju vidljivost */
-    }
+/* Hover efekat - plavi okvir pri hoveru */
+.tab-btn:hover {
+  border-color: #2563eb; /* Plavi okvir pri hoveru */
+  color: #2563eb; /* Plavi tekst pri hoveru */
+}
 
-    .tab-btn:hover {
-      border-color: #2563eb; /* Plavi okvir pri hoveru */
-    }
+/* Neaktivni tab - plavi okvir, tanka linija ispod */
+.tab-btn:not(.active) {
+  border-color: #2563eb; /* Plavi okvir za neaktivne tabove */
+  color: #374151; /* Siva boja teksta za neaktivni tab */
+  border-bottom: 2px solid #2563eb; /* Tanka plava linija ispod neaktivnog taba */
+}
 
-    .tab-btn[data-tab="prepisi"]:not(.active),
-    .tab-btn[data-tab="mobilnost"]:not(.active) {
-      border-color: #2563eb; /* Plavi okvir za neaktivnu karticu */
-    }
-  </style>
+/* Aktivni tab - plavi okvir i plava linija ispod */
+.tab-btn.active {
+  border-color: #2563eb; /* Plavi okvir za aktivni tab */
+  color: #2563eb; /* Plavi tekst za aktivni tab */
+  font-weight: bold; /* Podebljan tekst za aktivni tab */
+}
+
+/* Dupla linija ispod aktivnog taba */
+.tab-btn.active:after {
+  content: '';
+  position: absolute;
+  bottom: -6px; /* Pomera liniju malo ispod dugmeta */
+  left: 0;
+  width: 100%; /* Linija pokriva celu širinu dugmeta */
+  height: 4px; /* Debljina linije */
+  background-color: #2563eb; /* Plava boja linije */
+  border-radius: 2px; /* Zaobljeni krajevi linije */
+  z-index: 1; /* Osigurava da linija bude iznad drugih elemenata */
+}
 
 
 
@@ -314,10 +332,43 @@ document.addEventListener('DOMContentLoaded', () => {
     contents.forEach(c => c.classList.add('hidden'));
     document.getElementById('tab-content-' + tab).classList.remove('hidden');
 
-    tabs.forEach(b => {
-      b.style.borderBottomColor = b.dataset.tab === tab ? '#2563eb' : 'transparent';
-      b.style.color = b.dataset.tab === tab ? '#2563eb' : '#374151';
-    });
+tabs.forEach(b => {
+  // Uklonimo prethodnu liniju, ako postoji
+  let line = b.querySelector('.active-line');
+  if (line) {
+    line.remove(); // Uklonimo prethodnu liniju
+  }
+
+  // Postavljamo boje i efekat linije ispod taba na osnovu aktivnog taba
+  if (b.dataset.tab === tab) {
+    // Aktivni tab
+    b.classList.add('active'); // Dodajemo aktivnu klasu
+    b.style.borderColor = '#2563eb'; // Plavi okvir
+    b.style.color = '#2563eb'; // Plavi tekst
+    b.style.fontWeight = 'bold'; // Podebljan tekst (opciono)
+
+    // Kreiramo novu liniju ispod aktivnog taba
+    let line = document.createElement('div');
+    line.classList.add('active-line'); // Dodajemo klasu za referencu
+    line.style.position = 'absolute';
+    line.style.bottom = '-6px';
+    line.style.left = '0';
+    line.style.width = '100%';
+    line.style.height = '4px';
+    line.style.backgroundColor = '#2563eb';
+    line.style.borderRadius = '2px';
+    line.style.zIndex = '1'; // Obezbeđuje da linija bude iznad drugih elemenata
+    b.appendChild(line);
+  } else {
+    // Neaktivni tab
+    b.classList.remove('active'); // Uklanjamo aktivnu klasu
+    b.style.borderColor = '#2563eb'; // Plavi okvir za neaktivni tab
+    b.style.color = '#374151'; // Siva boja za neaktivni tab
+    b.style.fontWeight = 'normal'; // Normalan tekst za neaktivni tab
+  }
+});
+
+
 
     sessionStorage.setItem('active-tab', tab);
     resizeCharts();
