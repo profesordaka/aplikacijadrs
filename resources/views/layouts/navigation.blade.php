@@ -53,7 +53,7 @@
                         @elseif((int) $user->type === 1)
                             <x-nav-link :href="route('profesorDashboardShow')"
                                 :active="request()->routeIs('profesorDashboardShow')">
-                                {{ __('KontorlnaTabla') }}
+                                {{ __('KontrolnaTabla') }}
                             </x-nav-link>
 
                             <x-nav-link :href="route('profesor.mobility')" :active="request()->routeIs('profesor.mobility')">
@@ -96,7 +96,7 @@
 
                             <x-dropdown-link :href="route('logout')" onclick="event.preventDefault();
                                                 this.closest('form').submit();">
-                                {{ __('Napušti app') }}
+                                {{ __('Odjavi se') }}
                             </x-dropdown-link>
                         </form>
                     </x-slot>
@@ -130,7 +130,7 @@
                 @if((int) $user->type === 0)
                     <x-responsive-nav-link :href="route('adminDashboardShow')"
                         :active="request()->routeIs('adminDashboardShow')">
-                        {{ __('KontorlnaTabla') }}
+                        {{ __('KontrolnaTabla') }}
                     </x-responsive-nav-link>
 
                     <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
@@ -194,7 +194,7 @@
 
                     <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault();
                                         this.closest('form').submit();">
-                        {{ __('Napušti app') }}
+                        {{ __('Odjavi se') }}
                     </x-responsive-nav-link>
                 </form>
             </div>

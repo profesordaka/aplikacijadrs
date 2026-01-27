@@ -441,7 +441,7 @@
                             state.linkedPairs = [];
                             render();
                         } else {
-                            alert('Failed to send requests. Please try again.');
+                            alert('Nije uspjelo slanje zahtjeva.Pokušajte ponovo.');
                         }
                     } catch (error) {
                         console.error('Error:', error);
