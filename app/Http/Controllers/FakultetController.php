@@ -31,7 +31,7 @@ class FakultetController extends Controller
         ]);
 
         if ($request->hasFile('uputstvo_file')) {
-            // Upload PDF
+            // Upload PDF na Cloudinary
             $uploadedPdf = Cloudinary::uploadApi()->upload(
                 $request->file('uputstvo_file')->getRealPath(),
                 [
@@ -114,4 +114,3 @@ class FakultetController extends Controller
         return redirect()->back()->with('success', 'Fakultet uspješno obrisan!');
     }
 }
-

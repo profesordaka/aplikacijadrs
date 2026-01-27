@@ -15,14 +15,25 @@ return new class extends Migration
             if (!Schema::hasColumn('fakulteti', 'image_url')) {
                 $table->string('image_url')->nullable()->after('uputstvo_file');
             }
+            // Dodaj novu kolonu za preview PDF-a
+            if (!Schema::hasColumn('fakulteti', 'uputstvo_preview')) {
+                $table->string('uputstvo_preview')->nullable()->after('image_url');
+            }
         });
     }
 
     public function down(): void
     {
         Schema::table('fakulteti', function (Blueprint $table) {
-            $table->dropColumn('uputstvo_file');
-            $table->dropColumn('image_url');
+            if (Schema::hasColumn('fakulteti', 'uputstvo_file')) {
+                $table->dropColumn('uputstvo_file');
+            }
+            if (Schema::hasColumn('fakulteti', 'image_url')) {
+                $table->dropColumn('image_url');
+            }
+            if (Schema::hasColumn('fakulteti', 'uputstvo_preview')) {
+                $table->dropColumn('uputstvo_preview');
+            }
         });
     }
 };

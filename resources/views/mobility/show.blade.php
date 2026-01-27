@@ -60,24 +60,20 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">FIT Predmeti</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Strani Predmeti</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ECTS</th>
+
 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
     Ocjena
     @if($mobilnost->fakultet->uputstvo_file)
-        <div class="relative inline-block">
-            <a href="{{ $mobilnost->fakultet->uputstvo_file }}" target="_blank" class="text-red-600 font-bold cursor-pointer">!</a>
-            
-            @if($mobilnost->fakultet->uputstvo_preview)
-                <!-- Hover preview -->
-                <div class="absolute left-0 top-full mt-1 w-64 opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-all duration-200 border rounded shadow-lg bg-white z-50">
-                    <img src="{{ $mobilnost->fakultet->uputstvo_preview }}" alt="PDF Preview" class="w-full h-auto rounded">
-                </div>
-            @endif
+        <div class="relative inline-block group ml-1">
+            <span class="text-red-600 font-bold cursor-pointer">!</span>
+            <div class="absolute left-0 top-full mt-1 w-64 opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-all duration-200 border rounded shadow-lg bg-white z-50">
+                <img src="{{ $mobilnost->fakultet->uputstvo_preview }}" alt="PDF Preview" class="w-full h-auto rounded">
+            </div>
         </div>
     @elseif($mobilnost->fakultet->uputstvo_za_ocjene)
         <span class="text-red-600 font-bold cursor-pointer ml-1" title="{{ $mobilnost->fakultet->uputstvo_za_ocjene }}">!</span>
     @endif
 </th>
-
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
