@@ -19,7 +19,7 @@
                     @if($user)
                         @if((int) $user->type === 0)
                             <x-nav-link :href="route('adminDashboardShow')" :active="request()->routeIs('adminDashboardShow')">
-                                {{ __('Kontrolna Tabla') }}
+                                {{ __('Kontrolna tabla') }}
                             </x-nav-link>
 
                             <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
@@ -53,7 +53,7 @@
                         @elseif((int) $user->type === 1)
                             <x-nav-link :href="route('profesorDashboardShow')"
                                 :active="request()->routeIs('profesorDashboardShow')">
-                                {{ __('KontrolnaTabla') }}
+                                {{ __('Kontrolna Tabla') }}
                             </x-nav-link>
 
                             <x-nav-link :href="route('profesor.mobility')" :active="request()->routeIs('profesor.mobility')">
@@ -130,7 +130,7 @@
                 @if((int) $user->type === 0)
                     <x-responsive-nav-link :href="route('adminDashboardShow')"
                         :active="request()->routeIs('adminDashboardShow')">
-                        {{ __('KontrolnaTabla') }}
+                        {{ __('Kontrolna tabla') }}
                     </x-responsive-nav-link>
 
                     <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
@@ -165,7 +165,7 @@
                 @elseif((int) $user->type === 1)
                     <x-responsive-nav-link :href="route('profesorDashboardShow')"
                         :active="request()->routeIs('profesorDashboardShow')">
-                        {{ __('Kontrolna Tabla') }}
+                        {{ __('Kontrolna tabla') }}
                     </x-responsive-nav-link>
 
                     <x-responsive-nav-link :href="route('profesor.mobility')" :active="request()->routeIs('profesor.mobility')">
