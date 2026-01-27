@@ -37,41 +37,44 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Naziv</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Telefon</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Web</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Univerzitet</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Dokument</th>
-                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Akcije</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Naziv</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Telefon</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Univerzitet</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dokument</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Akcije</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach($fakulteti as $f)
-                        <tr class="faculty-row hover:bg-gray-50" data-search="{{ strtolower($f->naziv . ' ' . $f->email . ' ' . $f->univerzitet->naziv) }}">
-                            <td class="px-6 py-4">{{ $f->naziv }}</td>
-                            <td class="px-6 py-4">{{ $f->email }}</td>
-                            <td class="px-6 py-4">{{ $f->telefon }}</td>
+                        <tr class="faculty-row hover:bg-gray-50 transition-colors duration-150 ease-in-out" data-search="{{ strtolower($f->naziv . ' ' . $f->email . ' ' . $f->univerzitet->naziv) }}">
                             <td class="px-6 py-4">
-                                @if($f->web)
-                                    <a href="{{ $f->web }}" target="_blank" class="text-blue-600 hover:underline">{{ $f->web }}</a>
-                                @endif
-                            </td>
-                            <td class="px-6 py-4">{{ $f->univerzitet->naziv }}</td>
-                            <td class="px-6 py-4">
-                                @if($f->uputstvo_file)
-                                    <a href="{{ $f->uputstvo_file }}" target="_blank" class="text-blue-600 hover:underline">Preuzmi dokument</a>
-                                @endif
-
-                                @if($f->image_url)
-                                    <div>
-                                        <img src="{{ $f->image_url }}" alt="Slika Fakulteta" style="max-width: 100px;">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold">
+                                        {{ substr($f->naziv, 0, 1) }}
                                     </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">{{ $f->naziv }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $f->email }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $f->telefon }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ $f->univerzitet->naziv }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">
+                                @if($f->uputstvo_file)
+                                    <a href="{{ $f->uputstvo_file }}" 
+                                       download="{{ $f->naziv }}.pdf" 
+                                       class="text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-xs font-medium transition-colors">
+                                       Preuzmi
+                                    </a>
+                                @else
+                                    <span class="text-gray-400 text-xs">-</span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 text-center">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex justify-center space-x-2">
-                                    <button class="openEditModal text-indigo-600 bg-indigo-50 px-3 py-1 rounded-md"
+                                    <button class="openEditModal text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 px-3 py-1 rounded-md transition-colors"
                                         data-id="{{ $f->id }}"
                                         data-naziv="{{ $f->naziv }}"
                                         data-email="{{ $f->email }}"
@@ -82,13 +85,13 @@
                                         Izmijeni
                                     </button>
                                     <a href="{{ route('fakulteti.predmeti.index', $f->id) }}"
-                                       class="text-green-600 bg-green-50 px-3 py-1 rounded-md">
+                                       class="text-green-600 hover:text-green-900 bg-green-50 hover:bg-green-100 px-3 py-1 rounded-md transition-colors">
                                        Predmeti
                                     </a>
-                                    <form action="{{ route('fakulteti.destroy', $f->id) }}" method="POST" onsubmit="return confirm('Da li ste sigurni?')">
+                                    <form action="{{ route('fakulteti.destroy', $f->id) }}" method="POST" onsubmit="return confirm('Jeste li sigurni?')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="text-red-600 bg-red-50 px-3 py-1 rounded-md">Obriši</button>
+                                        <button type="submit" class="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 px-3 py-1 rounded-md transition-colors">Obriši</button>
                                     </form>
                                 </div>
                             </td>
