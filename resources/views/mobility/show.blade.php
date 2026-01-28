@@ -209,9 +209,6 @@
         </div>
     </div>
 
-<<<<<<< HEAD
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
-=======
     <!-- Documents Modal -->
     <div id="documentsModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
         <div class="bg-white rounded-lg shadow-lg w-1/2">
@@ -249,7 +246,6 @@
             </div>
         </div>
     </div>
->>>>>>> upstream/main
 
     <script>
         // PDF Tooltip positioning
