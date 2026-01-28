@@ -198,7 +198,7 @@
             <label class="block text-xs text-gray-600">Godina</label>
             <select name="year" onchange="this.form.submit()" class="border rounded px-2 py-1 pr-8 text-sm w-28 appearance-none bg-no-repeat bg-right">
               <option value="">Sve</option>
-              @foreach($mobilnosti as $m)
+              @foreach($mobilnosti->unique('year') as $m)
                 <option value="{{ $m->year }}" @if(isset($filterYear) && $filterYear == $m->year) selected @endif>{{ $m->year }}</option>
               @endforeach
             </select>
