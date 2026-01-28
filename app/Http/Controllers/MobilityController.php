@@ -714,29 +714,47 @@ class MobilityController extends Controller
         return response()->json(['message' => 'Document deleted successfully.']);
     }
 
-    public function exportZip($id)
-    {
-        $mobilnost = Mobilnost::findOrFail($id);
-        $this->ensureDefaultDocuments($mobilnost);
-        $documents = $mobilnost->documents()->get();
+public function exportZip($id)
+{
+    $mobilnost = Mobilnost::findOrFail($id);
+    $this->ensureDefaultDocuments($mobilnost);
 
-        $zip = new ZipArchive;
-        $zipFileName = 'Mobilnost_Dokumenti_' . $mobilnost->student->br_indexa . '.zip';
-        $zipPath = storage_path('app/public/' . $zipFileName);
+    $documents = $mobilnost->documents()->get();
 
-        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
-            foreach ($documents as $doc) {
-                $fullPath = Storage::path($doc->path);
-                
-                if (file_exists($fullPath)) {
-                    $zip->addFile($fullPath, $doc->name);
-                }
-            }
-            $zip->close();
-        }
-
-        return response()->download($zipPath)->deleteFileAfterSend(true);
+    
+    $tmpDir = storage_path('app/tmp');
+    if (!is_dir($tmpDir)) {
+        mkdir($tmpDir, 0775, true);
     }
+
+    putenv("TMPDIR=$tmpDir");
+    putenv("TMP=$tmpDir");
+    putenv("TEMP=$tmpDir");
+
+    $zipFileName = 'Mobilnost_Dokumenti_' . $mobilnost->student->br_indexa . '.zip';
+    $zipPath = $tmpDir . '/' . $zipFileName;
+
+    $zip = new ZipArchive();
+
+    if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+        abort(500, 'Unable to create ZIP archive');
+    }
+
+    foreach ($documents as $doc) {
+        $fullPath = Storage::path($doc->path);
+
+        if (is_file($fullPath)) {
+            // second argument is the filename INSIDE the zip
+            $zip->addFile($fullPath, basename($fullPath));
+        }
+    }
+
+    $zip->close();
+
+    return response()
+        ->download($zipPath, $zipFileName)
+        ->deleteFileAfterSend(true);
+}
 
     private function ensureDefaultDocuments(Mobilnost $mobilnost)
     {
