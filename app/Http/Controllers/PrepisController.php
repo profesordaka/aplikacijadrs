@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Fakultet;
 use App\Models\Predmet;
 use App\Models\Student;
+use App\Models\Prepis;
+use App\Models\PrepisAgreement;
 use Illuminate\Http\Request;
 use App\Services\WordExportService;
 
