@@ -83,6 +83,16 @@
                                     <input type="date" name="end_date" id="end_date" required class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm py-2.5">
                                 </div>
                             </div>
+
+                            <!-- Mobility Type -->
+                            <div class="mt-6">
+                                <label for="tip_mobilnosti" class="block text-sm font-medium text-gray-700 mb-1">Tip mobilnosti</label>
+                                <select name="tip_mobilnosti" id="tip_mobilnosti" required class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm py-2.5">
+                                    <option value="">-- Izaberi tip mobilnosti --</option>
+                                    <option value="Semestralna mobilnost">Semestralna mobilnost</option>
+                                    <option value="Godišnja mobilnost">Godišnja mobilnost</option>
+                                </select>
+                            </div>
                         </div>
 
                         <!-- Subjects Card -->
@@ -153,17 +163,19 @@
                             </svg>
                             Izvezi u Word
                         </button>
-                        <button type="button" id="btnSave" class="inline-flex items-center px-6 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            Sačuvaj Learning Agreement
-                        </button>
+
                         <button type="button" id="btnShowSummary" class="inline-flex items-center px-4 py-2 border border-blue-600 shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                             <svg class="-ml-1 mr-2 h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                             </svg>
                             Pregled povezanih predmeta
+                        </button>
+
+                        <button type="button" id="btnSave" class="inline-flex items-center px-6 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Sačuvaj Learning Agreement
                         </button>
                     </div>
                 </div>

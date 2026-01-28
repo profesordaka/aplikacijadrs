@@ -16,6 +16,7 @@
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fakultet</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tip Mobilnosti</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Period</th>
                             <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Radnja</th>
                         </tr>
@@ -37,9 +38,16 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     {{ $mobilnost->fakultet->naziv }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ \Carbon\Carbon::parse($mobilnost->datum_pocetka)->format('d.m.Y') }} - 
-                                    {{ \Carbon\Carbon::parse($mobilnost->datum_kraja)->format('d.m.Y') }}
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                        {{ $mobilnost->tip_mobilnosti ?? '-' }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-500">
+                                        {{ \Carbon\Carbon::parse($mobilnost->datum_pocetka)->format('d.m.Y') }} -
+                                        {{ \Carbon\Carbon::parse($mobilnost->datum_kraja)->format('d.m.Y') }}
+                                    </div>
                                 </td>
                                
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -58,7 +66,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="px-6 py-10 text-center text-gray-500">
+                                <td colspan="5" class="px-6 py-10 text-center text-gray-500">
                                     Nema dostupnih mobilnosti.
 
                                 </td>

@@ -141,7 +141,7 @@
                         <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ECTS
                         </th>
                         <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ocjena
-                            (6-10)</th>
+                            (6-10) <span class="text-red-500">*</span></th>
                         <th class="px-4 py-2"></th>
                     </tr>
                 </thead>
@@ -154,7 +154,7 @@
                             <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500"
                                 x-text="subject.ects + ' ECTS'"></td>
                             <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
-                                <input type="number" min="6" max="10" x-model="grades[subject.id]" placeholder="-"
+                                <input type="number" min="6" max="10" x-model="grades[subject.id]" placeholder="-" required
                                     class="w-20 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                             </td>
                             <td class="px-4 py-2 whitespace-nowrap text-right text-sm font-medium">

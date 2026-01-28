@@ -56,7 +56,7 @@ class StudentController extends Controller
       'fakultet_id' => 'required|exists:fakulteti,id',
       'predmeti' => 'array',
       'predmeti.*' => 'array', // Each item in predmeti should be an array (e.g., ['grade' => 7])
-      'predmeti.*.grade' => 'nullable|integer|min:6|max:10', // Validate grades if present
+      'predmeti.*.grade' => 'required|integer|min:6|max:10', // Validate grades if present
     ]);
 
     $student = Student::create($validated);
@@ -125,7 +125,7 @@ class StudentController extends Controller
       'fakultet_id' => 'required|exists:fakulteti,id',
       'predmeti' => 'array',
       'predmeti.*' => 'array', // Each item in predmeti should be an array (e.g., ['grade' => 7])
-      'predmeti.*.grade' => 'nullable|integer|min:6|max:10', // Validate grades if present
+      'predmeti.*.grade' => 'required|integer|min:6|max:10', // Validate grades if present
     ]);
 
     $student->update($validated);

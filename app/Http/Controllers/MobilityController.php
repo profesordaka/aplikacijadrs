@@ -197,6 +197,7 @@ class MobilityController extends Controller
             'fakultet_id' => 'required|exists:fakulteti,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
+            'tip_mobilnosti' => 'required|in:Semestralna mobilnost,Godišnja mobilnost',
             'courses' => 'nullable|string', // JSON string
         ]);
 
@@ -204,6 +205,7 @@ class MobilityController extends Controller
         $fakultetId = $request->fakultet_id;
         $datumPocetka = $request->start_date;
         $datumKraja = $request->end_date;
+        $tipMobilnosti = $request->tip_mobilnosti;
 
         // Frontend sends 'courses' as JSON string in hidden input
         $coursesPayload = json_decode($request->input('courses'), true) ?? [];
@@ -216,6 +218,7 @@ class MobilityController extends Controller
             'fakultet_id' => $fakultetId,
             'datum_pocetka' => $datumPocetka,
             'datum_kraja' => $datumKraja,
+            'tip_mobilnosti' => $tipMobilnosti,
         ]);
 
         // Process courses mapping
@@ -563,7 +566,7 @@ class MobilityController extends Controller
         $currentYear = $student->godina_studija;
 
         // Fetch Unpassed Subjects from Previous Years
-        $unpassedSubjects = [];
+        $unpassedSubjects = collect([]);
         $previousSemesters = [];
 
         if ($currentYear == 2) {
@@ -591,7 +594,7 @@ class MobilityController extends Controller
         }
 
         // Fetch Next Year Subjects
-        $nextYearSubjects = [];
+        $nextYearSubjects = collect([]);
         if ($currentYear == 1) {
             // Next is Year 2 (Semesters 3, 4)
             $nextYearSubjects = \App\Models\Predmet::whereIn('semestar', [3, 4])

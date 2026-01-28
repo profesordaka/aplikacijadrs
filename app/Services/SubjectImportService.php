@@ -102,6 +102,8 @@ class SubjectImportService
 
             if ($sifraVal === 'Šifra predmeta' || $nazivVal === 'Naziv predmeta') continue;
 
+            if (str_contains(mb_strtolower($nazivVal), 'izborni predmet')) continue;
+
             $courses[] = [
                 'Sifra Predmeta' => $sifraVal,
                 'Naziv Predmeta' => $nazivVal,
@@ -150,6 +152,8 @@ class SubjectImportService
 
             if ($sifraVal === '' || $nazivVal === '') continue;
             if ($sifraVal === 'Šifra predmeta' || $nazivVal === 'Naziv predmeta') continue;
+
+            if (str_contains(mb_strtolower($nazivVal), 'izborni predmet')) continue;
 
             $courses[] = [
                 'Sifra Predmeta' => $sifraVal,
