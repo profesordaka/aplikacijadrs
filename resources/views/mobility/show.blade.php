@@ -85,10 +85,13 @@
                                         <span>Ocjena</span>
                                         @if($mobilnost->fakultet->uputstvo_file)
                                             <div class="relative inline-block" title="Hover za preview PDF-a">
-<span
+<a
     id="pdfTrigger-{{ $mobilnost->fakultet->id }}"
+    href="{{ route('fakulteti.view-pdf', $mobilnost->fakultet->id) }}"
+    target="_blank"
+    rel="noopener noreferrer"
     class="inline-flex items-center justify-center cursor-pointer text-blue-600 hover:text-blue-800 transition-colors"
-    title="Pregledaj PDF uputstvo"
+    title="Hover: pregled PDF-a | Klik: otvori u novoj kartici"
     aria-label="Pregledaj PDF uputstvo"
 >
     <svg xmlns="http://www.w3.org/2000/svg"
@@ -100,7 +103,7 @@
         <rect x="11" y="6" width="2" height="8" rx="1" fill="white"/>
         <circle cx="12" cy="17" r="1.2" fill="white"/>
     </svg>
-</span>
+</a>
                                             </div>
                                         @elseif($mobilnost->fakultet->uputstvo_za_ocjene)
                                             <span class="text-red-600 font-bold text-lg" title="{{ $mobilnost->fakultet->uputstvo_za_ocjene }}">!</span>
