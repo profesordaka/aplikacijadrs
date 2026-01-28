@@ -4,7 +4,9 @@
             position: fixed !important;
             max-height: 80vh;
             z-index: 9999 !important;
+            pointer-events: auto;
         }
+
         @media (max-width: 768px) {
             .pdf-preview-tooltip {
                 width: 90vw !important;
@@ -252,77 +254,83 @@
 
     <script>
         // PDF Tooltip positioning
-        document.addEventListener('DOMContentLoaded', function() {
-            @if($mobilnost->fakultet && $mobilnost->fakultet->uputstvo_file)
-            const trigger = document.getElementById('pdfTrigger-{{ $mobilnost->fakultet->id }}');
-            const tooltip = document.getElementById('pdfTooltip-{{ $mobilnost->fakultet->id }}');
-            
-            if (trigger && tooltip) {
-                function positionTooltip() {
-                    const rect = trigger.getBoundingClientRect();
-                    const tooltipWidth = 500;
-                    const tooltipHeight = 600;
-                    const spacing = 10;
-                    
-                    // Pozicija iznad ikonice
-                    let top = rect.top - tooltipHeight - spacing;
-                    let left = rect.left;
-                    
-                    // Ako nema mesta iznad, pozicioniraj ispod
-                    if (top < 0) {
-                        top = rect.bottom + spacing;
-                    }
-                    
-                    // Ako nema mesta sa desne strane, pozicioniraj sa leve
-                    if (left + tooltipWidth > window.innerWidth) {
-                        left = window.innerWidth - tooltipWidth - 20;
-                    }
-                    
-                    // Osiguraj da ne ide van ekrana sa leve strane
-                    if (left < 20) {
-                        left = 20;
-                    }
-                    
-                    tooltip.style.top = top + 'px';
-                    tooltip.style.left = left + 'px';
-                }
-                
-                trigger.addEventListener('mouseenter', function() {
-                    tooltip.style.display = 'block';
-                    positionTooltip();
-                    setTimeout(() => {
-                        tooltip.classList.remove('invisible');
-                        tooltip.classList.add('opacity-100');
-                    }, 10);
-                });
-                
-                trigger.addEventListener('mouseleave', function() {
-                    tooltip.classList.add('invisible');
-                    tooltip.classList.remove('opacity-100');
-                    setTimeout(() => {
-                        tooltip.style.display = 'none';
-                    }, 200);
-                });
-                
-                tooltip.addEventListener('mouseenter', function() {
-                    tooltip.classList.remove('invisible');
-                    tooltip.classList.add('opacity-100');
-                });
-                
-                tooltip.addEventListener('mouseleave', function() {
-                    tooltip.classList.add('invisible');
-                    tooltip.classList.remove('opacity-100');
-                    setTimeout(() => {
-                        tooltip.style.display = 'none';
-                    }, 200);
-                });
-                
-                // Repozicioniraj na scroll
-                window.addEventListener('scroll', positionTooltip);
-                window.addEventListener('resize', positionTooltip);
-            }
-            @endif
+document.addEventListener('DOMContentLoaded', function () {
+    @if($mobilnost->fakultet && $mobilnost->fakultet->uputstvo_file)
+
+    const trigger = document.getElementById('pdfTrigger-{{ $mobilnost->fakultet->id }}');
+    const tooltip = document.getElementById('pdfTooltip-{{ $mobilnost->fakultet->id }}');
+
+    if (!trigger || !tooltip) return;
+
+    let hoverTimeout = null;
+
+    function positionTooltip() {
+        const rect = trigger.getBoundingClientRect();
+        const tooltipWidth = 500;
+        const tooltipHeight = 600;
+        const spacing = 10;
+
+        let top = rect.top - tooltipHeight - spacing;
+        let left = rect.left;
+
+        // Ako nema mjesta iznad → ispod
+        if (top < 0) {
+            top = rect.bottom + spacing;
+        }
+
+        // Ako izlazi desno
+        if (left + tooltipWidth > window.innerWidth) {
+            left = window.innerWidth - tooltipWidth - 20;
+        }
+
+        // Ako izlazi lijevo
+        if (left < 20) {
+            left = 20;
+        }
+
+        tooltip.style.top = top + 'px';
+        tooltip.style.left = left + 'px';
+    }
+
+    function showTooltip() {
+        clearTimeout(hoverTimeout);
+        tooltip.style.display = 'block';
+        positionTooltip();
+
+        requestAnimationFrame(() => {
+            tooltip.classList.remove('invisible');
+            tooltip.classList.add('opacity-100');
         });
+    }
+
+    function hideTooltip() {
+        hoverTimeout = setTimeout(() => {
+            tooltip.classList.add('invisible');
+            tooltip.classList.remove('opacity-100');
+
+            setTimeout(() => {
+                tooltip.style.display = 'none';
+            }, 200);
+        }, 150); // delay da miš stigne na tooltip
+    }
+
+    // Hover na ikoni
+    trigger.addEventListener('mouseenter', showTooltip);
+    trigger.addEventListener('mouseleave', hideTooltip);
+
+    // Hover na tooltipu
+    tooltip.addEventListener('mouseenter', function () {
+        clearTimeout(hoverTimeout);
+    });
+
+    tooltip.addEventListener('mouseleave', hideTooltip);
+
+    // Repozicioniranje
+    window.addEventListener('scroll', positionTooltip);
+    window.addEventListener('resize', positionTooltip);
+
+    @endif
+});
 
         function openDisableModal() {
             document.getElementById('disableModal').classList.remove('hidden');
