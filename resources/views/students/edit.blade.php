@@ -8,7 +8,35 @@
         </a>
       </div>
 
-      <form x-data action="{{ route('students.update', $student->id) }}" method="POST">
+      <form x-data="{
+          selectedFaculty: '{{ old('fakultet_id', $student->fakulteti->first()->id ?? '') }}',
+          studyYear: '{{ old('godina_studija', $student->godina_studija) }}',
+          studyLevel: '{{ old('nivo_studija_id', $student->nivo_studija_id) }}',
+          studyLevels: {{ json_encode($nivoStudija) }},
+          checkYear() {
+              if (parseInt(this.studyYear) > 3) {
+                  let master = this.studyLevels.find(l => l.naziv === 'Master');
+                  if (master) {
+                      this.studyLevel = master.id;
+                      this.$nextTick(() => {
+                          window.dispatchEvent(new CustomEvent('study-level-changed', { detail: this.studyLevel }));
+                      });
+                  }
+              }
+          },
+          async fetchSubjects() {
+              if (!this.selectedFaculty) return;
+              try {
+                  let response = await fetch(`/admin/api/fakulteti/${this.selectedFaculty}/predmeti`);
+                  if (!response.ok) throw new Error('Network response was not ok');
+                  let subjects = await response.json();
+                  window.dispatchEvent(new CustomEvent('update-subjects', { detail: subjects }));
+              } catch (error) {
+                  console.error('Error fetching subjects:', error);
+                  alert('Failed to load subjects for the selected faculty.');
+              }
+          }
+      }" action="{{ route('students.update', $student->id) }}" method="POST">
         @csrf
         @method('PUT')
 
@@ -58,7 +86,7 @@
 
           <div class="mb-4">
             <label for="godina_studija" class="block text-gray-700 font-medium mb-1">Godina studija</label>
-            <input type="number" id="godina_studija" name="godina_studija"
+            <input type="number" id="godina_studija" name="godina_studija" x-model="studyYear" @input="checkYear()" min="0" 
               value="{{ old('godina_studija', $student->godina_studija) }}"
               class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
             @error('godina_studija') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
@@ -88,21 +116,7 @@
             </div>
           </div>
 
-          <div class="mb-4 md:col-span-2" x-data="{
-            selectedFaculty: '{{ $student->fakulteti->first()->id ?? '' }}',
-            async fetchSubjects() {
-                if (!this.selectedFaculty) return;
-                try {
-                    let response = await fetch(`/admin/api/fakulteti/${this.selectedFaculty}/predmeti`);
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    let subjects = await response.json();
-                    window.dispatchEvent(new CustomEvent('update-subjects', { detail: subjects }));
-                } catch (error) {
-                    console.error('Error fetching subjects:', error);
-                    alert('Failed to load subjects for the selected faculty.');
-                }
-            }
-          }">
+          <div class="mb-4 md:col-span-2">
             <div class="mb-4">
               <label class="block text-gray-700 font-medium mb-2">Fakultet</label>
               <select name="fakultet_id" x-model="selectedFaculty" 
@@ -122,13 +136,15 @@
           <div class="mb-4 md:col-span-2">
             <div class="mb-4">
               <label class="block text-gray-700 font-medium mb-2">Nivo studija</label>
-              <select name="nivo_studija_id" required
+              <select name="nivo_studija_id" required x-model="studyLevel"
                 class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                onchange="window.dispatchEvent(new CustomEvent('study-level-changed', { detail: this.value }))"
+                @change="window.dispatchEvent(new CustomEvent('study-level-changed', { detail: $el.value }))"
                 x-init="$nextTick(() => window.dispatchEvent(new CustomEvent('study-level-changed', { detail: $el.value })))">
                 <option value="">Izaberi nivo studija</option>
                 @foreach($nivoStudija as $nivo)
-                  <option value="{{ $nivo->id }}" {{ old('nivo_studija_id', $student->nivo_studija_id) == $nivo->id ? 'selected' : '' }}>
+                  <option value="{{ $nivo->id }}" 
+                    x-bind:disabled="parseInt(studyYear) > 3 && '{{ $nivo->naziv }}' !== 'Master'"
+                  >
                     {{ $nivo->naziv }}
                   </option>
                 @endforeach
@@ -142,7 +158,20 @@
               </div>
               
               {{-- Store full object for edit to prefill grades. fallback to old input if validation fails --}}
-              <x-subject-selector :subjects="$predmeti" :selected="$errors->any() ? old('predmeti') : $student->predmeti">
+              @php
+                  $selectedSubjects = $student->predmeti;
+                  if($errors->any() && old('predmeti')) {
+                      $selectedSubjects = [];
+                      foreach(old('predmeti') as $id => $val) {
+                          $grade = (is_array($val) && isset($val['grade'])) ? $val['grade'] : null;
+                          $selectedSubjects[] = [
+                              'id' => $id,
+                              'pivot' => ['grade' => $grade]
+                          ];
+                      }
+                  }
+              @endphp
+              <x-subject-selector :subjects="$predmeti" :selected="$selectedSubjects">
                    <div x-data="{ visible: false }" @faculty-changed.window="visible = ($event.detail === 'FIT')" x-show="visible" style="display: none;">
                       <button type="button" @click="$dispatch('open-tor-modal')"
                           class="bg-green-600 hover:bg-green-700 text-white text-sm font-semibold px-3 py-1 rounded shadow transform transition hover:scale-105">

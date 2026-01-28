@@ -14,6 +14,8 @@ class MappingRequest extends Model
         'fakultet_id',
         'student_id',
         'status',
+        'datum_finalizacije',
+        'napomena',
     ];
 
     public function professor()

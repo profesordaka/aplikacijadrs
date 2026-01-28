@@ -17,6 +17,9 @@ use PhpOffice\PhpWord\SimpleType\Jc;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use App\Models\MobilnostDokument;
+use ZipArchive;
 
 
 class MobilityController extends Controller
@@ -177,7 +180,6 @@ class MobilityController extends Controller
         $fileName = 'Mobilnost_' . $safeIndeks . '_' . date('Ymd_His') . '.docx';
         $filePath = storage_path("app/public/$fileName");
 
-        // Ensure directory exists
         if (!file_exists(dirname($filePath))) {
             mkdir(dirname($filePath), 0755, true);
         }
@@ -505,12 +507,10 @@ class MobilityController extends Controller
 
                 if (!empty($la->ocjena)) {
                     $rawGrade = strtoupper(trim($la->ocjena));
-                    // Check map first
                     if (isset($gradeMap[$rawGrade])) {
                         $gradeSum += $gradeMap[$rawGrade];
                         $gradeCount++;
                     } elseif (is_numeric($rawGrade)) {
-                        // Fallback if grade is already numeric
                         $gradeSum += (float) $rawGrade;
                         $gradeCount++;
                     }
@@ -653,5 +653,321 @@ class MobilityController extends Controller
         $mobilnost->update(['is_locked' => true]);
         
         return redirect()->back()->with('success', 'Mobilnost uspješno zaključana.');
+    }
+
+    public function documents(Request $request, $id)
+    {
+        $mobilnost = Mobilnost::findOrFail($id);
+        
+        // Ensure default documents exist
+        $this->ensureDefaultDocuments($mobilnost);
+        
+        $documents = $mobilnost->documents()->get();
+        
+        return response()->json($documents);
+    }
+
+    public function uploadDocument(Request $request, $id)
+    {
+        $mobilnost = Mobilnost::findOrFail($id);
+
+        if ($mobilnost->is_locked) {
+            return response()->json(['message' => 'Mobility is locked.'], 403);
+        }
+
+        $request->validate([
+            'file' => 'required|file|max:10240', // 10MB max
+        ]);
+
+        $file = $request->file('file');
+        
+        $filename = $file->getClientOriginalName();
+        $path = $file->storeAs("mobility_docs/{$mobilnost->id}", $filename);
+
+        $doc = MobilnostDokument::create([
+            'mobilnost_id' => $mobilnost->id,
+            'name' => $filename,
+            'path' => $path,
+            'type' => 'other'
+        ]);
+
+        return response()->json($doc);
+    }
+
+    public function deleteDocument($id, $docId)
+    {
+        $mobilnost = Mobilnost::findOrFail($id);
+
+        if ($mobilnost->is_locked) {
+            return response()->json(['message' => 'Mobility is locked.'], 403);
+        }
+
+        $doc = MobilnostDokument::where('mobilnost_id', $mobilnost->id)->findOrFail($docId);
+
+        if ($doc->type !== 'other') {
+            return response()->json(['message' => 'Cannot delete default documents.'], 403);
+        }
+
+        Storage::delete($doc->path);
+        $doc->delete();
+
+        return response()->json(['message' => 'Document deleted successfully.']);
+    }
+
+    public function exportZip($id)
+    {
+        $mobilnost = Mobilnost::findOrFail($id);
+        $this->ensureDefaultDocuments($mobilnost);
+        $documents = $mobilnost->documents()->get();
+
+        $zip = new ZipArchive;
+        $zipFileName = 'Mobilnost_Dokumenti_' . $mobilnost->student->br_indexa . '.zip';
+        $zipPath = storage_path('app/public/' . $zipFileName);
+
+        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
+            foreach ($documents as $doc) {
+                $fullPath = Storage::path($doc->path);
+                
+                if (file_exists($fullPath)) {
+                    $zip->addFile($fullPath, $doc->name);
+                }
+            }
+            $zip->close();
+        }
+
+        return response()->download($zipPath)->deleteFileAfterSend(true);
+    }
+
+    private function ensureDefaultDocuments(Mobilnost $mobilnost)
+    {
+        $laPath = $this->generateLearningAgreement($mobilnost);
+        MobilnostDokument::updateOrCreate(
+            [
+                'mobilnost_id' => $mobilnost->id,
+                'type' => 'learning_agreement'
+            ],
+            [
+                'name' => 'Learning Agreement.docx',
+                'path' => $laPath
+            ]
+        );
+
+        $trPath = $this->generateTranscript($mobilnost);
+        MobilnostDokument::updateOrCreate(
+            [
+                'mobilnost_id' => $mobilnost->id,
+                'type' => 'transcript'
+            ],
+            [
+                'name' => 'Ocjene nakon mobilnosti.docx',
+                'path' => $trPath
+            ]
+        );
+    }
+
+    private function generateLearningAgreement(Mobilnost $mobilnost)
+    {
+        $student = $mobilnost->student;
+        $fakultet = $mobilnost->fakultet;
+        
+        $ime = $student->ime;
+        $prezime = $student->prezime;
+        $brojIndeksa = $student->br_indexa; 
+        $fakultetNaziv = $fakultet->naziv;
+
+        $phpWord = new PhpWord();
+        $section = $phpWord->addSection();
+
+        $section->addText('Mobilnost', ['bold' => true, 'size' => 16]);
+        $section->addTextBreak(1);
+
+        $textRun = $section->addTextRun(['size' => 12]);
+        $textRun->addText('Student osnovnih studija ');
+        $textRun->addText("{$ime} {$prezime} {$brojIndeksa}", ['bold' => true]);
+        $textRun->addText(' će boraviti na ');
+        $textRun->addText($fakultetNaziv, ['bold' => true]);
+        $textRun->addText('.');
+
+        $section->addText(
+            'Studentu ce se priznavati sledeci ispiti:',
+            ['size' => 12]
+        );
+        $section->addTextBreak(1);
+
+        $tableStyle = [
+            'borderSize' => 6,
+            'borderColor' => '999999',
+            'cellMargin' => 80,
+            'alignment' => JcTable::CENTER
+        ];
+        $phpWord->addTableStyle('CoursesTable', $tableStyle);
+        $table = $section->addTable('CoursesTable');
+
+        // Headeri
+        $headers = ['R.br', 'Predmet (FIT)', 'Semestar', 'ECTS', 'Priznaje se', 'ECTS'];
+        $table->addRow();
+        foreach ($headers as $header) {
+            $table->addCell(2000)->addText($header, ['bold' => true]);
+        }
+
+        $groupedAgreements = $mobilnost->learningAgreements->groupBy('fit_predmet_id');
+        $rowNum = 1;
+
+        foreach ($groupedAgreements as $fitPredmetId => $agreements) {
+            $fitPredmet = $agreements->first()->fitPredmet;
+            if (!$fitPredmet) continue;
+
+            $fitName = $fitPredmet->naziv;
+            $term = $fitPredmet->semestar;
+            $ects = $fitPredmet->ects;
+
+            $foreignSubjects = [];
+            $totalForeignEcts = 0;
+            foreach ($agreements as $la) {
+                if ($la->straniPredmet) {
+                    $foreignSubjects[] = $la->straniPredmet->naziv;
+                    $totalForeignEcts += $la->straniPredmet->ects;
+                }
+            }
+
+            $table->addRow();
+            $table->addCell(800)->addText($rowNum++);
+            $table->addCell(3000)->addText($fitName);
+            $table->addCell(1200)->addText($term);
+            $table->addCell(800)->addText($ects);
+
+            $textRun = $table->addCell(4000)->addTextRun();
+            foreach ($foreignSubjects as $i => $subj) {
+                $textRun->addText($subj);
+                if ($i < count($foreignSubjects) - 1) {
+                    $textRun->addTextBreak();
+                }
+            }
+
+            $table->addCell(800)->addText($totalForeignEcts);
+        }
+
+        $section->addTextBreak(2);
+        $section->addText('Dekan,', ['bold' => true]);
+        $section->addText('___________________________');
+
+        $fileName = 'Learning_Agreement_' . $mobilnost->id . '.docx';
+        $path = "mobility_docs/{$mobilnost->id}/" . $fileName;
+        
+        // Save to storage
+        $fullPath = Storage::path($path);
+        if (!file_exists(dirname($fullPath))) {
+            mkdir(dirname($fullPath), 0755, true);
+        }
+        $writer = IOFactory::createWriter($phpWord, 'Word2007');
+        $writer->save($fullPath);
+
+        return $path;
+    }
+
+    private function generateTranscript(Mobilnost $mobilnost)
+    {
+        $phpWord = new PhpWord();
+        $section = $phpWord->addSection();
+
+        $section->addText('Predlog za priznavanje ispita', ['bold' => true, 'size' => 16], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+        $section->addTextBreak(1);
+
+        $textRun = $section->addTextRun(['size' => 12]);
+        $textRun->addText('Student osnovnih studija ');
+        $textRun->addText("{$mobilnost->student->ime} {$mobilnost->student->prezime}", ['bold' => true]);
+        $textRun->addText(", broj indeksa ");
+        $textRun->addText($mobilnost->student->br_indexa, ['bold' => true]);
+        $textRun->addText(", boravio je na ");
+        $textRun->addText($mobilnost->fakultet->naziv, ['bold' => true]);
+        $textRun->addText(". Na osnovu sporazuma o mobilnosti i transkripta ocjena, studentu treba da se priznaju sledeći ispiti:");
+        $section->addTextBreak(1);
+
+        $tableStyle = [
+            'borderSize' => 6,
+            'borderColor' => '999999',
+            'cellMargin' => 80,
+            'alignment' => JcTable::CENTER,
+            'bgColor' => 'FFFFCC'
+        ];
+        $phpWord->addTableStyle('GradesTable', $tableStyle);
+        $table = $section->addTable('GradesTable');
+
+        $headers = ['R.br', 'Predmet (FIT)', 'Semestar', 'ECTS (FIT)', 'Priznaje se', 'Ocjena', 'ECTS'];
+        $table->addRow();
+        foreach ($headers as $header) {
+            $table->addCell(2000, ['bgColor' => 'FFFFFF'])->addText($header, ['name' => 'Times New Roman', 'bold' => true, 'italic' => true]);
+        }
+
+        $groupedAgreements = $mobilnost->learningAgreements->groupBy('fit_predmet_id');
+
+        $rowNum = 1;
+        foreach ($groupedAgreements as $fitPredmetId => $agreements) {
+            $fitPredmet = $agreements->first()->fitPredmet;
+
+            if (!$fitPredmet)
+                continue;
+
+            $fitSubjectName = $fitPredmet->naziv;
+            $semester = $fitPredmet->semestar;
+            $fitEcts = $fitPredmet->ects;
+
+            $foreignSubjects = [];
+            $totalForeignEcts = 0;
+
+            $gradeSum = 0;
+            $gradeCount = 0;
+            $gradeMap = ['A' => 10, 'B' => 9, 'C' => 8, 'D' => 7, 'E' => 6];
+
+            foreach ($agreements as $la) {
+                if ($la->straniPredmet) {
+                    $foreignSubjects[] = $la->straniPredmet->naziv;
+                    $totalForeignEcts += $la->straniPredmet->ects;
+                }
+
+                if (!empty($la->ocjena)) {
+                    $rawGrade = strtoupper(trim($la->ocjena));
+                    if (isset($gradeMap[$rawGrade])) {
+                        $gradeSum += $gradeMap[$rawGrade];
+                        $gradeCount++;
+                    } elseif (is_numeric($rawGrade)) {
+                        $gradeSum += (float) $rawGrade;
+                        $gradeCount++;
+                    }
+                }
+            }
+
+            if ($gradeCount > 0) {
+                $numericGrade = (int) round($gradeSum / $gradeCount);
+                $reverseMap = [10 => 'A', 9 => 'B', 8 => 'C', 7 => 'D', 6 => 'E'];
+                $grade = $reverseMap[$numericGrade] ?? $numericGrade;
+            } else {
+                $grade = '';
+            }
+
+            $foreignSubjectsString = implode(', ', $foreignSubjects);
+
+            $table->addRow();
+            $table->addCell(800)->addText($rowNum++);
+            $table->addCell(3000)->addText($fitSubjectName);
+            $table->addCell(1000)->addText($semester);
+            $table->addCell(1000)->addText($fitEcts);
+            $table->addCell(3000)->addText($foreignSubjectsString);
+            $table->addCell(1000)->addText($grade);
+            $table->addCell(1000)->addText($totalForeignEcts);
+        }
+
+        $fileName = 'Transcript_' . $mobilnost->id . '.docx';
+        $path = "mobility_docs/{$mobilnost->id}/" . $fileName;
+        
+        $fullPath = Storage::path($path);
+        if (!file_exists(dirname($fullPath))) {
+            mkdir(dirname($fullPath), 0755, true);
+        }
+
+        $writer = IOFactory::createWriter($phpWord, 'Word2007');
+        $writer->save($fullPath);
+
+        return $path;
     }
 }

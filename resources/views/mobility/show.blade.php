@@ -38,12 +38,10 @@
         <div class="flex items-center justify-between mb-6">
             <h1 class="text-2xl font-bold text-gray-800">Detalji o Mobilnosti</h1>
             <div class="flex gap-2">
-                <form action="{{ route('admin.mobility.export-word', $mobilnost->id) }}" method="POST">
-                    @csrf
-                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-lg shadow-lg transform transition hover:scale-105">
-                        Izvezi u Word
-                    </button>
-                </form>
+            
+                <button onclick="openDocumentsModal()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg shadow-lg transform transition hover:scale-105">
+                    Pregled Dokumenata
+                </button>
                 <a href="{{ route('adminDashboardShow') }}" class="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded-lg shadow-lg transform transition hover:scale-105">
                     Nazad na Kontrolnu Tablu
                 </a>
@@ -211,7 +209,47 @@
         </div>
     </div>
 
+<<<<<<< HEAD
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+=======
+    <!-- Documents Modal -->
+    <div id="documentsModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-white rounded-lg shadow-lg w-1/2">
+            <div class="px-6 py-4 border-b flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-gray-800">Dokumenti za mobilnost</h3>
+                <button onclick="closeDocumentsModal()" class="text-gray-500 hover:text-gray-700">&times;</button>
+            </div>
+            <div class="p-6">
+                <!-- Documents List -->
+                <div id="documentsList" class="mb-6 space-y-2">
+                    <p class="text-gray-500 text-sm">Loading...</p>
+                </div>
+
+                <!-- Add New Document -->
+                @if(!$mobilnost->is_locked)
+                <div class="border-t pt-4">
+                    <h4 class="text-md font-semibold text-gray-700 mb-2">Dodaj novi dokument</h4>
+                    <div class="flex gap-2">
+                        <input type="file" id="newDocInput" class="border border-gray-300 rounded p-1 w-full text-sm">
+                        <button onclick="uploadDocument()" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-3 py-1 rounded shadow text-sm">
+                            Dodaj
+                        </button>
+                    </div>
+                    <p id="uploadStatus" class="text-xs mt-1"></p>
+                </div>
+                @endif
+            </div>
+            <div class="px-6 py-4 border-t flex justify-between items-center">
+                 <a href="{{ route('admin.mobility.documents.zip', $mobilnost->id) }}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg shadow-lg transform transition hover:scale-105">
+                    Export (ZIP)
+                </a>
+                <button onclick="closeDocumentsModal()" class="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded-lg shadow-lg transform transition hover:scale-105">
+                    Zatvori
+                </button>
+            </div>
+        </div>
+    </div>
+>>>>>>> upstream/main
 
     <script>
         // PDF Tooltip positioning
@@ -293,6 +331,133 @@
 
         function closeDisableModal() {
             document.getElementById('disableModal').classList.add('hidden');
+        }
+
+        function openDocumentsModal() {
+            document.getElementById('documentsModal').classList.remove('hidden');
+            loadDocuments();
+        }
+
+        function closeDocumentsModal() {
+            document.getElementById('documentsModal').classList.add('hidden');
+        }
+
+        function loadDocuments() {
+            const listDiv = document.getElementById('documentsList');
+            const isLocked = {{ $mobilnost->is_locked ? 'true' : 'false' }};
+            listDiv.innerHTML = '<p class="text-gray-500 text-sm">Loading...</p>';
+
+            fetch('{{ route("admin.mobility.documents", $mobilnost->id) }}')
+                .then(res => res.json())
+                .then(docs => {
+                    listDiv.innerHTML = '';
+                    if (docs.length === 0) {
+                        listDiv.innerHTML = '<p class="text-gray-500 text-sm">Nema dokumenata.</p>';
+                        return;
+                    }
+                    
+                    // Order so defaults are first usually, but array order from DB should handle timestamps or ID.
+                    // Requirement: First two files cannot be deleted. 'type' !== 'other'
+                    
+                    docs.forEach(doc => {
+                        const isDeletable = doc.type === 'other';
+                        
+                        const item = document.createElement('div');
+                        item.className = 'flex justify-between items-center bg-gray-50 p-2 rounded border border-gray-200';
+                        
+                        const nameSpan = document.createElement('span');
+                        nameSpan.className = 'text-sm font-medium text-gray-700';
+                        nameSpan.textContent = doc.name;
+                        
+                        item.appendChild(nameSpan);
+                        
+                        if (isDeletable && !isLocked) {
+                            const delBtn = document.createElement('button');
+                            delBtn.className = 'text-red-500 hover:text-red-700 text-sm font-bold px-2';
+                            delBtn.innerHTML = '&times;';
+                            delBtn.title = 'Obriši';
+                            delBtn.onclick = () => deleteDocument(doc.id);
+                            item.appendChild(delBtn);
+                        } else {
+                             const lockIcon = document.createElement('span');
+                             lockIcon.className = 'text-gray-400 text-xs px-2';
+                             // If it is deletable but locked, maybe simply don't show X.
+                             // The original logic showed (System) for system files.
+                             // Now I might want to show nothing for custom files if locked? Or maybe a lock icon?
+                             // User said "User can only export word documents".
+                             // Let's stick effectively to: if(system) -> System label. If (custom & locked) -> nothing/read-only.
+                             if (!isDeletable) {
+                                 lockIcon.textContent = '(System)';
+                                 item.appendChild(lockIcon);
+                             }
+                        }
+                        
+                        listDiv.appendChild(item);
+                    });
+                })
+                .catch(err => {
+                    console.error(err);
+                    listDiv.innerHTML = '<p class="text-red-500 text-sm">Greška pri učitavanju dokumenata.</p>';
+                });
+        }
+
+        function uploadDocument() {
+            const input = document.getElementById('newDocInput');
+            const file = input.files[0];
+            if (!file) return;
+
+            const status = document.getElementById('uploadStatus');
+            status.textContent = 'Uploading...';
+            status.className = 'text-xs mt-1 text-gray-500';
+
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            fetch('{{ route("admin.mobility.documents.upload", $mobilnost->id) }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: formData
+            })
+            .then(res => {
+                if (!res.ok) throw new Error('Upload failed');
+                return res.json();
+            })
+            .then(data => {
+                status.textContent = 'Upload successful!';
+                status.className = 'text-xs mt-1 text-green-600';
+                input.value = ''; // clear input
+                loadDocuments(); // reload list
+                setTimeout(() => { status.textContent = ''; }, 2000);
+            })
+            .catch(err => {
+                console.error(err);
+                status.textContent = 'Upload failed.';
+                status.className = 'text-xs mt-1 text-red-600';
+            });
+        }
+
+        function deleteDocument(docId) {
+            if (!confirm('Are you sure you want to delete this file?')) return;
+
+            fetch(`/admin/mobility/{{ $mobilnost->id }}/documents/${docId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+            .then(res => {
+                if (!res.ok) throw new Error('Delete failed');
+                return res.json();
+            })
+            .then(() => {
+                loadDocuments();
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Failed to delete document.');
+            });
         }
 
         function saveAllGrades() {

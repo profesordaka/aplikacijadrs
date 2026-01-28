@@ -4,21 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\Fakultet;
 use App\Models\Predmet;
-use App\Models\Prepis;
-use App\Models\PrepisAgreement;
 use App\Models\Student;
 use Illuminate\Http\Request;
+use App\Services\WordExportService;
 
 class PrepisController extends Controller
 {
     public function index()
     {
-        $prepisi = Prepis::with(['student', 'fakultet'])->latest()->get();
+        // Consolidate into just mapping requests for the main UI
         $mappingRequests = \App\Models\MappingRequest::with(['professor', 'student', 'subjects.straniPredmet', 'subjects.fitPredmet'])
             ->latest()
             ->get();
             
-        return view('prepis.index', compact('prepisi', 'mappingRequests'));
+        return view('prepis.index', compact('mappingRequests'));
     }
 
 
@@ -113,7 +112,11 @@ class PrepisController extends Controller
     public function match()
     {
         $professors = \App\Models\User::where('type', 1)->get();
-        $students = Student::whereHas('predmeti')->get();
+        $students = Student::whereHas('predmeti')
+            ->whereDoesntHave('fakulteti', function ($query) {
+                $query->where('naziv', 'FIT');
+            })
+            ->get();
         
         $previousMatches = \App\Models\MappingRequestSubject::whereNotNull('fit_predmet_id')
             ->with(['professor', 'fitPredmet'])
@@ -335,45 +338,39 @@ class PrepisController extends Controller
             return redirect()->back()->with('error', 'Request is not pending.');
         }
 
-        // Update Student Faculty to FIT (ID 2) and Sync Subjects
+        $fitFaculty = Fakultet::where('naziv', 'FIT')->first();
+        if (!$fitFaculty) {
+             return redirect()->back()->with('error', 'Faculty "FIT" not found in database.');
+        }
+        $fitFacultyId = $fitFaculty->id;
+
         $student = $mappingRequest->student;
-        // Student has many-to-many relationship with Faculty
-        $student->fakulteti()->sync([2]);
+        $student->fakulteti()->sync([$fitFacultyId]); 
 
-        $newSubjectIds = $mappingRequest->subjects()
-            ->whereNotNull('fit_predmet_id')
-            ->pluck('fit_predmet_id')
-            ->toArray();
-            
-        $student->predmeti()->sync($newSubjectIds);
+        $syncData = [];
+        
+        $student->load('predmeti');
 
-        // Create Prepis
-        $prepis = Prepis::create([
-            'student_id' => $mappingRequest->student_id,
-            'fakultet_id' => 2, // Ensure Prepis is also linked to FIT
-            'datum' => now(), 
-            'status' => 'odobren', // Accepted
-        ]);
-
-        foreach ($mappingRequest->subjects as $subject) {
-            // Only add agreements if they are matched (have fit_predmet_id)
-            // Or should we add all? Unmatched ones can't be added to PrepisAgreement usually without fit_predmet_id?
-            // PrepisAgreement requires fit_predmet_id and strani_predmet_id?
-            // Let's check migration of PrepisAgreement.
-            // If fit_predmet_id is nullable mostly no?
-            // Assuming we only add matched ones.
-            
-            if ($subject->fit_predmet_id) {
-                PrepisAgreement::create([
-                    'prepis_id' => $prepis->id,
-                    'fit_predmet_id' => $subject->fit_predmet_id,
-                    'strani_predmet_id' => $subject->strani_predmet_id,
-                    'status' => 'odobren',
-                ]);
+        foreach ($mappingRequest->subjects as $mappingSubject) {
+            if ($mappingSubject->fit_predmet_id) {
+                $foreignSubject = $student->predmeti->firstWhere('id', $mappingSubject->strani_predmet_id);
+                
+                $grade = $foreignSubject ? $foreignSubject->pivot->grade : null;
+                
+                $syncData[$mappingSubject->fit_predmet_id] = ['grade' => $grade];
             }
         }
+            
+        // Use syncWithoutDetaching to ADD new subjects while keeping the Foreign ones
+        if (!empty($syncData)) {
+            $student->predmeti()->syncWithoutDetaching($syncData);
+        }
 
-        $mappingRequest->update(['status' => 'accepted']);
+        // Update mapping request with finalization data
+        $mappingRequest->update([
+            'status' => 'accepted',
+            'datum_finalizacije' => now(),
+        ]);
 
         return redirect()->back()->with('success', 'Zahtjev za usklađivanje prihvaćen i prepis kreiran.');
     }
@@ -396,5 +393,18 @@ class PrepisController extends Controller
         $mappingRequest = \App\Models\MappingRequest::findOrFail($id);
         $mappingRequest->delete();
         return redirect()->back()->with('success', 'Zahtjev za usklađivanje obrisan.');
+    }
+
+    public function exportWord($id, WordExportService $service)
+    {
+        $mappingRequest = \App\Models\MappingRequest::with(['student.predmeti', 'subjects.straniPredmet', 'subjects.fitPredmet', 'subjects.professor', 'fakultet'])->findOrFail($id);
+
+        if ($mappingRequest->status !== 'accepted') {
+            return redirect()->back()->with('error', 'Only accepted requests can be exported.');
+        }
+
+        $filePath = $service->generatePrepis($mappingRequest);
+
+        return response()->download($filePath)->deleteFileAfterSend(true);
     }
 }

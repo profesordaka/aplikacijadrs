@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Student;
-use App\Models\Prepis;
+use App\Models\MappingRequest;
 use App\Models\Mobilnost;
 use App\Models\NivoStudija;
 use App\Models\Fakultet;
@@ -23,13 +23,14 @@ class IzvjestajiController extends Controller
         $filterYear = $request->get('year');
         $filterNivo = $request->get('nivo');
 
-        $prepisRaw = Prepis::with('fakultet.univerzitet', 'student')
+        $prepisRaw = MappingRequest::with('fakultet.univerzitet', 'student')
+            ->where('status', 'accepted')
             ->when($filterFakultet, function($q) use ($filterFakultet) { return $q->where('fakultet_id', $filterFakultet); })
-            ->when($filterYear, function($q) use ($filterYear) { return $q->whereYear('datum', $filterYear); })
+            ->when($filterYear, function($q) use ($filterYear) { return $q->whereYear('datum_finalizacije', $filterYear); })
             ->get();
         $prepisiAgg = [];
         foreach ($prepisRaw as $p) {
-            $year = \Carbon\Carbon::parse($p->datum)->format('Y');
+            $year = \Carbon\Carbon::parse($p->datum_finalizacije)->format('Y');
             $fakultetNaziv = $p->fakultet->naziv ?? 'Nepoznato';
             $drzava = $p->fakultet && $p->fakultet->univerzitet ? $p->fakultet->univerzitet->drzava : 'Nepoznato';
             $key = $year . '|' . $fakultetNaziv . '|' . $drzava;
@@ -84,7 +85,7 @@ class IzvjestajiController extends Controller
                 }
                 
                 // Po godini
-                $year = \Carbon\Carbon::parse($p->datum)->format('Y');
+                $year = \Carbon\Carbon::parse($p->datum_finalizacije)->format('Y');
                 if (!isset($prepisYearAgg[$year])) {
                     $prepisYearAgg[$year] = ['musko' => [], 'zensko' => []];
                 }
@@ -322,12 +323,13 @@ return view('izvjestaji.index', compact(
         if ($filterYear) $studentsQuery->whereRaw("$yearSql = ?", [$filterYear]);
         $students = $studentsQuery->groupBy('year')->orderBy('year')->get();
 
-        $prepisRaw = Prepis::with('fakultet.univerzitet', 'student')
+        $prepisRaw = MappingRequest::with('fakultet.univerzitet', 'student')
+            ->where('status', 'accepted')
             ->when($filterFakultet, function($q) use ($filterFakultet) { return $q->where('fakultet_id', $filterFakultet); })
             ->get();
         $prepisiAgg = [];
         foreach ($prepisRaw as $p) {
-            $year = \Carbon\Carbon::parse($p->datum)->format('Y');
+            $year = \Carbon\Carbon::parse($p->datum_finalizacije)->format('Y');
             $fakultetNaziv = $p->fakultet->naziv ?? 'Nepoznato';
             $drzava = $p->fakultet && $p->fakultet->univerzitet ? $p->fakultet->univerzitet->drzava : 'Nepoznato';
             $key = $year . '|' . $fakultetNaziv . '|' . $drzava;
@@ -433,7 +435,7 @@ return view('izvjestaji.index', compact(
             // --- PRIPREMI DETALJNE PODATKE O STUDENTIMA ---
             $prepisStudentsByYear = $prepisRaw
                 ->groupBy(function ($p) {
-                    $date = $p->datum ?? $p->created_at;
+                    $date = $p->datum_finalizacije ?? $p->created_at;
                     return \Carbon\Carbon::parse($date)->format('Y');
                 })
                 ->map(function ($prepisYear) {
@@ -453,7 +455,7 @@ return view('izvjestaji.index', compact(
                                 $p->fakultet && $p->fakultet->univerzitet
                                     ? $p->fakultet->univerzitet->drzava
                                     : '',
-                                $p->datum ?? $p->created_at ?? '',
+                                $p->datum_finalizacije ?? $p->created_at ?? '',
                             ];
                         })
                         ->values()

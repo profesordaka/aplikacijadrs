@@ -42,6 +42,12 @@ Route::middleware('adminAuth')->prefix('admin')->group(function () {
     Route::post('/mobility/{id}/grades', [MobilityController::class, 'updateGrades'])->name('admin.mobility.update-grades');
     Route::post('/mobility/{id}/export-word', [MobilityController::class, 'exportWord'])->name('admin.mobility.export-word');
     Route::post('/mobility/{id}/lock', [MobilityController::class, 'lock'])->name('admin.mobility.lock');
+    
+    Route::get('/mobility/{id}/documents', [MobilityController::class, 'documents'])->name('admin.mobility.documents');
+    Route::post('/mobility/{id}/documents', [MobilityController::class, 'uploadDocument'])->name('admin.mobility.documents.upload');
+    Route::delete('/mobility/{id}/documents/{docId}', [MobilityController::class, 'deleteDocument'])->name('admin.mobility.documents.delete');
+    Route::get('/mobility/{id}/documents/zip', [MobilityController::class, 'exportZip'])->name('admin.mobility.documents.zip');
+
     Route::delete('/mobilnost/{id}', [MobilityController::class, 'destroy'])->name('admin.mobility.destroy');
 
     Route::get('/users/', [UserController::class, 'index'])->name('users.index');
@@ -81,6 +87,7 @@ Route::middleware('adminAuth')->prefix('admin')->group(function () {
     Route::post('/prepisi/mapping-request/{id}/add-subject', [\App\Http\Controllers\PrepisController::class, 'addMappingRequestSubject'])->name('prepis.mapping-request.subject.add');
     Route::post('/prepisi/mapping-request/{id}/add-subjects-bulk', [\App\Http\Controllers\PrepisController::class, 'storeBulkSubjects'])->name('prepis.mapping-request.subject.bulk-add');
     Route::delete('/prepisi/mapping-request/{id}', [\App\Http\Controllers\PrepisController::class, 'destroyMappingRequest'])->name('prepis.mapping-request.destroy');
+    Route::post('/prepisi/mapping-request/{id}/export-word', [\App\Http\Controllers\PrepisController::class, 'exportWord'])->name('prepis.mapping-request.export-word');
 
     Route::resource('prepisi', \App\Http\Controllers\PrepisController::class)->names('prepis')->except(['create', 'store']);
 

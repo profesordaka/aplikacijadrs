@@ -9,6 +9,7 @@
     grades: {},
     subjects: {{ json_encode($subjects) }},
     currentLevelId: '',
+    facultySelected: false,
 
     selectedSubjectsData: [],
 
@@ -24,11 +25,8 @@
                         this.grades[item.id] = item.pivot.grade;
                     } 
                 } else {
-                    // If we only have ID, we might not have the full object if it's not in the initial 'subjects' list.
-                    // However, for 'create', initialSelected is usually empty or from old input.
-                    // For 'edit', we pass the student's subjects which are full objects.
+                    // ID only case
                     this.selectedIds.push(item);
-                    // Try to find in initial subjects
                     let subj = this.subjects.find(s => s.id == item);
                     if (subj) this.selectedSubjectsData.push(subj);
                 }
@@ -73,6 +71,21 @@
 
     updateSubjects(newSubjects) {
         this.subjects = newSubjects;
+        
+        // Sync selectedSubjectsData with current selectedIds using the new subjects list
+        let newSelectedData = [];
+        let newSelectedIds = [];
+        
+        this.selectedIds.forEach(id => {
+            let subj = this.subjects.find(s => s.id == id);
+            if (subj) {
+                newSelectedData.push(subj);
+                newSelectedIds.push(id);
+            }
+        });
+        
+        this.selectedSubjectsData = newSelectedData;
+        this.selectedIds = newSelectedIds;
     },
     
     clearSelection() {
@@ -82,13 +95,11 @@
     },
 
     setSelection(newItems) {
-        // newItems should be an array of subject objects with optional pivot.grade or just grade property
         newItems.forEach(item => {
             if (!this.selectedIds.includes(item.id)) {
                 this.selectedIds.push(item.id);
                 this.selectedSubjectsData.push(item);
             }
-            // Update grade if present
             let grade = item.pivot?.grade || item.grade;
             if (grade) {
                 this.grades[item.id] = grade;
@@ -97,6 +108,7 @@
     }
 }" class="w-full" 
     @study-level-changed.window="currentLevelId = $event.detail"
+    @faculty-changed.window="facultySelected = !!$event.detail"
     @update-subjects.window="updateSubjects($event.detail)"
     @clear-selection.window="clearSelection()"
     @set-selection.window="setSelection($event.detail)">
@@ -104,14 +116,14 @@
     <div class="mb-2">
         <label class="block text-gray-700 font-medium mb-1">Dodijeli predmete</label>
         <div class="flex items-center space-x-3 mb-4">
-            <button type="button" @click="open = true" :disabled="currentLevelId === ''"
-                :class="{'opacity-50 cursor-not-allowed': currentLevelId === ''}"
+            <button type="button" @click="open = true" :disabled="currentLevelId === '' || !facultySelected"
+                :class="{'opacity-50 cursor-not-allowed': currentLevelId === '' || !facultySelected}"
                 class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 px-4 py-2 rounded-lg border border-indigo-200 transition-colors flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
-                <span x-text="currentLevelId === '' ? 'Selektuj nivo studija prvo' : 'Selektuj Predmete'"></span>
+                <span x-text="!facultySelected ? 'Selektuj fakultet prvo' : (currentLevelId === '' ? 'Selektuj nivo studija prvo' : 'Selektuj Predmete')"></span>
             </button>
             {{ $slot ?? '' }}
         </div>
@@ -163,13 +175,8 @@
         </div>
 
         <!-- Hidden inputs for form submission -->
-        <!-- We generate input name="predmeti[ID][grade]" value="GRADE" -->
         <template x-for="id in selectedIds" :key="id">
             <div>
-                <!-- We need to send the ID even if grade is empty? Or logic in controller handles it? 
-                      The controller expects predmeti[id] => ['grade' => val].
-                      So we generate inputs such that req->predmeti is an associative array.
-                 -->
                 <input type="hidden" :name="'predmeti[' + id + '][grade]'" :value="grades[id]">
             </div>
         </template>
@@ -180,7 +187,7 @@
         x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
         x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
         class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4"
-        style="display: none;"> <!-- style display none prevents flash before alpine loads -->
+        style="display: none;">
 
         <div @click.away="open = false"
             class="relative mx-auto p-5 border w-full max-w-3xl shadow-lg rounded-xl bg-white">

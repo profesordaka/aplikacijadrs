@@ -119,7 +119,7 @@ class PrepisiExport implements WithMultipleSheets
                     return [
                         'Ime', 'Prezime', 'Pol',
                         'Nivo studija', 'Fakultet',
-                        'Univerzitet', 'Država', 'Datum pregleda'
+                        'Univerzitet', 'Država', 'Datum finalizacije'
                     ];
                 }
 

@@ -9,6 +9,13 @@ class Mobilnost extends Model
     protected $table = 'mobilnosti';
     protected $fillable = ['datum_pocetka', 'datum_kraja', 'student_id', 'fakultet_id', 'is_locked'];
 
+    protected static function booted()
+    {
+        static::deleting(function ($mobilnost) {
+            \Illuminate\Support\Facades\Storage::deleteDirectory("mobility_docs/{$mobilnost->id}");
+        });
+    }
+
     public function student()
     {
         return $this->belongsTo(Student::class);
@@ -17,6 +24,11 @@ class Mobilnost extends Model
     public function fakultet()
     {
         return $this->belongsTo(Fakultet::class);
+    }
+
+    public function documents()
+    {
+        return $this->hasMany(MobilnostDokument::class);
     }
 
     public function learningAgreements()

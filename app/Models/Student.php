@@ -43,4 +43,10 @@ class Student extends Model
     {
         return $this->belongsToMany(Fakultet::class, 'student_fakultet', 'student_id', 'fakultet_id');
     }
+
+    public function mappingRequests()
+    {
+        return $this->hasMany(MappingRequest::class, 'student_id');
+    }
+
 }

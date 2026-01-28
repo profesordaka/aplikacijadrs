@@ -16,14 +16,14 @@
             <div class="flex items-center justify-between">
                 <h1 class="text-3xl font-bold text-gray-900">Review Mapping Request</h1>
                 <a href="{{ route('prepis.index') }}" class="text-indigo-600 hover:text-indigo-900 font-medium">
-                    &larr; Back to Dashboard
+                    &larr; Nazad na Kontorolna tablu
                 </a>
             </div>
 
             <!-- Request Details -->
             <div class="bg-white shadow-sm rounded-xl overflow-hidden border border-gray-200">
                 <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
-                    <h2 class="text-lg font-semibold text-gray-800">Request Information</h2>
+                    <h2 class="text-lg font-semibold text-gray-800">Informacije o zahtjevu</h2>
                     @php
                         $color = match($mappingRequest->status) {
                             'accepted' => 'bg-green-100 text-green-800',
@@ -50,11 +50,11 @@
                                 </div>
                             </div>
                         @else
-                            <span class="text-gray-500 italic">No student associated</span>
+                            <span class="text-gray-500 italic">Nema povezanih studenata</span>
                         @endif
                     </div>
                     <div>
-                        <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">Professor</h3>
+                        <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">Profesor</h3>
                         @php
                             $uniqueProfessors = $mappingRequest->subjects->pluck('professor')->unique('id')->filter();
                         @endphp
@@ -67,7 +67,7 @@
                                 </div>
                                 <div class="ml-4">
                                     <div class="text-lg font-medium text-gray-900">{{ $prof->name }}</div>
-                                    <div class="text-sm text-gray-500">Reviewing Professor</div>
+                                    <div class="text-sm text-gray-500">Profesor za pregled</div>
                                 </div>
                             </div>
                         @elseif($uniqueProfessors->count() > 1)
@@ -76,14 +76,14 @@
                                     M
                                 </div>
                                 <div class="ml-4">
-                                    <div class="text-lg font-medium text-gray-900">Multiple Professors</div>
+                                    <div class="text-lg font-medium text-gray-900">Više profesora</div>
                                     <div class="text-sm text-gray-500">
                                         {{ $uniqueProfessors->pluck('name')->join(', ') }}
                                     </div>
                                 </div>
                             </div>
                          @else
-                            <span class="text-gray-500 italic">No professors assigned</span>
+                            <span class="text-gray-500 italic">Nema dodijeljenih profesora</span>
                         @endif
                     </div>
                 </div>
@@ -92,18 +92,18 @@
             <!-- Subject Mappings -->
             <div class="bg-white shadow-sm rounded-xl overflow-hidden border border-gray-200">
                 <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
-                    <h2 class="text-lg font-semibold text-gray-800">Subject Mappings</h2>
-                    <span class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded-full">{{ $mappingRequest->subjects->count() }} Subjects</span>
+                    <h2 class="text-lg font-semibold text-gray-800">Usklađivanje predmeta</h2>
+                    <span class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded-full">{{ $mappingRequest->subjects->count() }} Predmeti</span>
                 </div>
                 
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Foreign Subject</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Assigned Professor</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Matched FIT Subject</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Strani predmeti</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dodijeljeni profesori</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usklađeno sa FIT predmetima</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Radnje</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -156,17 +156,17 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         @if(in_array($mappingRequest->status, ['pending', 'completed']))
-                                            <form action="{{ route('prepis.mapping-request.subject.remove', $subject->id) }}" method="POST" onsubmit="return confirm('Remove this subject from the request?');">
+                                            <form action="{{ route('prepis.mapping-request.subject.remove', $subject->id) }}" method="POST" onsubmit="return confirm('Izbriši ovaj predmet iz zahtjeva');">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="text-red-500 hover:text-red-700 transition-colors" title="Remove Subject">
+                                                <button type="submit" class="text-red-500 hover:text-red-700 transition-colors" title="Izbriši predmet iz zahtjeva">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                                     </svg>
                                                 </button>
                                             </form>
                                         @else
-                                            <span class="text-gray-400 text-xs">Actions Locked</span>
+                                            <span class="text-gray-400 text-xs">Radnja zaključana</span>
                                         @endif
                                     </td>
                                 </tr>
@@ -174,7 +174,7 @@
                             @if($mappingRequest->subjects->isEmpty())
                                 <tr>
                                     <td colspan="3" class="px-6 py-4 text-center text-sm text-gray-500 italic">
-                                        No subjects in this request.
+                                        Nema predmeta u ovom zahtjevu za usklađivanje.
                                     </td>
                                 </tr>
                             @endif
@@ -188,14 +188,14 @@
 
             <div class="bg-white shadow-sm rounded-xl overflow-hidden border border-gray-200 mt-6 select-none">
                 <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
-                    <h2 class="text-lg font-semibold text-gray-800">Add Subjects to Match</h2>
-                    <span class="text-xs text-gray-500">Drag to link</span>
+                    <h2 class="text-lg font-semibold text-gray-800">Dodaj predmet za usklađivanje</h2>
+                    <span class="text-xs text-gray-500">Prevuci za link</span>
                 </div>
                 <div class="p-6">
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <!-- Student Subjects Column (Source) -->
                         <div class="flex flex-col bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-                            <h4 class="font-semibold text-gray-700 mb-2">Unmapped Student Subjects</h4>
+                            <h4 class="font-semibold text-gray-700 mb-2">Neusklađeni predmeti</h4>
                             <input type="text" id="search-subject" placeholder="Search Subject..." class="mb-2 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                             <div id="subject-list" class="h-[400px] overflow-y-auto space-y-2 p-1 border border-gray-100 rounded bg-gray-50">
                                 <!-- Injected via JS -->
@@ -206,20 +206,20 @@
                         <div class="flex flex-col space-y-4">
                             <!-- Drop Zone -->
                             <div id="drop-zone" class="bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg p-4 flex flex-col items-center justify-center transition-colors min-h-[120px]">
-                                <p class="text-blue-500 font-medium text-center mb-2 text-sm">Drag subject & professor here</p>
+                                <p class="text-blue-500 font-medium text-center mb-2 text-sm">Prevuci predmet & profesora ovdje</p>
                                 <div class="flex items-center space-x-2 w-full justify-center">
-                                    <div id="drop-slot-subject" class="w-1/2 h-10 bg-white border border-gray-200 rounded flex items-center justify-center text-xs text-gray-400 text-center px-1 truncate">Subject</div>
+                                    <div id="drop-slot-subject" class="w-1/2 h-10 bg-white border border-gray-200 rounded flex items-center justify-center text-xs text-gray-400 text-center px-1 truncate">Predmet</div>
                                     <span class="text-gray-400 text-xs">+</span>
-                                    <div id="drop-slot-prof" class="w-1/2 h-10 bg-white border border-gray-200 rounded flex items-center justify-center text-xs text-gray-400 text-center px-1 truncate">Professor</div>
+                                    <div id="drop-slot-prof" class="w-1/2 h-10 bg-white border border-gray-200 rounded flex items-center justify-center text-xs text-gray-400 text-center px-1 truncate">Profesor</div>
                                 </div>
                             </div>
 
                             <!-- Linked List -->
                             <div class="flex-1 bg-white rounded-lg border border-gray-200 shadow-sm flex flex-col h-[260px]">
                                 <div class="p-2 border-b border-gray-200 bg-gray-50 rounded-t-lg flex justify-between items-center">
-                                    <h4 class="font-semibold text-gray-700 text-sm">New Matches</h4>
+                                    <h4 class="font-semibold text-gray-700 text-sm">Novo poklapanje</h4>
                                     <button id="send-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-1 px-3 rounded shadow transition-colors hidden">
-                                        Add to Request
+                                        Dodaj predmete u zahtjev
                                     </button>
                                 </div>
                                 <div id="linked-list" class="overflow-y-auto p-2 space-y-2 flex-1">
@@ -230,7 +230,7 @@
 
                         <!-- Professors Column -->
                          <div class="flex flex-col bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-                            <h4 class="font-semibold text-gray-700 mb-2">Available Professors</h4>
+                            <h4 class="font-semibold text-gray-700 mb-2">Dostupni profesori</h4>
                             <input type="text" id="search-prof" placeholder="Search Professor..." class="mb-2 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                             <div id="prof-list" class="h-[400px] overflow-y-auto space-y-2 p-1 border border-gray-100 rounded bg-gray-50">
                                 <!-- Injected via JS -->
@@ -370,7 +370,7 @@
                                     state.pendingProf = null;
                                     state.pendingSubject = null;
                                 } else {
-                                    alert('Subject already added to match list.');
+                                    alert('Predmet je već dodat na listu.');
                                 }
                             }
                             render();
@@ -388,7 +388,7 @@
 
                     function setupSendButton() {
                         els.sendBtn.addEventListener('click', async () => {
-                            if (!confirm('Add these subjects to the request?')) return;
+                            if (!confirm('Dodaj predmet na ovaj zahtjev?')) return;
                             
                             const matches = state.linkedPairs.map(p => ({
                                 professor_id: p.prof.id,
@@ -407,12 +407,12 @@
                                 if (response.ok) {
                                     window.location.reload();
                                 } else {
-                                    alert('Failed to add subjects: ' + (data.message || response.statusText));
+                                    alert('Greška u dodavanju predmeta: ' + (data.message || response.statusText));
                                     console.error('Server Error:', data);
                                 }
                             } catch (e) {
                                 console.error(e);
-                                alert('Error occurred: ' + e.message);
+                                alert('Desila se greška: ' + e.message);
                             }
                         });
                     }
@@ -423,23 +423,35 @@
             @endif
 
             <!-- Global Actions -->
-            @if(in_array($mappingRequest->status, ['pending', 'completed']))
             <div class="flex justify-end space-x-4 pt-4 border-t border-gray-200">
+                @if($mappingRequest->status === 'accepted')
+                     <form action="{{ route('prepis.mapping-request.export-word', $mappingRequest->id) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2 rounded-lg shadow-lg transform transition hover:scale-105 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            Izvezi Prepis
+                        </button>
+                    </form>
+                @endif
+                
+                @if(in_array($mappingRequest->status, ['pending', 'completed']))
                 <form action="{{ route('prepis.mapping-request.reject', $mappingRequest->id) }}" method="POST" onsubmit="return confirm('Jeste li sigurni da želite da odbijete ovaj zahtjev?');">
                     @csrf
                     <button type="submit" class="bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 font-semibold px-4 py-2 rounded-lg shadow-sm transition-colors">
-                        Reject Request
+                        Odbij zahtjev
                     </button>
                 </form>
                 
                 <form action="{{ route('prepis.mapping-request.accept', $mappingRequest->id) }}" method="POST" onsubmit="return confirm('Jeste  li sigurni da želite da prohvatite ovaj zahtjev za Prepis?');">
                     @csrf
                     <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-lg shadow-lg transform transition hover:scale-105">
-                        Accept Request
+                        Prihvati zahtjev
                     </button>
                 </form>
+                @endif
             </div>
-            @endif
         </div>
     </div>
 </x-app-layout>

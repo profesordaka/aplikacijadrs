@@ -40,7 +40,18 @@ class StudentController extends Controller
       'email' => 'required|email|max:255|unique:studenti,email',
       'godina_studija' => 'required|integer',
       'jmbg' => 'required|string|size:13|unique:studenti,jmbg',
-      'nivo_studija_id' => 'required|exists:nivo_studija,id',
+      'nivo_studija_id' => [
+          'required',
+          'exists:nivo_studija,id',
+          function ($attribute, $value, $fail) use ($request) {
+              if ($request->godina_studija > 3) {
+                  $master = NivoStudija::where('naziv', 'Master')->first();
+                  if (!$master || $value != $master->id) {
+                      $fail('Za godinu studija veću od 3, nivo studija mora biti Master.');
+                  }
+              }
+          },
+      ],
       'pol' => 'required|string|in:musko,zensko',
       'fakultet_id' => 'required|exists:fakulteti,id',
       'predmeti' => 'array',
@@ -98,7 +109,18 @@ class StudentController extends Controller
       'email' => 'required|email|max:255|unique:studenti,email,' . $id,
       'godina_studija' => 'required|integer',
       'jmbg' => 'required|string|size:13|unique:studenti,jmbg,' . $id,
-      'nivo_studija_id' => 'required|exists:nivo_studija,id',
+      'nivo_studija_id' => [
+        'required',
+        'exists:nivo_studija,id',
+        function ($attribute, $value, $fail) use ($request) {
+            if ($request->godina_studija > 3) {
+                $master = NivoStudija::where('naziv', 'Master')->first();
+                if (!$master || $value != $master->id) {
+                    $fail('Za godinu studija veću od 3, nivo studija mora biti Master.');
+                }
+            }
+        },
+      ],
       'pol' => 'required|string|in:musko,zensko',
       'fakultet_id' => 'required|exists:fakulteti,id',
       'predmeti' => 'array',
@@ -136,6 +158,19 @@ class StudentController extends Controller
   public function destroy($id)
   {
     $student = Student::findOrFail($id);
+    
+    if ($student->mappingRequests) {
+        foreach ($student->mappingRequests as $req) {
+            $req->subjects()->delete();
+            $req->delete();
+        }
+    }
+
+
+    
+    $student->predmeti()->detach();
+    $student->fakulteti()->detach();
+
     $student->delete();
 
     return redirect()->route('students.index')
