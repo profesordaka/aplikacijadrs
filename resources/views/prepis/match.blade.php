@@ -645,14 +645,14 @@
                         });
 
                         if (response.ok) {
-                            alert('Requests sent successfully!');
+                            alert('Uspješno poslato!');
                             window.location.href = "{{ route('prepis.index') }}";
                         } else {
                             alert('Nije uspjelo slanje zahtjeva.Pokušajte ponovo.');
                         }
                     } catch (error) {
                         console.error('Error:', error);
-                        alert('An error occurred.');
+                        alert('Desila se greška. Pokušajte ponovo.');
                     }
                 });
             }

@@ -711,7 +711,7 @@ class MobilityController extends Controller
         Storage::delete($doc->path);
         $doc->delete();
 
-        return response()->json(['message' => 'Document deleted successfully.']);
+        return response()->json(['message' => 'Dokument usjpešno obrisan.']);
     }
 
 public function exportZip($id)
