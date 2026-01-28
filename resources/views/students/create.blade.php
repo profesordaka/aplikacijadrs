@@ -22,7 +22,7 @@
                 return f && f.naziv === 'FIT';
             },
             checkYear() {
-                if (parseInt(this.studyYear) > 3) {
+                if (parseInt(this.studyYear) > 4) {
                     let master = this.studyLevels.find(l => l.naziv === 'Master');
                     if (master) {
                         this.studyLevel = master.id;
@@ -147,7 +147,7 @@
                 <option value="">Izaberi Godinu Studija</option>
                 @foreach($nivoStudija as $nivo)
                   <option value="{{ $nivo->id }}" 
-                    x-bind:disabled="parseInt(studyYear) > 3 && '{{ $nivo->naziv }}' !== 'Master'"
+                    x-bind:disabled="parseInt(studyYear) > 4 && '{{ $nivo->naziv }}' !== 'Master'"
                   >
                     {{ $nivo->naziv }}
                   </option>

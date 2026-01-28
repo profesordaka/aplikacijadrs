@@ -629,8 +629,8 @@ class MobilityController extends Controller
         }
 
         return response()->json([
-            'unpassed' => $unpassedSubjects,
-            'next_year' => $nextYearSubjects
+            'unpassed' => $unpassedSubjects->map(fn($p) => ['id' => $p['id'], 'naziv' => $p['naziv'], 'ects' => \App\Models\Predmet::find($p['id'])->ects]),
+            'next_year' => $nextYearSubjects->map(fn($p) => ['id' => $p['id'], 'naziv' => $p['naziv'], 'ects' => \App\Models\Predmet::find($p['id'])->ects])
         ]);
     }
 
@@ -642,7 +642,7 @@ class MobilityController extends Controller
 
         $subjects = \App\Models\Predmet::where('fakultet_id', $facultyId)
             ->orderBy('naziv')
-            ->get(['id', 'naziv']);
+            ->get(['id', 'naziv', 'ects']);
 
         return response()->json($subjects);
     }

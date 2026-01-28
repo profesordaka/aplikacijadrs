@@ -159,6 +159,60 @@
                             </svg>
                             Sačuvaj Learning Agreement
                         </button>
+                        <button type="button" id="btnShowSummary" class="inline-flex items-center px-4 py-2 border border-blue-600 shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <svg class="-ml-1 mr-2 h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            Pregled povezanih predmeta
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Protected Modal -->
+                <div id="summaryModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                        <!-- Background overlay -->
+                        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+
+                        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+                        <div class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full sm:p-6">
+                            <div class="sm:flex sm:items-start">
+                                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                                    <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                                        Pregled povezanih predmeta
+                                    </h3>
+                                    <div class="mt-4 overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                                        <table class="min-w-full divide-y divide-gray-300">
+                                            <thead class="bg-gray-50">
+                                                <tr>
+                                                    <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">FIT Predmet</th>
+                                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">FIT ECTS</th>
+                                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Povezani Predmeti (Strani)</th>
+                                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Strani ECTS</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="summaryTableBody" class="divide-y divide-gray-200 bg-white">
+                                                <!-- Dynamic Rows -->
+                                            </tbody>
+                                            <tfoot class="bg-gray-50">
+                                                <tr>
+                                                    <th scope="row" class="pl-4 pr-3 py-4 text-left text-sm font-semibold text-gray-900 sm:pl-6">Ukupno FIT ECTS:</th>
+                                                    <td class="pl-3 pr-3 py-4 text-left text-sm font-bold text-indigo-600" id="totalFitEcts">0</td>
+                                                    <th scope="row" class="pl-3 pr-3 py-4 text-left text-sm font-semibold text-gray-900">Ukupno Strani ECTS:</th>
+                                                    <td class="pl-3 pr-3 py-4 text-left text-sm font-bold text-green-600" id="totalForeignEcts">0</td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                                <button type="button" id="btnCloseModal" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm">
+                                    Zatvori
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -324,10 +378,11 @@
                     div.className = 'bg-white border border-gray-200 rounded-md p-3 cursor-pointer hover:shadow-md hover:border-indigo-300 transition-all duration-200 group relative';
                     div.dataset.name = key;
                     div.dataset.id = subj.id;
+                    div.dataset.ects = subj.ects;
 
                     div.innerHTML = `
                     <div class="flex items-start justify-between">
-                        <span class="text-sm font-medium text-gray-700 group-hover:text-indigo-700">${subj.naziv}</span>
+                        <span class="text-sm font-medium text-gray-700 group-hover:text-indigo-700">${subj.naziv} <span class="text-xs text-gray-500 font-normal">(${subj.ects} ECTS)</span></span>
                         <div class="h-2 w-2 rounded-full bg-indigo-100 group-hover:bg-indigo-500 transition-colors"></div>
                     </div>
                     <div class="linked-pills mt-2 flex flex-wrap gap-1"></div>
@@ -404,10 +459,11 @@
                     div.className = 'available-subject group p-3 rounded-lg border border-gray-100 hover:border-indigo-200 hover:bg-indigo-50 cursor-pointer transition-all duration-200 mb-2';
                     div.dataset.id = p.id;
                     div.dataset.name = p.naziv;
+                    div.dataset.ects = p.ects;
 
                     div.innerHTML = `
                     <div class="flex justify-between items-start">
-                        <span class="font-medium text-gray-700 group-hover:text-indigo-700 text-sm">${p.naziv}</span>
+                        <span class="font-medium text-gray-700 group-hover:text-indigo-700 text-sm">${p.naziv} <span class="text-xs text-gray-500 font-normal">(${p.ects} ECTS)</span></span>
                         <span class="hidden group-hover:inline-block text-indigo-500">
                             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                         </span>
@@ -444,6 +500,7 @@
                 const rightId = rightDiv.dataset.id;
                 // rightDiv might be newly created, need to grab name correctly
                 const rightName = rightDiv.dataset.name;
+                const rightEcts = rightDiv.dataset.ects;
 
                 if (!currentMappings[leftName]) {
                     currentMappings[leftName] = [];
@@ -457,8 +514,9 @@
                 } else {
                     // Add
                     currentMappings[leftName].push({
-                        id: rightId
-                        , name: rightName
+                        id: rightId,
+                        name: rightName,
+                        ects: rightEcts
                     });
                 }
 
@@ -532,6 +590,76 @@
                     form.action = "{{ route('admin.mobility.export') }}";
                     form.submit();
                 }
+            }
+
+            // --- 7. Modal Logic ---
+            const modal = document.getElementById('summaryModal');
+            const btnShowSummary = document.getElementById('btnShowSummary');
+            const btnCloseModal = document.getElementById('btnCloseModal');
+            const summaryTableBody = document.getElementById('summaryTableBody');
+            const totalFitEctsEl = document.getElementById('totalFitEcts');
+            const totalForeignEctsEl = document.getElementById('totalForeignEcts');
+
+            btnShowSummary.addEventListener('click', () => {
+                renderSummaryTable();
+                modal.classList.remove('hidden');
+            });
+
+            btnCloseModal.addEventListener('click', () => {
+                modal.classList.add('hidden');
+            });
+
+            // Close on escape
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                    modal.classList.add('hidden');
+                }
+            });
+
+            function renderSummaryTable() {
+                summaryTableBody.innerHTML = '';
+                let totalFit = 0;
+                let totalForeign = 0;
+                let processedForeignIds = new Set();
+                
+                // Get all FIT subject elements to retrieve their ECTS (since currentMappings only has name)
+                // We stored ECTS in dataset of DOM elements.
+                // Or we can rebuild a map from what we fetched.
+                // Since `currentMappings` keys are names, we find the container.
+                
+                // Better approach: Iterate keys of currentMappings
+                for (const [fitName, foreignList] of Object.entries(currentMappings)) {
+                    if (foreignList.length === 0) continue;
+
+                    // Find FIT ECTS
+                    // We can look up the element in DOM
+                    const fitEl = document.querySelector(`.bg-white[data-name="${CSS.escape(fitName)}"]`);
+                    const fitEcts = fitEl ? parseFloat(fitEl.dataset.ects) || 0 : 0;
+                    
+                    if (foreignList.length > 0) totalFit += fitEcts;
+
+                    foreignList.forEach(f => {
+                         if (!processedForeignIds.has(f.id)) {
+                             totalForeign += parseFloat(f.ects) || 0;
+                             processedForeignIds.add(f.id);
+                         }
+                    });
+
+                    const foreignNames = foreignList.map(f => `${f.name} (${f.ects})`).join('<br>');
+                    const foreignSum = foreignList.reduce((acc, curr) => acc + (parseFloat(curr.ects) || 0), 0);
+
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">${fitName}</td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">${fitEcts}</td>
+                        <td class="px-3 py-4 text-sm text-gray-500">${foreignNames}</td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">${foreignSum}</td>
+                    `;
+                    summaryTableBody.appendChild(row);
+                }
+                
+                totalFitEctsEl.textContent = totalFit;
+                totalForeignEctsEl.textContent = totalForeign;
             }
         });
 

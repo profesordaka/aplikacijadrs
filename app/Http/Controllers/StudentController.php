@@ -44,10 +44,10 @@ class StudentController extends Controller
           'required',
           'exists:nivo_studija,id',
           function ($attribute, $value, $fail) use ($request) {
-              if ($request->godina_studija > 3) {
+              if ($request->godina_studija > 4) {
                   $master = NivoStudija::where('naziv', 'Master')->first();
                   if (!$master || $value != $master->id) {
-                      $fail('Za godinu studija veću od 3, nivo studija mora biti Master.');
+                      $fail('Za godinu studija veću od 4, nivo studija mora biti Master.');
                   }
               }
           },
@@ -113,10 +113,10 @@ class StudentController extends Controller
         'required',
         'exists:nivo_studija,id',
         function ($attribute, $value, $fail) use ($request) {
-            if ($request->godina_studija > 3) {
+            if ($request->godina_studija > 4) {
                 $master = NivoStudija::where('naziv', 'Master')->first();
                 if (!$master || $value != $master->id) {
-                    $fail('Za godinu studija veću od 3, nivo studija mora biti Master.');
+                    $fail('Za godinu studija veću od 4, nivo studija mora biti Master.');
                 }
             }
         },
