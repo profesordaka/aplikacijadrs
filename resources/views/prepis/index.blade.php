@@ -7,9 +7,12 @@
 
     <div class="py-10 max-w-7xl mx-auto px-6">
         <div class="flex items-center justify-between mb-6">
-            <h1 class="text-3xl font-bold text-gray-900">Upravljanje Prepisima</h1>
+            <h1 class="text-3xl font-bold text-gray-900">Prepisi</h1>
             <div class="flex space-x-4">
-                <a href="{{ route('prepis.match') }}" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 py-2 rounded-lg shadow-lg transform transition hover:scale-105">
+                <a href="{{ route('prepis.match') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-lg shadow-lg transform transition hover:scale-105 flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
                     Dodaj Prepis
                 </a>
             </div>

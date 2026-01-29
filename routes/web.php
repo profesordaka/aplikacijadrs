@@ -65,13 +65,6 @@ Route::middleware('adminAuth')->prefix('admin')->group(function () {
     Route::delete('/students/{id}', [App\Http\Controllers\StudentController::class, 'destroy'])->name('students.destroy');
 
 
-    Route::get('/univerzitet', [UniverzitetController::class, 'index'])->name('univerzitet.index');
-    Route::get('/univerzitet/create', [UniverzitetController::class, 'create'])->name('univerzitet.create');
-    Route::post('/univerzitet', [UniverzitetController::class, 'store'])->name('univerzitet.store');
-    Route::get('/univerzitet/{id}/edit', [UniverzitetController::class, 'edit'])->name('univerzitet.edit');
-    Route::put('/univerzitet/{id}', [UniverzitetController::class, 'update'])->name('univerzitet.update');
-    Route::delete('/univerzitet/{id}', [UniverzitetController::class, 'destroy'])->name('univerzitet.destroy');
-
     // Route::get('/prepisi/professor-match', [\App\Http\Controllers\PrepisController::class, 'professorMatch'])->name('prepis.professor-match'); // Removed
     // Route::post('/prepisi/professor-match', [\App\Http\Controllers\PrepisController::class, 'storeProfessorMatch'])->name('prepis.professor-match.store'); // Removed
     
@@ -97,6 +90,7 @@ Route::middleware('adminAuth')->prefix('admin')->group(function () {
     Route::get('/fakulteti', [\App\Http\Controllers\FakultetController::class, 'index'])->name('fakulteti.index');
     Route::post('/fakulteti', [\App\Http\Controllers\FakultetController::class, 'store'])->name('fakulteti.store');
     Route::put('/fakulteti/{id}', [\App\Http\Controllers\FakultetController::class, 'update'])->name('fakulteti.update');
+    Route::get('/fakulteti/{id}/download', [\App\Http\Controllers\FakultetController::class, 'downloadFile'])->name('fakulteti.download');
     Route::delete('/fakulteti/{id}', [\App\Http\Controllers\FakultetController::class, 'destroy'])->name('fakulteti.destroy');
     Route::get('/fakulteti/{fakultet}/view-pdf', [\App\Http\Controllers\FakultetController::class, 'viewPdf'])->name('fakulteti.view-pdf');
     Route::get('/fakulteti/{fakultet}/pdf-proxy', [\App\Http\Controllers\FakultetController::class, 'pdfProxy'])->name('fakulteti.pdf-proxy');

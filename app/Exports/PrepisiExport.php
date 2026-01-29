@@ -42,7 +42,7 @@ class PrepisiExport implements WithMultipleSheets
             public function headings(): array
             {
                 return [
-                    'Godina', 'Fakultet', 'Država', 'Ukupno', 'Muško', 'Žensko', '%Muško', '%Žensko'
+                    'Godina', 'Fakultet', 'Ukupno', 'Muško', 'Žensko', '%Muško', '%Žensko'
                 ];
             }
 
@@ -56,18 +56,18 @@ class PrepisiExport implements WithMultipleSheets
                         // Naslov
                         $sheet->insertNewRowBefore(1, 2);
                         $sheet->setCellValue('A1', 'Izvještaj o prepisima');
-                        $sheet->mergeCells('A1:H1');
+                        $sheet->mergeCells('A1:G1');
                         $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
                         $sheet->getStyle('A1')->getAlignment()
                               ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
                         // Auto-size kolona
-                        foreach (range('A', 'H') as $col) {
+                        foreach (range('A', 'G') as $col) {
                             $sheet->getColumnDimension($col)->setAutoSize(true);
                         }
 
                         // Zaglavlje sa bojom i debelim okvirima
-                        $sheet->getStyle('A3:H3')->applyFromArray([
+                        $sheet->getStyle('A3:G3')->applyFromArray([
                             'font' => ['bold' => true, 'color' => ['argb' => 'FFFFFFFF']],
                             'fill' => [
                                 'fillType' => Fill::FILL_SOLID,
@@ -83,7 +83,7 @@ class PrepisiExport implements WithMultipleSheets
 
                         // Deblji okvir oko cijele tabele
                         $lastRow = 3 + count($this->data);
-                        $sheet->getStyle('A3:H' . $lastRow)->applyFromArray([
+                        $sheet->getStyle('A3:G' . $lastRow)->applyFromArray([
                             'borders' => [
                                 'allBorders' => [
                                     'borderStyle' => Border::BORDER_THIN,
@@ -119,7 +119,8 @@ class PrepisiExport implements WithMultipleSheets
                     return [
                         'Ime', 'Prezime', 'Pol',
                         'Nivo studija', 'Fakultet',
-                        'Univerzitet', 'Država', 'Datum pregleda'
+                        'Nivo studija', 'Fakultet',
+                        'Univerzitet', 'Datum finalizacije'
                     ];
                 }
 
@@ -132,18 +133,18 @@ class PrepisiExport implements WithMultipleSheets
 
                             $sheet->insertNewRowBefore(1, 2);
                             $sheet->setCellValue('A1', 'Izvještaj za studente - Godina ' . $this->year);
-                            $sheet->mergeCells('A1:H1');
+                            $sheet->mergeCells('A1:G1');
                             $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
                             $sheet->getStyle('A1')->getAlignment()
                                   ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
                             // Auto-size kolona
-                            foreach (range('A', 'H') as $col) {
+                            foreach (range('A', 'G') as $col) {
                                 $sheet->getColumnDimension($col)->setAutoSize(true);
                             }
 
                             // Zaglavlje sa bojom i debelim okvirima
-                            $sheet->getStyle('A3:H3')->applyFromArray([
+                            $sheet->getStyle('A3:G3')->applyFromArray([
                                 'font' => ['bold' => true, 'color' => ['argb' => 'FFFFFFFF']],
                                 'fill' => [
                                     'fillType' => Fill::FILL_SOLID,
@@ -159,7 +160,7 @@ class PrepisiExport implements WithMultipleSheets
 
                             // Deblji okvir oko cijele tabele
                             $lastRow = 3 + count($this->students);
-                            $sheet->getStyle('A3:H' . $lastRow)->applyFromArray([
+                            $sheet->getStyle('A3:G' . $lastRow)->applyFromArray([
                                 'borders' => [
                                     'allBorders' => [
                                         'borderStyle' => Border::BORDER_THIN,

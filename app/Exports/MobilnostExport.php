@@ -42,7 +42,7 @@ class MobilnostExport implements WithMultipleSheets
             public function headings(): array
             {
                 return [
-                    'Država', 'Godina', 'Ukupno',
+                    'Godina', 'Ukupno',
                     'Muško', 'Žensko',
                     'Muško (%)', 'Žensko (%)',
                     'Master', 'Osnovne'
@@ -59,18 +59,18 @@ class MobilnostExport implements WithMultipleSheets
                         // Naslov
                         $sheet->insertNewRowBefore(1, 2);
                         $sheet->setCellValue('A1', 'Izvještaj o mobilnosti');
-                        $sheet->mergeCells('A1:I1');
+                        $sheet->mergeCells('A1:H1');
                         $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
                         $sheet->getStyle('A1')->getAlignment()
                               ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
                         // Auto-size kolona
-                        foreach (range('A', 'I') as $col) {
+                        foreach (range('A', 'H') as $col) {
                             $sheet->getColumnDimension($col)->setAutoSize(true);
                         }
 
                         // Zaglavlje sa bojom i debelim okvirima
-                        $sheet->getStyle('A3:I3')->applyFromArray([
+                        $sheet->getStyle('A3:H3')->applyFromArray([
                             'font' => ['bold' => true, 'color' => ['argb' => 'FFFFFFFF']],
                             'fill' => [
                                 'fillType' => Fill::FILL_SOLID,
@@ -86,7 +86,7 @@ class MobilnostExport implements WithMultipleSheets
 
                         // Deblji okvir oko cijele tabele
                         $lastRow = 3 + count($this->data);
-                        $sheet->getStyle('A3:I' . $lastRow)->applyFromArray([
+                        $sheet->getStyle('A3:H' . $lastRow)->applyFromArray([
                             'borders' => [
                                 'allBorders' => [
                                     'borderStyle' => Border::BORDER_THIN,
@@ -122,7 +122,7 @@ class MobilnostExport implements WithMultipleSheets
                     return [
                         'Ime', 'Prezime', 'Pol',
                         'Nivo studija', 'Fakultet',
-                        'Univerzitet', 'Država', 'Datum početka', 'Datum završetka'
+                        'Univerzitet', 'Datum početka', 'Datum završetka'
                     ];
                 }
 
@@ -136,26 +136,23 @@ class MobilnostExport implements WithMultipleSheets
 
                         $sheet->insertNewRowBefore(1, 2);
                         $sheet->setCellValue('A1', 'Izvještaj za studente - Godina ' . $this->year);
-                        $sheet->mergeCells('A1:I1');
+                        $sheet->mergeCells('A1:H1');
                         $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
                         $sheet->getStyle('A1')->getAlignment()
                               ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
                         // Auto-size kolona
-                        foreach (range('A', 'I') as $col) {
+                        foreach (range('A', 'H') as $col) {
                             $sheet->getColumnDimension($col)->setAutoSize(true);
                         }
 
 
 
 
-                            // Auto-size kolona
-                            foreach (range('A', 'I') as $col) {
-                                $sheet->getColumnDimension($col)->setAutoSize(true);
-                            }
+
 
                             // Zaglavlje sa bojom i debelim okvirima
-                            $sheet->getStyle('A3:I3')->applyFromArray([
+                            $sheet->getStyle('A3:H3')->applyFromArray([
                                 'font' => ['bold' => true, 'color' => ['argb' => 'FFFFFFFF']],
                                 'fill' => [
                                     'fillType' => Fill::FILL_SOLID,
@@ -171,7 +168,7 @@ class MobilnostExport implements WithMultipleSheets
 
                             // Deblji okvir oko cijele tabele
                             $lastRow = 3 + count($this->students);
-                            $sheet->getStyle('A3:I' . $lastRow)->applyFromArray([
+                            $sheet->getStyle('A3:H' . $lastRow)->applyFromArray([
                                 'borders' => [
                                     'allBorders' => [
                                         'borderStyle' => Border::BORDER_THIN,

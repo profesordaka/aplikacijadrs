@@ -15,12 +15,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([UserSeeder::class]);
-        $this->call([UniverzitetSeeder::class]);
-        $this->call([FakultetSeeder::class]);
-        $this->call([NivoStudijaSeeder::class]);
-        $this->call([PredmetiSeeder::class]);
-        $this->call([StudentSeeder::class]);
+        $this->call([
+            UniverzitetSeeder::class,
+            UserSeeder::class,
+            FakultetSeeder::class,
+            NivoStudijaSeeder::class,
+            PredmetiSeeder::class,
+            StudentSeeder::class,
+        ]);
 
         // User::factory(10)->create();
 

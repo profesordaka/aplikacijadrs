@@ -83,35 +83,15 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">FIT Predmeti</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Strani Predmeti</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ECTS</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    <div class="flex items-center gap-2 relative">
-                                        <span>Ocjena</span>
-                                        @if($mobilnost->fakultet->uputstvo_file)
-                                            <div class="relative inline-block" title="Hover za preview PDF-a">
-<a
-    id="pdfTrigger-{{ $mobilnost->fakultet->id }}"
-    href="{{ route('fakulteti.view-pdf', $mobilnost->fakultet->id) }}"
-    target="_blank"
-    rel="noopener noreferrer"
-    class="inline-flex items-center justify-center cursor-pointer text-blue-600 hover:text-blue-800 transition-colors"
-    title="Hover: pregled PDF-a | Klik: otvori u novoj kartici"
-    aria-label="Pregledaj PDF uputstvo"
->
-    <svg xmlns="http://www.w3.org/2000/svg"
-         viewBox="0 0 24 24"
-         class="w-6 h-6">
-        <!-- plavi krug -->
-        <circle cx="12" cy="12" r="10" fill="currentColor"/>
-        <!-- bijeli znak uzvika -->
-        <rect x="11" y="6" width="2" height="8" rx="1" fill="white"/>
-        <circle cx="12" cy="17" r="1.2" fill="white"/>
-    </svg>
-</a>
-                                            </div>
-                                        @elseif($mobilnost->fakultet->uputstvo_za_ocjene)
-                                            <span class="text-red-600 font-bold text-lg" title="{{ $mobilnost->fakultet->uputstvo_za_ocjene }}">!</span>
-                                        @endif
-                                    </div>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider flex items-center gap-2">
+                                    Ocjena
+                                    @if($mobilnost->fakultet && $mobilnost->fakultet->file_path)
+                                        <a href="{{ route('fakulteti.download', $mobilnost->fakultet->id) }}" title="Preuzmi sistem ocjenjivanja" class="text-blue-500 hover:text-blue-700">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                        </a>
+                                    @endif
                                 </th>
                             </tr>
                         </thead>

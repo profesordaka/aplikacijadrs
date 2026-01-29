@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Univerzitet;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,27 +12,17 @@ class UniverzitetSeeder extends Seeder
      */
     public function run(): void
     {
-        Univerzitet::create([
-            'naziv' => 'Univerzitet Crna Gora',
-            'email' => 'info@ucg.cg',
-            'drzava' => 'Crna Gora',
-            'grad' => 'Podgorica',
-        ]);
+        $universities = [
+            ['naziv' => 'Univerzitet Crna Gora'],
+            ['naziv' => 'Univerzitet Mediteran Crna Gora'],
+            ['naziv' => 'Mälardalen University'],
+        ];
 
-        Univerzitet::create([
-            'naziv' => 'Univerzitet Mediteran Crna Gora',
-            'email' => 'info@unimed.cg',
-            'drzava' => 'Crna Gora',
-            'grad' => 'Podgorica',
-        ]);
-       
-        Univerzitet::create([
-    'naziv' => 'Mälardalen University',
-    'email' => 'studenttorget@mdu.se',
-    'drzava' => 'Švedska',
-    'grad' => 'Västerås',
-]);
-
-
+        foreach ($universities as $university) {
+            \App\Models\Univerzitet::updateOrCreate(
+                ['naziv' => $university['naziv']],
+                $university
+            );
+        }
     }
 }

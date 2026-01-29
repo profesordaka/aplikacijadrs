@@ -16,9 +16,6 @@ class Univerzitet extends Model
     // Koja polja mogu da se masovno dodaju (mass assignment)
     protected $fillable = [
         'naziv',
-        'drzava',
-        'grad',
-        'email',
     ];
 
     // Relacija sa fakultetima (ako planiraš kasnije)

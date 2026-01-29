@@ -437,6 +437,7 @@
                 @endif
                 
                 @if(in_array($mappingRequest->status, ['pending', 'completed']))
+<<<<<<< HEAD
                 <form action="{{ route('prepis.mapping-request.reject', $mappingRequest->id) }}" method="POST" onsubmit="return confirm('Jeste li sigurni da želite da odbijete ovaj zahtjev?');">
                     @csrf
                     <button type="submit" class="bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 font-semibold px-4 py-2 rounded-lg shadow-sm transition-colors">
@@ -450,6 +451,46 @@
                         Prihvati zahtjev
                     </button>
                 </form>
+=======
+                    @php
+                        $isEmpty = $mappingRequest->subjects->isEmpty();
+                        $hasUnresolvedSubjects = $mappingRequest->subjects->contains(fn($s) => is_null($s->fit_predmet_id));
+                        $isActionsDisabled = $isEmpty || $hasUnresolvedSubjects;
+                    @endphp
+
+                    @if($isActionsDisabled)
+                        <div class="flex items-center text-yellow-600 mr-4 text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                            @if($isEmpty)
+                                Add subjects to the request to enable actions.
+                            @else
+                                Resolve all subjects (pending or rejected) to enable actions.
+                            @endif
+                        </div>
+                    @endif
+
+                    <form action="{{ route('prepis.mapping-request.reject', $mappingRequest->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to REJECT this entire request?');">
+                        @csrf
+                        <button type="submit" 
+                            class="bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 font-semibold px-4 py-2 rounded-lg shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-red-50"
+                            @if($isActionsDisabled) disabled @endif
+                        >
+                            Reject Request
+                        </button>
+                    </form>
+                    
+                    <form action="{{ route('prepis.mapping-request.accept', $mappingRequest->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to ACCEPT this request and create a Prepis?');">
+                        @csrf
+                        <button type="submit" 
+                            class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-lg shadow-lg transform transition hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                            @if($isActionsDisabled) disabled @endif
+                        >
+                            Accept Request
+                        </button>
+                    </form>
+>>>>>>> upstream/main
                 @endif
             </div>
         </div>
