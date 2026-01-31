@@ -1,7 +1,7 @@
 # ============================================================
 # 1) BUILD STAGE — Composer + NPM + Vite build
 # ============================================================
-FROM php:8.2-apache as build
+FROM php:8.3-apache as build
 
 # System dependencies + GD
 RUN apt-get update && apt-get install -y \
@@ -37,7 +37,7 @@ RUN npm ci && npm run build
 # ============================================================
 # 2) PRODUCTION STAGE — Apache + Laravel
 # ============================================================
-FROM php:8.2-apache
+FROM php:8.3-apache
 
 # System dependencies + GD
 RUN apt-get update && apt-get install -y \
