@@ -38,14 +38,14 @@
         @endif
 
         <div class="flex items-center justify-between mb-6">
-            <h1 class="text-2xl font-bold text-gray-800">Detalji o Mobilnosti</h1>
+            <h1 class="text-2xl font-bold text-gray-800">Detalji o mobilnosti</h1>
             <div class="flex gap-2">
             
                 <button onclick="openDocumentsModal()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg shadow-lg transform transition hover:scale-105">
-                    Pregled Dokumenata
+                    Pregled dokumenata
                 </button>
                 <a href="{{ route('adminDashboardShow') }}" class="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded-lg shadow-lg transform transition hover:scale-105">
-                    Nazad na Kontrolnu Tablu
+                    Nazad na kontrolnu tablu
                 </a>
             </div>
         </div>
@@ -73,7 +73,7 @@
 
         <div class="bg-white shadow rounded-lg overflow-hidden relative">
             <div class="px-6 py-4 border-b border-gray-200">
-                <h2 class="text-lg font-semibold text-gray-800">Learning Agreements</h2>
+                <h2 class="text-lg font-semibold text-gray-800">Learning agreements</h2>
             </div>
             <div class="overflow-x-auto">
                 <form id="gradesForm">
@@ -126,12 +126,12 @@
                         <span id="saveMessage" class="text-sm font-medium"></span>
                         @if(!$mobilnost->is_locked)
                             <button type="button" onclick="openDisableModal()" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg shadow-lg transform transition hover:scale-105">
-                                Onemogući Unos
+                                Zaključi unos
                             </button>
 
                             <button type="button" onclick="saveAllGrades()" 
                                 class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow-lg transform transition hover:scale-105 duration-150 ease-in-out">
-                                Sačuvaj Sve Ocjene
+                                Sačuvaj sve ocjene
                             </button>
                         @endif
                     </div>
@@ -180,16 +180,16 @@
     <div id="disableModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
         <div class="bg-white rounded-lg shadow-lg w-1/3">
             <div class="px-6 py-4 border-b">
-                <h3 class="text-lg font-semibold text-gray-800">Potvrdi onemoućavanje unosa</h3>
+                <h3 class="text-lg font-semibold text-gray-800">Zaključi ocjene</h3>
             </div>
             <div class="p-6">
-                <p class="text-gray-600">Da li ste sigurni da želite da onemogućite sav unos? Ova radnja je trajna i ne može se opozvati.</p>
+                <p class="text-gray-600">Da li ste sigurni da želite da zaključite ove ocjene? Ova radnja je trajna i ne može se opozvati.</p>
             </div>
             <div class="px-6 py-4 border-t flex justify-end gap-2">
                 <button onclick="closeDisableModal()" class="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded-lg shadow-lg transform transition hover:scale-105 duration-150 ease-in-out">Otkazi</button>
                 <form action="{{ route('admin.mobility.lock', $mobilnost->id) }}" method="POST">
                     @csrf
-                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg shadow-lg transform transition hover:scale-105 duration-150 ease-in-out">Onemogući za vazda</button>
+                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg shadow-lg transform transition hover:scale-105 duration-150 ease-in-out">Zaključi unos</button>
                 </form>
             </div>
         </div>

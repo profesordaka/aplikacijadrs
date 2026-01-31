@@ -13,7 +13,7 @@
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                     </svg>
-                    Dodaj Prepis
+                    Dodaj prepis
                 </a>
             </div>
         </div>
@@ -23,7 +23,7 @@
         <!-- Mapping Requests Table -->
         <div class="bg-white shadow-sm rounded-xl overflow-hidden border border-gray-200 mt-8">
              <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
-                <h2 class="text-lg font-semibold text-gray-800">Zahtjevi za dodjelu profesorima</h2>
+                <h2 class="text-lg font-semibold text-gray-800">Zahtjevi za prepis</h2>
                 <span class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded-full">{{ count($mappingRequests) }} Ukupno</span>
             </div>
             
@@ -31,8 +31,8 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student / Profesor</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Predmeti (Student -> Profesor)</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Predmeti</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                             <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Akcije</th>
                         </tr>
@@ -63,9 +63,9 @@
                                                 @if($subject->fitPredmet)
                                                      <span class="text-green-600 font-bold">-> {{ $subject->fitPredmet->naziv }}</span>
                                                 @elseif($subject->is_rejected)
-                                                     <span class="text-red-500 font-bold">-> (Odbijeno)</span>
+                                                     <span class="text-red-500 font-bold">-> (Rejected)</span>
                                                 @else
-                                                     <span class="text-yellow-500 italic">-> (Usklađivanje predmeta na čekanju)</span>
+                                                     <span class="text-yellow-500 italic">-> (Na čekanju)</span>
                                                 @endif
                                             </li>
                                         @endforeach
@@ -81,7 +81,7 @@
                                         };
                                         $statusText = match($request->status) {
                                             'accepted' => 'Prihvaćen',
-                                            'rejected' => 'Razočaran',
+                                            'rejected' => 'Odbijen',
                                             default => 'U obradi',
                                         };
                                         
@@ -102,7 +102,7 @@
                                         @elseif($allProcessed)
                                             <div class="text-xs text-green-600 mt-1 font-bold">Spremno za reviziju</div>
                                         @else
-                                            <div class="text-xs text-yellow-600 mt-1">Čeka se profesor({{ $processedSubjects }}/{{ $totalSubjects }})</div>
+                                            <div class="text-xs text-yellow-600 mt-1">Čekanje na profesora ({{ $processedSubjects }}/{{ $totalSubjects }})</div>
                                         @endif
                                     @endif
                                 </td>
@@ -111,7 +111,7 @@
                                         <a href="{{ route('prepis.mapping-request.show', $request->id) }}" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 px-3 py-1 rounded-md transition-colors">
                                             Pregledaj zahtjev
                                         </a>
-                                        <form action="{{ route('prepis.mapping-request.destroy', $request->id) }}" method="POST" onsubmit="return confirm('Jeste li sigurni da želite da obrišete usklađivanje predmeta?');">
+                                        <form action="{{ route('prepis.mapping-request.destroy', $request->id) }}" method="POST" onsubmit="return confirm('Jeste li sigurni da želite da izbrišete ovaj zahtjev?');">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 px-3 py-1 rounded-md transition-colors">
@@ -124,7 +124,7 @@
                         @empty
                             <tr>
                                 <td colspan="4" class="px-6 py-10 text-center text-gray-500 italic">
-                                    Nema dostupnih zahtjeva za dodjelu.
+                                    Nema zahtjeva za prepis.
                                 </td>
                             </tr>
                         @endforelse

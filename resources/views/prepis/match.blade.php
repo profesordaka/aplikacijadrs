@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Predmeti studenata za profesore') }}
+            {{ __('Kreiranje zahtjeva za prepis') }}
         </h2>
     </x-slot>
 
@@ -11,7 +11,7 @@
                 <div class="p-6 text-gray-900">
                     <div class="mb-6">
                         <a href="{{ route('prepis.index') }}" class="text-blue-600 hover:text-blue-800 font-semibold">
-                            &larr; Nazad na Upravljanje Prepisima
+                            &larr; Nazad na upravljanje prepisima
                         </a>
                     </div>
 
@@ -37,7 +37,7 @@
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                             <!-- Student Subjects Column (Source) -->
                             <div class="flex flex-col bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-                                <h4 class="font-semibold text-gray-700 mb-2">Studentovi predmeti</h4>
+                                <h4 class="font-semibold text-gray-700 mb-2">Predmeti studenta</h4>
                                 <input type="text" id="search-subject" placeholder="Pretraži predmet..." class="mb-2 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" disabled>
                                 <div id="subject-list" class="h-[500px] overflow-y-auto space-y-2 p-1 border border-gray-100 rounded bg-gray-50">
                                     <p class="text-gray-500 text-sm text-center mt-4">Izaberi studenta/fakultet da vidiš predmete</p>
@@ -64,9 +64,9 @@
                                 <!-- Linked List -->
                                 <div class="flex-1 bg-white rounded-lg border border-gray-200 shadow-sm flex flex-col">
                                     <div class="p-3 border-b border-gray-200 bg-gray-50 rounded-t-lg flex justify-between items-center">
-                                        <h4 class="font-semibold text-gray-700">Usklađjeni predmeti</h4>
+                                        <h4 class="font-semibold text-gray-700">Povezani parovi</h4>
                                         <button id="send-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-1 px-3 rounded shadow transition-colors hidden">
-                                            Pošalji za odobrenje
+                                            Sačuvaj
                                         </button>
                                     </div>
                                     <div id="linked-list" class="h-[350px] overflow-y-auto p-2 space-y-2">
@@ -77,8 +77,8 @@
 
                             <!-- Professors Column -->
                              <div class="flex flex-col bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-                                <h4 class="font-semibold text-gray-700 mb-2">Dostupni profesori</h4>
-                                <input type="text" id="search-prof" placeholder="Pretraži Profesore..." class="mb-2 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                <h4 class="font-semibold text-gray-700 mb-2">Profesori</h4>
+                                <input type="text" id="search-prof" placeholder="Pretraži profesore..." class="mb-2 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                 <div id="prof-list" class="h-[500px] overflow-y-auto space-y-2 p-1 border border-gray-100 rounded bg-gray-50">
                                     <!-- Professor Items will be injected here -->
                                 </div>
@@ -94,7 +94,7 @@
     <div id="matchInfoModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 hidden items-center justify-center z-[60]">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden transform transition-all">
             <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
-                <h3 class="text-lg font-semibold text-gray-800">Match Information</h3>
+                <h3 class="text-lg font-semibold text-gray-800">Informacije o paru</h3>
                 <button type="button" onclick="closeMatchModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -108,7 +108,7 @@
             </div>
             <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end">
                 <button type="button" onclick="closeMatchModal()" class="px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
-                    Close
+                    Zatvori
                 </button>
             </div>
         </div>
@@ -201,7 +201,7 @@
                 els.subjectList.innerHTML = '';
                 
                 if (!state.selectedStudentId) {
-                    els.subjectList.innerHTML = '<p class="text-gray-500 text-sm text-center mt-4">Selektuj studenta da vidiš predmete</p>';
+                    els.subjectList.innerHTML = '<p class="text-gray-500 text-sm text-center mt-4">Odaberi studenta da vidiš predmete</p>';
                     els.searchSubject.disabled = true;
                     return;
                 }
@@ -220,7 +220,7 @@
                             el.classList.add('opacity-50', 'cursor-not-allowed', 'bg-gray-100');
                             el.classList.remove('bg-white', 'hover:border-indigo-400', 'bg-green-100', 'border-green-300'); // Remove other styles
                             el.draggable = false;
-                            el.title = "Already matched or pending";
+                            el.title = "Već povezano ili na čekanju";
                             // Remove event listeners by cloning (simplest way to strip them if we didn't want them, but draggable=false handles most)
                             // Actually, just setting draggable false is enough to stop dragstart.
                         } else {
@@ -236,7 +236,7 @@
                                 const linkBtn = document.createElement('button');
                                 linkBtn.type = 'button';
                                 linkBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600 hover:text-green-800" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>`;
-                                linkBtn.title = "Auto-match to " + match.fit_predmet_name;
+                                linkBtn.title = "Auto-match na " + match.fit_predmet_name;
                                 linkBtn.onclick = (e) => {
                                     e.stopPropagation();
                                     autoMatch(s, match);
@@ -277,12 +277,12 @@
                     }
                     
                     if (pair.isLocked) {
-                        matchInfo += `<div class="text-yellow-600 text-xs font-semibold mt-1">Čeka se odobrenje profesora</div>`;
+                        matchInfo += `<div class="text-yellow-600 text-xs font-semibold mt-1">Predmet je već poslat, čeka se odgovor profesora</div>`;
                     }
 
                     let deleteBtn = `<button type="button" class="ml-3 text-red-500 hover:text-red-700 font-bold px-2" onclick="unlinkPair(${index})">&times;</button>`;
                     if (pair.isLocked) {
-                        deleteBtn = `<span class="ml-3 text-gray-400 px-2 cursor-not-allowed" title="Cannot remove pending match">&times;</span>`;
+                        deleteBtn = `<span class="ml-3 text-gray-400 px-2 cursor-not-allowed" title="Ne može se ukloniti povezivanje na čekanju">&times;</span>`;
                     }
 
                     el.innerHTML = `
@@ -391,7 +391,7 @@
                     updateSendButton(); // Ensure button is shown if there are pending items
                 } catch (error) {
                     console.error('Error fetching subjects:', error);
-                    alert('Could not load student subjects.');
+                    alert('Nije moguće učitati predmete studenta.');
                 }
             }
             
@@ -414,7 +414,7 @@
             function autoMatch(subject, matchData) {
                 const prof = allProfessors.find(p => p.id == matchData.professor_id);
                 if (!prof) {
-                    alert('Professor for this match not found.');
+                    alert('Profesor za ovaj par nije pronađen.');
                     return;
                 }
 
@@ -427,7 +427,7 @@
                     });
                     render();
                 } else {
-                    alert('This match already exists.');
+                    alert('Ovo povezivanje već postoji.');
                 }
             }
 
@@ -444,22 +444,22 @@
                             </svg>
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-gray-900">Previously Matched</p>
-                            <p class="text-sm text-gray-500">This subject has a verified match in the system.</p>
+                            <p class="text-sm font-medium text-gray-900">Prethodno povezano</p>
+                            <p class="text-sm text-gray-500">Ovaj predmet ima verifikovanog ekvivalenta u sistemu.</p>
                         </div>
                     </div>
                     <div class="mt-4 border-t border-gray-100 pt-4">
                         <dl class="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
                             <div class="sm:col-span-1">
-                                <dt class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Matched By</dt>
+                                <dt class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Povezao/la</dt>
                                 <dd class="mt-1 text-sm text-gray-900 font-medium">${match.professor_name}</dd>
                             </div>
                             <div class="sm:col-span-1">
-                                <dt class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Date</dt>
+                                <dt class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Datum</dt>
                                 <dd class="mt-1 text-sm text-gray-900 font-medium">${match.date}</dd>
                             </div>
                             <div class="sm:col-span-2">
-                                <dt class="text-xs font-semibold text-gray-500 uppercase tracking-wider">FIT Equivalent</dt>
+                                <dt class="text-xs font-semibold text-gray-500 uppercase tracking-wider">FIT Ekvivalent</dt>
                                 <dd class="mt-1 text-sm text-indigo-600 font-bold">${match.fit_predmet_name}</dd>
                             </div>
                         </dl>
@@ -524,7 +524,7 @@
                                 state.pendingProf = null;
                                 state.pendingSubject = null;
                             } else {
-                                alert('This match already exists.');
+                                alert('Ovo povezivanje već postoji.');
                             }
                         }
 
@@ -619,11 +619,11 @@
                 els.sendBtn.addEventListener('click', async () => {
                     // Send ALL pairs, including locked ones (as they need to be created for this student)
                     if (state.linkedPairs.length === 0) {
-                        alert('No matches to send.');
+                        alert('Nema parova za slanje.');
                         return;
                     }
                     
-                    if (!confirm('Jeste li sigurni da želite da posašaljete ovo usklađivanje predmeta Profesoru?')) return;
+                    if (!confirm('Jeste li sigurni da želite da sačuvate ove parove?')) return;
 
                     const matches = state.linkedPairs.map(p => ({
                         professor_id: p.prof.id,
@@ -645,14 +645,14 @@
                         });
 
                         if (response.ok) {
-                            alert('Uspješno poslato!');
+                            alert('Uspješno sačuvano!');
                             window.location.href = "{{ route('prepis.index') }}";
                         } else {
-                            alert('Nije uspjelo slanje zahtjeva.Pokušajte ponovo.');
+                            alert('Greška!');
                         }
                     } catch (error) {
                         console.error('Error:', error);
-                        alert('Desila se greška. Pokušajte ponovo.');
+                        alert('Došlo je do greške.');
                     }
                 });
             }

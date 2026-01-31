@@ -37,4 +37,9 @@ class MappingRequest extends Model
     {
         return $this->hasMany(MappingRequestSubject::class);
     }
+
+    public function comments()
+    {
+        return $this->hasMany(ProfessorRequestComment::class);
+    }
 }

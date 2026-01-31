@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Fakultet;
 use App\Models\Predmet;
 use App\Models\Student;
-use App\Models\Prepis;
-use App\Models\PrepisAgreement;
 use Illuminate\Http\Request;
 use App\Services\WordExportService;
 
@@ -93,7 +91,7 @@ class PrepisController extends Controller
             }
         }
 
-        return redirect()->route('prepis.index')->with('success', 'Prepis ažuriran uspješno.');
+        return redirect()->route('prepis.index')->with('success', 'Prepis je uspješno ažuriran.');
     }
 
     public function destroy($id)
@@ -101,7 +99,7 @@ class PrepisController extends Controller
         $prepis = Prepis::findOrFail($id);
         $prepis->agreements()->delete();
         $prepis->delete();
-        return redirect()->route('prepis.index')->with('success', 'Prepis izbrisan uspješno.');
+        return redirect()->route('prepis.index')->with('success', 'Prepis je uspješno obrisan.');
     }
 
     public function show($id)
@@ -114,7 +112,8 @@ class PrepisController extends Controller
     public function match()
     {
         $professors = \App\Models\User::where('type', 1)->get();
-        $students = Student::whereHas('predmeti')
+        $students = Student::where('status', 'prepis')
+            ->whereHas('predmeti')
             ->whereDoesntHave('fakulteti', function ($query) {
                 $query->where('naziv', 'FIT');
             })
@@ -190,7 +189,7 @@ class PrepisController extends Controller
         }
 
 
-        return response()->json(['message' => 'Zahtjev za usklađivanje poslat uspješno.']);
+        return response()->json(['message' => 'Zahtjev je uspješno poslat.']);
     }
 
     public function getStudentSubjects($studentId)
@@ -247,7 +246,7 @@ class PrepisController extends Controller
         ]);
         
         if ($mappingRequest->subjects()->where('strani_predmet_id', $request->strani_predmet_id)->exists()) {
-             return redirect()->back()->with('error', 'Subject is already in this request.');
+             return redirect()->back()->with('error', 'Predmet je već u ovom zahtjevu.');
         }
 
         \App\Models\MappingRequestSubject::create([
@@ -256,7 +255,7 @@ class PrepisController extends Controller
             'professor_id' => $request->professor_id,
         ]);
 
-        return redirect()->back()->with('success', 'Subject added.');
+        return redirect()->back()->with('success', 'Predmet je dodat.');
     }
 
     public function storeBulkSubjects(Request $request, $id)
@@ -309,7 +308,7 @@ class PrepisController extends Controller
                 ]);
         }
 
-        return response()->json(['message' => "$count predmeta dodato uspješno."]);
+        return response()->json(['message' => "$count predmeta uspješno dodato."]);
     }
 
     public function updateMappingRequestSubject(Request $request, $id)
@@ -322,14 +321,14 @@ class PrepisController extends Controller
 
         $subject->update(['fit_predmet_id' => $request->fit_predmet_id]);
 
-        return redirect()->back()->with('success', 'Subject mapping updated.');
+        return redirect()->back()->with('success', 'Povezivanje ažurirano.');
     }
 
     public function removeMappingRequestSubject($id)
     {
          $subject = \App\Models\MappingRequestSubject::findOrFail($id);
          $subject->delete();
-         return redirect()->back()->with('success', 'Subject removed from request.');
+         return redirect()->back()->with('success', 'Predmet uklonjen iz zahtjeva.');
     }
 
     public function acceptMappingRequest($id)
@@ -337,12 +336,12 @@ class PrepisController extends Controller
         $mappingRequest = \App\Models\MappingRequest::with('subjects')->findOrFail($id);
         
         if (!in_array($mappingRequest->status, ['pending', 'completed'])) {
-            return redirect()->back()->with('error', 'Request is not pending.');
+            return redirect()->back()->with('error', 'Zahtjev nije na čekanju.');
         }
 
         $fitFaculty = Fakultet::where('naziv', 'FIT')->first();
         if (!$fitFaculty) {
-             return redirect()->back()->with('error', 'Faculty "FIT" not found in database.');
+             return redirect()->back()->with('error', 'Fakultet "FIT" nije pronađen u bazi.');
         }
         $fitFacultyId = $fitFaculty->id;
 
@@ -374,7 +373,7 @@ class PrepisController extends Controller
             'datum_finalizacije' => now(),
         ]);
 
-        return redirect()->back()->with('success', 'Zahtjev za usklađivanje prihvaćen i prepis kreiran.');
+        return redirect()->back()->with('success', 'Zahtjev za prepis je prihvaćen i ocjene su prenesene.');
     }
 
     public function rejectMappingRequest($id)
@@ -387,14 +386,14 @@ class PrepisController extends Controller
 
         $mappingRequest->update(['status' => 'rejected']);
 
-        return redirect()->back()->with('success', 'Zahtjev za usklađivanje nije prihvaćen.');
+        return redirect()->back()->with('success', 'Zahtjev za prepis je odbijen.');
     }
 
     public function destroyMappingRequest($id)
     {
         $mappingRequest = \App\Models\MappingRequest::findOrFail($id);
-        $mappingRequest->delete();
-        return redirect()->back()->with('success', 'Zahtjev za usklađivanje obrisan.');
+        $mappingRequest->delete(); // Cascade will handle agreements and subjects
+        return redirect()->back()->with('success', 'Zahtjev za prepis je uspješno obrisan.');
     }
 
     public function exportWord($id, WordExportService $service)
@@ -402,7 +401,7 @@ class PrepisController extends Controller
         $mappingRequest = \App\Models\MappingRequest::with(['student.predmeti', 'subjects.straniPredmet', 'subjects.fitPredmet', 'subjects.professor', 'fakultet'])->findOrFail($id);
 
         if ($mappingRequest->status !== 'accepted') {
-            return redirect()->back()->with('error', 'Only accepted requests can be exported.');
+            return redirect()->back()->with('error', 'Samo prihvaćeni zahtjevi se mogu eksportovati.');
         }
 
         $filePath = $service->generatePrepis($mappingRequest);

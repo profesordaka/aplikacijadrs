@@ -29,10 +29,10 @@
             <div class="flex items-center space-x-2">
                 <button id="addSubjectBtn"
                     class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg shadow-lg transform transition hover:scale-105">
-                    Dodaj Predmet
+                    Dodaj predmet
                 </button>
                 <button id="importSubjectBtn" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-lg shadow-lg transform transition hover:scale-105">
-                    Uvezi Predmete
+                    Uvezi predmete
                 </button>
             </div>
         </div>
@@ -123,12 +123,17 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <div class="flex space-x-2">
-                                        <button
-                                            class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 px-3 py-1 rounded-md transition-colors openEditModal"
-                                            data-id="{{ $p->id }}" data-sifra="{{ $p->sifra_predmeta }}" data-naziv="{{ $p->naziv }}" data-ects="{{ $p->ects }}"
-                                            data-semestar="{{ $p->semestar }}" data-nivo="{{ $p->nivo_studija_id }}">
-                                            Izmijeni
-                                        </button>
+                                            <a href="{{ route('nastavne-liste.index', $p->id) }}"
+                                               class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 hover:bg-emerald-100 px-3 py-1 rounded-md transition-colors"
+                                               title="Nastavna Lista">
+                                                Nastavna Lista
+                                            </a>
+                                            <button
+                                                class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 px-3 py-1 rounded-md transition-colors openEditModal"
+                                                data-id="{{ $p->id }}" data-sifra="{{ $p->sifra_predmeta }}" data-naziv="{{ $p->naziv }}" data-ects="{{ $p->ects }}"
+                                                data-semestar="{{ $p->semestar }}" data-nivo="{{ $p->nivo_studija_id }}">
+                                                Izmijeni
+                                            </button>
                                         <form action="{{ route('predmeti.destroy', $p->id) }}" method="POST"
                                             onsubmit="return confirm('Da li ste sigurni koje odbrisati ovaj predmet?')">
                                             @csrf

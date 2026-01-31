@@ -108,6 +108,15 @@ Route::middleware('adminAuth')->prefix('admin')->group(function () {
     Route::post('/predmeti', [\App\Http\Controllers\PredmetController::class, 'store'])->name('predmeti.store');
     Route::put('/predmeti/{id}', [\App\Http\Controllers\PredmetController::class, 'update'])->name('predmeti.update');
     Route::delete('/predmeti/{id}', [\App\Http\Controllers\PredmetController::class, 'destroy'])->name('predmeti.destroy');
+
+    Route::get('/api/fakulteti/{fakultet}/predmeti', [\App\Http\Controllers\PredmetController::class, 'getSubjectsByFaculty'])->name('api.fakulteti.predmeti');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/predmeti/{predmet}/nastavna-lista', [\App\Http\Controllers\NastavnaListaController::class, 'index'])->name('nastavne-liste.index');
+    Route::post('/predmeti/{predmet}/nastavna-lista', [\App\Http\Controllers\NastavnaListaController::class, 'store'])->name('nastavne-liste.store');
+    Route::get('/nastavna-lista/{nastavnaLista}/download', [\App\Http\Controllers\NastavnaListaController::class, 'download'])->name('nastavne-liste.download');
+    Route::delete('/nastavna-lista/{nastavnaLista}', [\App\Http\Controllers\NastavnaListaController::class, 'destroy'])->name('nastavne-liste.destroy');
 });
 
 Route::middleware('profesorAuth')->prefix('profesor')->group(function () {

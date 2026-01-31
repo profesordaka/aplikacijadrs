@@ -40,7 +40,7 @@
                                     <input type="text" class="search-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Search Faculty..." autocomplete="off">
                                     <div class="search-results absolute z-50 w-full bg-white border border-gray-300 rounded-lg shadow-lg mt-1 max-h-60 overflow-y-auto hidden"></div>
                                     <select name="fakultet_id" id="fakultet_id" class="hidden" required>
-                                        <option value="">Select Faculty</option>
+                                        <option value="">Odaberi fakultet</option>
                                         @foreach($fakulteti as $fakultet)
                                             <option value="{{ $fakultet->id }}" data-text="{{ $fakultet->naziv }}">{{ $fakultet->naziv }}</option>
                                         @endforeach

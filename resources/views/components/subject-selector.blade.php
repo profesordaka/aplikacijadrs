@@ -123,7 +123,7 @@
                     stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
-                <span x-text="!facultySelected ? 'Selektuj fakultet prvo' : (currentLevelId === '' ? 'Selektuj nivo studija prvo' : 'Selektuj Predmete')"></span>
+                <span x-text="!facultySelected ? 'Odaberi fakultet prvo' : (currentLevelId === '' ? 'Odaberi nivo studija prvo' : 'Odaberi predmete')"></span>
             </button>
             {{ $slot ?? '' }}
         </div>
@@ -192,7 +192,7 @@
         <div @click.away="open = false"
             class="relative mx-auto p-5 border w-full max-w-3xl shadow-lg rounded-xl bg-white">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold text-gray-900">Selektuj predmet</h3>
+                <h3 class="text-xl font-bold text-gray-900">Odaberi predmet</h3>
                 <button @click="open = false" type="button" class="text-gray-400 hover:text-gray-500">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -282,7 +282,7 @@
                 </button>
                 <button @click="open = false" type="button"
                     class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 shadow-lg transform hover:scale-105 transition-all font-medium">
-                    Zapamti Izbor
+                    Sačuvaj
                 </button>
             </div>
         </div>

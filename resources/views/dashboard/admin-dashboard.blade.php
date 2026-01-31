@@ -1,4 +1,10 @@
 <x-app-layout>
+    {{-- <x-slot name="header">
+        <h2 class="font-semibold text-xl text-white leading-tight">
+            {{ __('Dashboard') }}
+        </h2>
+    </x-slot> --}}
+
     <div class="py-10 max-w-7xl mx-auto px-6">
         <div class="flex items-center justify-between mb-8">
             <h1 class="text-3xl font-bold text-gray-900">Mobilnosti</h1>
@@ -10,9 +16,11 @@
             </a>
         </div>
 
+
+
         <div class="bg-white shadow-sm rounded-xl overflow-hidden border border-gray-200">
             <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
-                <h2 class="text-lg font-semibold text-gray-800">Pregled Mobilnosti</h2>
+                <h2 class="text-lg font-semibold text-gray-800">Pregled mobilnosti</h2>
                 <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">{{ $mobilnosti->count() }} Ukupno</span>
             </div>
             
@@ -41,8 +49,8 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ $mobilnost->fakultet->naziv }}
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900 font-medium">{{ $mobilnost->fakultet->naziv }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
@@ -55,13 +63,12 @@
                                         {{ \Carbon\Carbon::parse($mobilnost->datum_kraja)->format('d.m.Y') }}
                                     </div>
                                 </td>
-                               
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <a href="{{ route('admin.mobility.show', $mobilnost->id) }}" 
+                                    <a href="{{ route('admin.mobility.show', $mobilnost->id) }}"
                                         class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 px-3 py-1 rounded-md transition-colors">
                                         Pregledaj
                                     </a>
-                                    <form action="{{ route('admin.mobility.destroy', $mobilnost->id) }}" method="POST" class="inline-block ml-2" onsubmit="return confirm('Jeste li sigurni da želite obrisati ovaj zapis?');">
+                                    <form action="{{ route('admin.mobility.destroy', $mobilnost->id) }}" method="POST" class="inline-block ml-2" onsubmit="return confirm('Are you sure you want to delete this record?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 px-3 py-1 rounded-md transition-colors">
@@ -73,8 +80,7 @@
                         @empty
                             <tr>
                                 <td colspan="5" class="px-6 py-10 text-center text-gray-500">
-                                    Nema dostupnih mobilnosti.
-
+                                    Nema mobilnosti.
                                 </td>
                             </tr>
                         @endforelse

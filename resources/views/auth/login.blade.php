@@ -18,19 +18,21 @@
         </div>
 
         <!-- Password -->
-        <div class="mt-4 relative">
+        <div class="mt-4">
             <x-input-label for="password" :value="__('Šifra')" />
 
-            <x-text-input id="password" class="block mt-1 w-full pr-16" 
-                          type="password" 
-                          name="password" 
-                          required autocomplete="current-password" />
+            <div class="relative mt-1">
+                <x-text-input id="password" class="block w-full pr-16" 
+                              type="password" 
+                              name="password" 
+                              required autocomplete="current-password" />
 
-            <!-- Dugme za prikaz/skrivanje šifre -->
-            <button type="button" onclick="togglePassword()" 
-                    class="absolute right-2 top-2 text-sm text-gray-500 hover:text-gray-700">
-                Prikaži
-            </button>
+                <!-- Dugme za prikaz/skrivanje šifre -->
+                <button type="button" onclick="togglePassword()" 
+                        class="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-gray-500 hover:text-gray-700 font-medium px-2 py-1">
+                    Prikaži
+                </button>
+            </div>
 
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>

@@ -7,7 +7,6 @@
 
     @if($errors->any())
     <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mx-6 mt-6 max-w-7xl mx-auto" role="alert">
-        <strong class="font-bold">Upsss!</strong>
         <span class="block">Došlo je do greške:</span>
         <ul class="mt-2 list-disc list-inside">
             @foreach ($errors->all() as $error)
@@ -27,7 +26,7 @@
                 </a>
                 <button id="addSubjectBtn"
                     class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg shadow-lg transform transition hover:scale-105">
-                    Dodaj Predmet
+                    Dodaj predmet
                 </button>
             </div>
         </div>

@@ -33,8 +33,13 @@ class Predmet extends Model
         return $this->belongsTo(NivoStudija::class);
     }
 
-    public function studenti()
+    public function student_predmet()
     {
-        return $this->belongsToMany(Student::class, 'student_predmet', 'predmet_id', 'student_id')->withPivot('grade');
+         return $this->belongsToMany(Student::class, 'student_predmet', 'predmet_id', 'student_id')->withPivot('grade');
+    }
+
+    public function nastavneListe()
+    {
+        return $this->hasMany(NastavnaLista::class, 'predmet_id');
     }
 }

@@ -1,13 +1,6 @@
 <x-app-layout>
 
   <style>
-    #tab-content-mobilnost .flex.gap-6 {
-      margin-bottom: 20px; /* Razmak između grafikona i tabele */
-    }
-
-    table {
-      margin-top: 30px; /* Razmak između tabele i svega što je iznad nje */
-    }
 
 
 /* Početni stil za sve tabove */
@@ -52,17 +45,27 @@
   border-radius: 2px; /* Zaobljeni krajevi linije */
   z-index: 1; /* Osigurava da linija bude iznad drugih elemenata */
 }
+/* Dugmad pored tabele – koriste ISTI stil kao tabovi */
+.side-tab-btn {
+  @apply tab-btn;
+    border: 0.5px solid #2563eb; /* PLAVI OKVIR UVIJEK */
+    border-radius: 5px;
+  text-align: left;
+  width: 100%;
+  padding: 6px 10px;
+  font-size: 0.75rem; /* text-xs */
+}
 
-
-
-
-
-
+/* Aktivno dugme pored tabele */
+.side-tab-btn.active {
+  color: #2563eb;
+  font-weight: bold;
+}
   </style>
-  <div class="py-10 max-w-7xl mx-auto px-6">
+  <div class="py-4 max-w-7xl mx-auto px-6">
 
     <!-- HEADER -->
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center justify-between mb-3">
       <h1 class="text-3xl font-bold text-gray-900">Izvještaji</h1>
 
       <div class="flex gap-1 bg-gray-50 rounded-lg p-1">
@@ -71,10 +74,10 @@
       </div>
     </div>
 
-    <div class="bg-white shadow-sm rounded-xl border border-gray-200 p-4">
+    <div class="bg-white shadow-sm rounded-xl border border-gray-200 px-4 py-3">
 
       <!-- ================= PREPISI ================= -->
-      <div id="tab-content-prepisi" class="tab-content hidden mb-12">
+      <div id="tab-content-prepisi" class="tab-content hidden mb-1">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-semibold m-0 p-0">Prepisi</h2>
         </div>
@@ -85,8 +88,8 @@
             <label class="block text-xs text-gray-600">Godina</label>
             <select name="year" onchange="this.form.submit()" class="border rounded px-2 py-1 pr-8 text-sm w-28 appearance-none bg-no-repeat bg-right">
               <option value="">Sve</option>
-              @foreach($prepisi as $p)
-                <option value="{{ $p->year }}" @if(isset($filterYear) && $filterYear == $p->year) selected @endif>{{ $p->year }}</option>
+              @foreach($prepisYears as $year)
+                <option value="{{ $year }}" {{ request('year') == $year ? 'selected' : '' }}>{{ $year }}</option>
               @endforeach
             </select>
           </div>
@@ -95,7 +98,7 @@
             <select name="fakultet" onchange="this.form.submit()" class="border rounded px-2 py-1 pr-8 text-sm w-56 appearance-none bg-no-repeat bg-right">
               <option value="">Sve</option>
               @foreach($fakulteti as $f)
-                <option value="{{ $f->id }}" @if(isset($filterFakultet) && $filterFakultet == $f->id) selected @endif>{{ $f->naziv }}</option>
+                <option value="{{ $f->id }}" {{ request('fakultet') == $f->id ? 'selected' : '' }}>{{ $f->naziv }}</option>
               @endforeach
             </select>
           </div>
@@ -134,39 +137,104 @@
         </div>
 
         <!-- TABELA PREPISI -->
-        <div class="overflow-x-auto flex justify-center mb-4">
-          <table class="table-fixed text-sm w-auto border border-gray-200">
-            <thead>
-              <tr class="bg-gray-100 h-7">
-                <th class="px-3 py-1 border">Godina</th>
-                <th class="px-3 py-1 border">Fakultet</th>
+        <div class="flex gap-6 mb-4 items-start">
+          
+          <!-- LIJEVA STRANA (DUGMAD) -->
+          <div class="w-52 flex-shrink-0 bg-gray-50 border border-gray-200 rounded-lg p-3">
+            <div class="mb-3 text-sm text-gray-600 font-medium flex items-center">
+              Prikaži tabelu po:
+            </div>
+            <div class="flex flex-col gap-2">
+              <button onclick="setPrepisView('godine')" id="btn-prepis-godine" class="side-tab-btn active">Godinama</button>
+              <button onclick="setPrepisView('studenti')" id="btn-prepis-studenti" class="side-tab-btn">Studentima</button>
+              <button onclick="setPrepisView('fakulteti')" id="btn-prepis-fakulteti" class="side-tab-btn">Fakultetu</button>
+            </div>
+          </div>
 
-                <th class="px-3 py-1 border text-center">Ukupno</th>
-                <th class="px-3 py-1 border text-center">Muško</th>
-                <th class="px-3 py-1 border text-center">Žensko</th>
-                <th class="px-3 py-1 border text-center">%Muško</th>
-                <th class="px-3 py-1 border text-center">%Žensko</th>
-              </tr>
-            </thead>
-            <tbody>
-              @forelse($prepisi as $row)
-                <tr class="h-7">
-                  <td class="px-3 border">{{ $row->year }}</td>
-                  <td class="px-3 border">{{ $row->fakultet }}</td>
+          <!-- DESNA STRANA (TABELE) -->
+          <div class="overflow-x-auto flex-1">
+            
+            <!-- PRIKAZ PO GODINAMA -->
+            <div id="view-prepis-godine">
+              <table class="table-fixed text-sm w-auto mx-auto border border-gray-200">
+                <thead>
+                  <tr class="bg-gray-100 h-8">
+                    <th class="px-3 py-1 border font-semibold">Godina</th>
+                    <th class="px-3 py-1 border font-semibold">Fakultet</th>
+                    <th class="px-3 py-1 border text-center font-semibold">Ukupno</th>
+                    <th class="px-3 py-1 border text-center font-semibold">Muško</th>
+                    <th class="px-3 py-1 border text-center font-semibold">Žensko</th>
+                    <th class="px-3 py-1 border text-center font-semibold">%Muško</th>
+                    <th class="px-3 py-1 border text-center font-semibold">%Žensko</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @forelse($prepisi as $row)
+                    <tr class="h-8 hover:bg-gray-50">
+                      <td class="px-3 border">{{ $row->year }}</td>
+                      <td class="px-3 border">{{ $row->fakultet }}</td>
+                      <td class="px-3 border text-center font-medium">{{ $row->total }}</td>
+                      <td class="px-3 border text-center">{{ $row->musko ?? 0 }}</td>
+                      <td class="px-3 border text-center">{{ $row->zensko ?? 0 }}</td>
+                      <td class="px-3 border text-center">{{ round($row->procenat_musko) }}%</td>
+                      <td class="px-3 border text-center">{{ round($row->procenat_zensko) }}%</td>
+                    </tr>
+                  @empty
+                    <tr>
+                      <td colspan="7" class="px-3 py-4 text-center text-gray-500 border">Nema podataka</td>
+                    </tr>
+                  @endforelse
+                </tbody>
+              </table>
+            </div>
 
-                  <td class="px-3 border text-center">{{ $row->total }}</td>
-                  <td class="px-3 border text-center">{{ $row->musko ?? 0 }}</td>
-                  <td class="px-3 border text-center">{{ $row->zensko ?? 0 }}</td>
-                  <td class="px-3 border text-center">{{ round($row->procenat_musko) }}%</td>
-                  <td class="px-3 border text-center">{{ round($row->procenat_zensko) }}%</td>
-                </tr>
-              @empty
-                <tr>
-                  <td colspan="7" class="px-3 py-2 text-center text-gray-500 border">Nema podataka</td>
-                </tr>
-              @endforelse
-            </tbody>
-          </table>
+            <!-- PRIKAZ PO STUDENTIMA -->
+            <div id="view-prepis-studenti" class="hidden">
+              <table class="table-fixed text-sm w-auto mx-auto border border-gray-200">
+                <thead class="bg-gray-100 h-8">
+                  <tr>
+                    <th class="px-4 py-2 border text-left font-semibold">Ime i prezime</th>
+                    <th class="px-4 py-2 border text-left font-semibold">Fakultet</th>
+                    <th class="px-4 py-2 border text-center font-semibold w-24">Godina</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @forelse($prepisiByStudent as $s)
+                    <tr class="hover:bg-gray-50">
+                      <td class="px-4 py-2 border">{{ $s->ime_prezime }}</td>
+                      <td class="px-4 py-2 border">{{ $s->fakultet }}</td>
+                      <td class="px-4 py-2 border text-center">{{ $s->godina }}</td>
+                    </tr>
+                  @empty
+                    <tr><td colspan="3" class="px-4 py-4 border text-center text-gray-500">Nema podataka</td></tr>
+                  @endforelse
+                </tbody>
+              </table>
+            </div>
+
+            <!-- PRIKAZ PO FAKULTETIMA -->
+            <div id="view-prepis-fakulteti" class="hidden">
+              <table class="table-fixed text-sm w-auto mx-auto border border-gray-200">
+                <thead class="bg-gray-100 h-8">
+                  <tr>
+                    <th class="px-4 py-2 border text-left font-semibold">Fakultet</th>
+                    <th class="px-4 py-2 border text-center font-semibold w-32">Broj studenata</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @forelse($prepisiByFakultet as $f)
+                    <tr class="hover:bg-gray-50">
+                      <td class="px-4 py-2 border">{{ $f->naziv }}</td>
+                      <td class="px-4 py-2 border text-center font-medium">{{ $f->count }}</td>
+                    </tr>
+                  @empty
+                    <tr><td colspan="2" class="px-4 py-4 border text-center text-gray-500">Nema podataka</td></tr>
+                  @endforelse
+                </tbody>
+              </table>
+            </div>
+
+          </div>
         </div>
 
         <!-- DUGME IZVEZI -->
@@ -179,7 +247,7 @@
       </div>
 
       <!-- ================= MOBILNOST ================= -->
-      <div id="tab-content-mobilnost" class="tab-content hidden mb-12">
+      <div id="tab-content-mobilnost" class="tab-content hidden mb-1">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-semibold m-0 p-0">Mobilnost</h2>
         </div>
@@ -190,8 +258,8 @@
             <label class="block text-xs text-gray-600">Godina</label>
             <select name="year" onchange="this.form.submit()" class="border rounded px-2 py-1 pr-8 text-sm w-28 appearance-none bg-no-repeat bg-right">
               <option value="">Sve</option>
-              @foreach($mobilnosti->unique('year') as $m)
-                <option value="{{ $m->year }}" @if(isset($filterYear) && $filterYear == $m->year) selected @endif>{{ $m->year }}</option>
+              @foreach($mobilnostYears as $year)
+                <option value="{{ $year }}" {{ request('year') == $year ? 'selected' : '' }}>{{ $year }}</option>
               @endforeach
             </select>
           </div>
@@ -200,7 +268,7 @@
             <select name="fakultet" onchange="this.form.submit()" class="border rounded px-2 py-1 pr-8 text-sm w-56 appearance-none bg-no-repeat bg-right">
               <option value="">Sve</option>
               @foreach($fakulteti as $f)
-                <option value="{{ $f->id }}" @if(isset($filterFakultet) && $filterFakultet == $f->id) selected @endif>{{ $f->naziv }}</option>
+                <option value="{{ $f->id }}" {{ request('fakultet') == $f->id ? 'selected' : '' }}>{{ $f->naziv }}</option>
               @endforeach
             </select>
           </div>
@@ -250,41 +318,145 @@
 </div> <!-- end of flex container for charts -->
 
 <!-- TABELA MOBILNOST -->
-<div class="overflow-x-auto flex justify-center mb-4">
-  <table class="table-fixed text-sm w-auto border border-gray-200">
-    <thead>
-      <tr class="bg-gray-100 h-7">
-        <th class="py-1 px-2 border">Godina</th>
+<div class="flex gap-6 mb-4 items-start">
 
-        <th class="py-1 px-2 w-10 text-center border">Ukupno</th>
-        <th class="py-1 px-2 w-10 text-center border">Muško</th>
-        <th class="py-1 px-2 w-16 text-center border">Žensko</th>
-        <th class="py-1 px-2 w-16 text-center border">%Muško</th>
-        <th class="py-1 px-2 w-16 text-center border">%Žensko</th>
-        <th class="py-1 px-2 w-12 text-center border">Master</th>
-        <th class="py-1 px-2 w-12 text-center border">Osnovne</th>
-      </tr>
-    </thead>
-    <tbody>
-      @forelse($mobilnosti as $row)
-        <tr class="h-7">
-          <td class="py-1 px-2 border">{{ $row->year }}</td>
+  <!-- LIJEVA STRANA -->
+  <div class="w-52 flex-shrink-0 bg-gray-50 border border-gray-200 rounded-lg p-3">
+    
+    <!-- HEADER -->
+    <div class="mb-3 text-sm text-gray-600 font-medium flex items-center">
+      Prikaži tabelu po:
+    </div>
 
-          <td class="py-1 px-2 text-center border">{{ $row->total }}</td>
-          <td class="py-1 px-2 text-center border">{{ $row->musko }}</td>
-          <td class="py-1 px-2 text-center border">{{ $row->zensko }}</td>
-          <td class="py-1 px-2 text-center border">{{ round($row->procenat_musko) }}%</td>
-          <td class="py-1 px-2 text-center border">{{ round($row->procenat_zensko) }}%</td>
-          <td class="py-1 px-2 text-center border">{{ $row->master }}</td>
-          <td class="py-1 px-2 text-center border">{{ $row->osnovne }}</td>
-        </tr>
-      @empty
-        <tr>
-          <td colspan="8" class="px-3 py-2 text-center text-gray-500 border">Nema podataka</td>
-        </tr>
-      @endforelse
-    </tbody>
-  </table>
+    <!-- BUTTONS -->
+    <div class="flex flex-col gap-2">
+      <button
+        onclick="setMobView('godine')"
+        id="btn-mob-godine"
+        class="side-tab-btn active"
+      >
+        Godinama
+      </button>
+
+      <button
+        onclick="setMobView('studenti')"
+        id="btn-mob-studenti"
+        class="side-tab-btn"
+      >
+        Studentima
+      </button>
+
+      <button
+        onclick="setMobView('fakulteti')"
+        id="btn-mob-fakulteti"
+        class="side-tab-btn"
+      >
+        Fakultetu
+      </button>
+    </div>
+  </div>
+
+  <!-- DESNA STRANA -->
+  <div class="overflow-x-auto flex-1">
+
+    <!-- PRAZAN HEADER (PORAVNANJE) -->
+
+
+    <!-- PRIKAZ PO GODINAMA -->
+    <div id="view-mob-godine">
+      <table class="table-fixed text-sm w-auto mx-auto border border-gray-200">
+        <thead>
+          <tr class="bg-gray-100 h-8">
+            <th class="py-1 px-3 border text-left font-semibold">Godina</th>
+            <th class="py-1 px-3 border text-center w-16">Ukupno</th>
+            <th class="py-1 px-3 border text-center w-16">Muško</th>
+            <th class="py-1 px-3 border text-center w-16">Žensko</th>
+            <th class="py-1 px-3 border text-center w-20">%Muško</th>
+            <th class="py-1 px-3 border text-center w-20">%Žensko</th>
+            <th class="py-1 px-3 border text-center w-16">Master</th>
+            <th class="py-1 px-3 border text-center w-16">Osnovne</th>
+          </tr>
+        </thead>
+        <tbody>
+          @forelse($mobilnosti as $row)
+            <tr class="h-8 hover:bg-gray-50">
+              <td class="py-1 px-3 border">{{ $row->year }}</td>
+              <td class="py-1 px-3 border text-center font-medium">{{ $row->total }}</td>
+              <td class="py-1 px-3 border text-center">{{ $row->musko }}</td>
+              <td class="py-1 px-3 border text-center">{{ $row->zensko }}</td>
+              <td class="py-1 px-3 border text-center">{{ round($row->procenat_musko) }}%</td>
+              <td class="py-1 px-3 border text-center">{{ round($row->procenat_zensko) }}%</td>
+              <td class="py-1 px-3 border text-center">{{ $row->master }}</td>
+              <td class="py-1 px-3 border text-center">{{ $row->osnovne }}</td>
+            </tr>
+          @empty
+            <tr>
+              <td colspan="8" class="px-3 py-4 text-center text-gray-500 border">
+                Nema podataka
+              </td>
+            </tr>
+          @endforelse
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PRIKAZ PO STUDENTIMA -->
+    <div id="view-mob-studenti" class="hidden">
+      <table class="table-fixed text-sm w-auto mx-auto border border-gray-200">
+        <thead class="bg-gray-100 h-8">
+          <tr>
+            <th class="px-4 py-2 border text-left font-semibold">Ime i prezime</th>
+            <th class="px-4 py-2 border text-left font-semibold">Fakultet</th>
+            <th class="px-4 py-2 border text-center font-semibold w-24">Godina</th>
+          </tr>
+        </thead>
+        <tbody>
+          @forelse($mobilnostiByStudent as $s)
+            <tr class="hover:bg-gray-50">
+              <td class="px-4 py-2 border">{{ $s->ime_prezime }}</td>
+              <td class="px-4 py-2 border">{{ $s->fakultet }}</td>
+              <td class="px-4 py-2 border text-center">{{ $s->godina }}</td>
+            </tr>
+          @empty
+            <tr>
+              <td colspan="3" class="px-4 py-4 border text-center text-gray-500">
+                Nema podataka
+              </td>
+            </tr>
+          @endforelse
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PRIKAZ PO FAKULTETIMA -->
+    <div id="view-mob-fakulteti" class="hidden">
+      <table class="table-fixed text-sm w-auto mx-auto border border-gray-200">
+        <thead class="bg-gray-100 h-8">
+          <tr>
+            <th class="px-4 py-2 border text-left font-semibold">Fakultet</th>
+            <th class="px-4 py-2 border text-center font-semibold w-32">
+              Broj studenata
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          @forelse($mobilnostiByFakultet as $f)
+            <tr class="hover:bg-gray-50">
+              <td class="px-4 py-2 border">{{ $f->naziv }}</td>
+              <td class="px-4 py-2 border text-center font-medium">{{ $f->count }}</td>
+            </tr>
+          @empty
+            <tr>
+              <td colspan="2" class="px-4 py-4 border text-center text-gray-500">
+                Nema podataka
+              </td>
+            </tr>
+          @endforelse
+        </tbody>
+      </table>
+    </div>
+
+  </div>
 </div>
 
 
@@ -360,6 +532,40 @@ tabs.forEach(b => {
 
   tabs.forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
   showTab(activeTab);
+
+  /* ================= PREPIS TABLE VIEW SWITCHER ================= */
+  window.setPrepisView = function(view) {
+    // Hide all views
+    document.getElementById('view-prepis-godine').classList.add('hidden');
+    document.getElementById('view-prepis-studenti').classList.add('hidden');
+    document.getElementById('view-prepis-fakulteti').classList.add('hidden');
+    
+    // Show selected
+    document.getElementById('view-prepis-' + view).classList.remove('hidden');
+
+    // Update buttons style
+    ['godine', 'studenti', 'fakulteti'].forEach(v => {
+      const btn = document.getElementById('btn-prepis-' + v);
+      btn.classList.toggle('active', v === view);
+    });
+  };
+
+  /* ================= MOBILNOST TABLE VIEW SWITCHER ================= */
+  window.setMobView = function(view) {
+    // Hide all views
+    document.getElementById('view-mob-godine').classList.add('hidden');
+    document.getElementById('view-mob-studenti').classList.add('hidden');
+    document.getElementById('view-mob-fakulteti').classList.add('hidden');
+    
+    // Show selected
+    document.getElementById('view-mob-' + view).classList.remove('hidden');
+
+    // Update buttons style
+['godine', 'studenti', 'fakulteti'].forEach(v => {
+  const btn = document.getElementById('btn-mob-' + v);
+  btn.classList.toggle('active', v === view);
+});
+  };
 
   /* ================= PODACI ================= */
   const prepisiData = @json($prepisi->map(fn($r)=>['year'=>$r->year,'total'=>$r->total]));
@@ -590,8 +796,8 @@ try {
       responsive:true,
       maintainAspectRatio:false,
       scales:{
-        x:{ offset:true, grid:{display:false} },
-        y:{ beginAtZero:true, ticks:{stepSize:1} }
+        x:{ offset:true, grid:{display:false}, stacked: true },
+        y:{ beginAtZero:true, ticks:{stepSize:1}, stacked: true }
       },
       plugins:{
         tooltip:{
@@ -728,8 +934,8 @@ try {
       responsive:true,
       maintainAspectRatio:false,
       scales:{
-        x:{ offset:true, grid:{display:false} },
-        y:{ beginAtZero:true, ticks:{stepSize:1} }
+        x:{ offset:true, grid:{display:false}, stacked: true },
+        y:{ beginAtZero:true, ticks:{stepSize:1}, stacked: true }
       },
       plugins:{
         tooltip:{
@@ -795,14 +1001,3 @@ try {
 
 });
 </script>
-
-
-
-
-
-
-
-
-
-
-

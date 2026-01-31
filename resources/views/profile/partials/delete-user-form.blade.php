@@ -1,12 +1,10 @@
 <section class="space-y-6">
     <header>
         <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Izbrisi nalog') }}
+            {{ __('Obriši nalog') }}
         </h2>
 
-        <p class="mt-1 text-sm text-gray-600">
-            {{ __('Jednom kada se račun izbrise sve sto je vezano za njega će se zauvjek izbrisati. Prije brisanje naloga dowlnoadujte sve informacije vezane za taj nalog.') }}
-        </p>
+        
     </header>
 
     <x-danger-button

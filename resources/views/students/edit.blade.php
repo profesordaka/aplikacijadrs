@@ -2,9 +2,9 @@
   <div class="py-10 max-w-4xl mx-auto px-6">
     <div class="bg-white shadow-sm rounded-xl overflow-hidden border border-gray-200 p-6">
       <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">Edit Student</h1>
+        <h1 class="text-2xl font-bold text-gray-900">Izmijeni studenta</h1>
         <a href="{{ route('students.index') }}" class="text-blue-600 hover:text-blue-800 font-semibold">
-          &larr; Nazad na listu studenata
+          &larr; Nazad
         </a>
       </div>
 
@@ -56,14 +56,14 @@
           </div>
 
           <div class="mb-4">
-            <label for="br_indexa" class="block text-gray-700 font-medium mb-1">Broj Indexa</label>
+            <label for="br_indexa" class="block text-gray-700 font-medium mb-1">Broj indeksa</label>
             <input type="text" id="br_indexa" name="br_indexa" value="{{ old('br_indexa', $student->br_indexa) }}"
               class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
             @error('br_indexa') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
           </div>
 
           <div class="mb-4">
-            <label for="datum_rodjenja" class="block text-gray-700 font-medium mb-1">Datum Rodjenja</label>
+            <label for="datum_rodjenja" class="block text-gray-700 font-medium mb-1">Datum rodjenja</label>
             <input type="date" id="datum_rodjenja" name="datum_rodjenja"
               value="{{ old('datum_rodjenja', $student->datum_rodjenja) }}"
               class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
@@ -71,7 +71,7 @@
           </div>
 
           <div class="mb-4">
-            <label for="telefon" class="block text-gray-700 font-medium mb-1">Broj Telefona</label>
+            <label for="telefon" class="block text-gray-700 font-medium mb-1">Broj telefona</label>
             <input type="text" id="telefon" name="telefon" value="{{ old('telefon', $student->telefon) }}"
               class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
             @error('telefon') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
@@ -99,7 +99,7 @@
             @error('jmbg') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
           </div>
 
-          <div class="mb-4">
+          <div class="mb-4 md:col-span-2">
             <label class="block text-gray-700 font-medium mb-1">Pol</label>
             <div class="flex items-center space-x-6">
               <label class="inline-flex items-center">
@@ -117,13 +117,23 @@
           </div>
 
           <div class="mb-4 md:col-span-2">
+            <label class="block text-gray-700 font-medium mb-1">Status</label>
+            <select name="status" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                <option value="" disabled>Izaberi status</option>
+                <option value="mobilnost" {{ old('status', $student->status) == 'mobilnost' ? 'selected' : '' }}>Mobilnost</option>
+                <option value="prepis" {{ old('status', $student->status) == 'prepis' ? 'selected' : '' }}>Prepis</option>
+            </select>
+            @error('status') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+          </div>
+
+          <div class="mb-4 md:col-span-2">
             <div class="mb-4">
               <label class="block text-gray-700 font-medium mb-2">Fakultet</label>
               <select name="fakultet_id" x-model="selectedFaculty" 
                 @change="window.dispatchEvent(new CustomEvent('clear-selection')); fetchSubjects(); $dispatch('faculty-changed', $el.selectedOptions[0].text.trim())" 
                 x-init="if(selectedFaculty) { fetchSubjects(); $nextTick(() => $dispatch('faculty-changed', $el.selectedOptions[0].text.trim())); }"
                 class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                <option value="">Select Faculty</option>
+                <option value="">Odaberi fakultet</option>
                 @foreach($fakulteti as $f)
                   <option value="{{ $f->id }}">
                     {{ $f->naziv }}
@@ -175,7 +185,7 @@
                    <div x-data="{ visible: false }" @faculty-changed.window="visible = ($event.detail === 'FIT')" x-show="visible" style="display: none;">
                       <button type="button" @click="$dispatch('open-tor-modal')"
                           class="bg-green-600 hover:bg-green-700 text-white text-sm font-semibold px-3 py-1 rounded shadow transform transition hover:scale-105">
-                          Uploaduj ToR
+                          Unesi TOR
                       </button>
                   </div>
               </x-subject-selector>
@@ -196,7 +206,7 @@
         <div class="flex justify-end mt-6">
           <button type="submit"
             class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg shadow-lg transform transition hover:scale-105">
-            Ažuriraj Studenta
+            Ažuriraj studenta
           </button>
         </div>
       </form>
@@ -216,7 +226,7 @@
                    uploadTor() {
                        let fileInput = $refs.torFile;
                        if (!fileInput.files.length) {
-                           alert('Izaberite fajl za upload.');
+                           alert('Please select a file');
                            return;
                        }
 
@@ -300,7 +310,7 @@
                               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                           </svg>
                       </span>
-                      <span x-text="uploading ? 'Processing...' : 'Pošalji'"></span>
+                      <span x-text="uploading ? 'Processing...' : 'Upload & Process'"></span>
                   </button>
               </div>
           </div>

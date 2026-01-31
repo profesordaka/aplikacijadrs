@@ -31,14 +31,28 @@ class MappingRequestController extends Controller
         }
 
         if (in_array($mappingRequest->status, ['accepted', 'rejected'])) {
-            return response()->json(['message' => 'Request is finalized and cannot be modified.'], 403);
+            return response()->json(['message' => 'Zahtjev je finalizovan i ne može se mijenjati.'], 403);
         }
 
         $request->validate([
             'mappings' => 'array',
             'mappings.*.request_subject_id' => 'required|exists:mapping_request_subjects,id',
             'mappings.*.fit_predmet_id' => 'required|exists:predmeti,id',
+            'comment' => 'nullable|string'
         ]);
+
+        // Handle Comment
+        if ($request->has('comment')) {
+            \App\Models\ProfessorRequestComment::updateOrCreate(
+                [
+                    'mapping_request_id' => $mappingRequest->id,
+                    'professor_id' => auth()->id(),
+                ],
+                [
+                    'comment' => $request->comment
+                ]
+            );
+        }
 
         $mySubjects = MappingRequestSubject::where('mapping_request_id', $mappingRequest->id)
             ->where('professor_id', auth()->id())
@@ -55,7 +69,6 @@ class MappingRequestController extends Controller
                     'is_rejected' => false
                 ]);
 
-                // Auto-match logic: Propagate to other pending requests
                 if ($fitPredmetId) {
                     MappingRequestSubject::where('professor_id', auth()->id())
                         ->where('strani_predmet_id', $subject->strani_predmet_id)
@@ -77,8 +90,8 @@ class MappingRequestController extends Controller
             }
         }
 
-        session()->flash('success', 'Uskčađivanje predmeta uspješno sačuvano.');
+        session()->flash('success', 'Povezani predmeti i komentar uspješno sačuvani.');
 
-        return response()->json(['message' => 'Usklađivanje predmeta uspješno sačuvano.']);
+        return response()->json(['message' => 'Povezani predmeti i komentar uspješno sačuvani.']);
     }
 }

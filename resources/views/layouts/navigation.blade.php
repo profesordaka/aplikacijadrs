@@ -48,7 +48,7 @@
 
                         @elseif((int) $user->type === 1)
                             <x-nav-link :href="route('profesorDashboardShow')" :active="request()->routeIs('profesorDashboardShow')">
-                                {{ __('Mobilnosti') }}
+                                {{ __('Kontrolna tabla') }}
                             </x-nav-link>
 
                             <x-nav-link :href="route('profesor.mobility')" :active="request()->routeIs('profesor.mobility')">

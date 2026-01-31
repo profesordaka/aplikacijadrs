@@ -25,7 +25,7 @@
 
             <!-- Header -->
             <div class="mb-8">
-                <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Upravljanje Mobilnošću</h1>
+                <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Kreiraj mobilnost</h1>
             </div>
 
             <form id="mobilityForm" action="{{ route('admin.mobility.save') }}" method="POST">
@@ -39,8 +39,8 @@
 
                         <!-- Student & Faculty Card -->
                         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                            <h2 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Student & Fakultet
-                                Informacije</h2>
+                            <h2 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Podaci
+                                </h2>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <!-- Student Selection -->
@@ -61,10 +61,10 @@
 
                                 <!-- Faculty Selection -->
                                 <div>
-                                    <label for="fakultet_id" class="block text-sm font-medium text-gray-700 mb-1">Host-Strani
-                                        Fakultet</label>
+                                    <label for="fakultet_id" class="block text-sm font-medium text-gray-700 mb-1">Host
+                                        fakultet</label>
                                     <select name="fakultet_id" id="fakultet_id" required class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm py-2.5">
-                                        <option value="">-- Izaberi Fakultet --</option>
+                                        <option value="">-- Izaberi fakultet --</option>
                                         @foreach($fakulteti as $f)
                                         <option value="{{ $f->id }}">{{ $f->naziv }}</option>
                                         @endforeach
@@ -105,28 +105,28 @@
                                 <!-- Unpassed Subjects -->
                                 <div class="flex flex-col h-full">
                                     <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Nepoloženi
-                                        (Prijethodne godine)</h3>
+                                        (Iz prethodne godine)</h3>
                                     <div id="unpassedSubjectsBox" class="flex-1 min-h-[250px] bg-gray-50 rounded-lg border border-gray-200 p-3 overflow-y-auto space-y-2 transition-all hover:border-gray-300">
                                         <div class="flex flex-col items-center justify-center h-full text-gray-400 text-sm">
                                             <svg class="w-8 h-8 mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
                                                 </path>
                                             </svg>
-                                            <span>Izaberi studenta da učitaš predmete</span>
+                                            <span>Izaberi studenta</span>
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Next Year Subjects -->
                                 <div class="flex flex-col h-full">
-                                    <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Predmeti iz sljedeće godine</h3>
+                                    <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Predmeti iz sledeće godine</h3>
                                     <div id="nextYearSubjectsBox" class="flex-1 min-h-[250px] bg-gray-50 rounded-lg border border-gray-200 p-3 overflow-y-auto space-y-2 transition-all hover:border-gray-300">
                                         <div class="flex flex-col items-center justify-center h-full text-gray-400 text-sm">
                                             <svg class="w-8 h-8 mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
                                                 </path>
                                             </svg>
-                                            <span>Izaberi studenta da učitaš predmete</span>
+                                            <span>Izaberi studenta</span>
                                         </div>
                                     </div>
                                 </div>
@@ -138,15 +138,15 @@
                     <!-- Right Column: Available Subjects -->
                     <div class="lg:col-span-1">
                         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-6 h-[calc(100vh-theme('spacing.12'))] flex flex-col">
-                            <h2 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Dostupni predmeti</h2>
+                            <h2 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Predmeti fakulteta</h2>
 
                             <div class="mb-4">
-                                <input type="text" id="subjectFilter" placeholder="Prefiltriraj predmete..." class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm py-2 px-3">
+                                <input type="text" id="subjectFilter" placeholder="Pretraži predmete..." class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm py-2 px-3">
                             </div>
 
                             <div id="available-subjects" class="space-y-3 max-h-[600px] overflow-y-auto pr-2">
                                 <div class="p-4 text-center text-gray-500 text-sm">
-                                    Izaberi studenta da učitaš dostupne predmete
+                                    Izaberi fakultet
                                 </div>
                             </div>
                         </div>
@@ -161,7 +161,7 @@
                             <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                             </svg>
-                            Izvezi u Word
+                            Sačuvaj word dokument
                         </button>
 
                         <button type="button" id="btnShowSummary" class="inline-flex items-center px-4 py-2 border border-blue-600 shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
@@ -175,7 +175,7 @@
                             <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                             </svg>
-                            Sačuvaj Learning Agreement
+                            Sačuvaj learning agreement
                         </button>
                     </div>
                 </div>
@@ -200,7 +200,7 @@
                                                 <tr>
                                                     <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">FIT Predmet</th>
                                                     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">FIT ECTS</th>
-                                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Povezani Predmeti (Strani)</th>
+                                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Strani predmet</th>
                                                     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Strani ECTS</th>
                                                 </tr>
                                             </thead>

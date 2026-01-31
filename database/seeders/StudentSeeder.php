@@ -127,11 +127,16 @@ class StudentSeeder extends Seeder
             ],
         ];
 
+        $count = 0;
         foreach ($students as $studentData) {
+            $status = $count < 5 ? 'prepis' : 'mobilnost';
+            $studentData['status'] = $status;
+            
             $student = Student::create($studentData);
             if ($fit) {
                 $student->fakulteti()->attach($fit->id);
             }
+            $count++;
         }
     }
 }

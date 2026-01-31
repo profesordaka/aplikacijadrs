@@ -26,7 +26,7 @@ class MobilityController extends Controller
 {
     public function index()
     {
-        $students = Student::whereHas('fakulteti', function($query) {
+        $students = Student::where('status', 'mobilnost')->whereHas('fakulteti', function($query) {
             $query->where('naziv', 'FIT');
         })->orderBy('ime')->orderBy('prezime')->get();
         $fakulteti = Fakultet::with('predmeti')->orderBy('naziv')->get();
@@ -443,7 +443,7 @@ class MobilityController extends Controller
             }
         }
 
-        return response()->json(['message' => 'Ocjene uspješno updejtovane.']);
+        return response()->json(['message' => 'Grades updated successfully.']);
     }
     public function exportWord($id)
     {
@@ -555,7 +555,7 @@ class MobilityController extends Controller
         $mobilnost = Mobilnost::findOrFail($id);
         $mobilnost->delete();
 
-        return redirect()->back()->with('success', 'Zapis mobilnosti uspješno obrisan.');
+        return redirect()->back()->with('success', 'Mobility record deleted successfully.');
     }
 
     public function getStudentSubjects(Request $request)
@@ -655,7 +655,7 @@ class MobilityController extends Controller
         $mobilnost = Mobilnost::findOrFail($id);
         $mobilnost->update(['is_locked' => true]);
         
-        return redirect()->back()->with('success', 'Mobilnost uspješno zaključana.');
+        return redirect()->back()->with('success', 'Mobilnost uspješno zaključena.');
     }
 
     public function documents(Request $request, $id)
@@ -714,50 +714,32 @@ class MobilityController extends Controller
         Storage::delete($doc->path);
         $doc->delete();
 
-        return response()->json(['message' => 'Dokument usjpešno obrisan.']);
+        return response()->json(['message' => 'Document deleted successfully.']);
     }
 
-public function exportZip($id)
-{
-    $mobilnost = Mobilnost::findOrFail($id);
-    $this->ensureDefaultDocuments($mobilnost);
+    public function exportZip($id)
+    {
+        $mobilnost = Mobilnost::findOrFail($id);
+        $this->ensureDefaultDocuments($mobilnost);
+        $documents = $mobilnost->documents()->get();
 
-    $documents = $mobilnost->documents()->get();
+        $zip = new ZipArchive;
+        $zipFileName = 'Mobilnost_Dokumenti_' . $mobilnost->student->br_indexa . '.zip';
+        $zipPath = storage_path('app/public/' . $zipFileName);
 
-    
-    $tmpDir = storage_path('app/tmp');
-    if (!is_dir($tmpDir)) {
-        mkdir($tmpDir, 0775, true);
-    }
-
-    putenv("TMPDIR=$tmpDir");
-    putenv("TMP=$tmpDir");
-    putenv("TEMP=$tmpDir");
-
-    $zipFileName = 'Mobilnost_Dokumenti_' . $mobilnost->student->br_indexa . '.zip';
-    $zipPath = $tmpDir . '/' . $zipFileName;
-
-    $zip = new ZipArchive();
-
-    if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
-        abort(500, 'Unable to create ZIP archive');
-    }
-
-    foreach ($documents as $doc) {
-        $fullPath = Storage::path($doc->path);
-
-        if (is_file($fullPath)) {
-            // second argument is the filename INSIDE the zip
-            $zip->addFile($fullPath, basename($fullPath));
+        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
+            foreach ($documents as $doc) {
+                $fullPath = Storage::path($doc->path);
+                
+                if (file_exists($fullPath)) {
+                    $zip->addFile($fullPath, $doc->name);
+                }
+            }
+            $zip->close();
         }
+
+        return response()->download($zipPath)->deleteFileAfterSend(true);
     }
-
-    $zip->close();
-
-    return response()
-        ->download($zipPath, $zipFileName)
-        ->deleteFileAfterSend(true);
-}
 
     private function ensureDefaultDocuments(Mobilnost $mobilnost)
     {

@@ -102,7 +102,7 @@
           </div>
 
 
-          <div class="mb-4">
+          <div class="mb-4 md:col-span-2">
             <label class="block text-gray-700 font-medium mb-1">Pol</label>
               <label class="inline-flex items-center">
                 <input type="radio" name="pol" id="pol_muski" value="musko" checked
@@ -115,6 +115,16 @@
                   class="form-radio text-blue-600" />
                 <span class="ml-2 text-gray-700">Ženski</span>
               </label>
+          </div>
+
+          <div class="mb-4 md:col-span-2">
+            <label class="block text-gray-700 font-medium mb-1">Status</label>
+            <select name="status" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                <option value="" disabled selected>Izaberi status</option>
+                <option value="mobilnost" {{ old('status') == 'mobilnost' ? 'selected' : '' }}>Mobilnost</option>
+                <option value="prepis" {{ old('status') == 'prepis' ? 'selected' : '' }}>Prepis</option>
+            </select>
+            @error('status') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
           </div>
 
 
@@ -144,7 +154,7 @@
                 class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 @change="window.dispatchEvent(new CustomEvent('study-level-changed', { detail: $el.value }))"
                 x-init="$nextTick(() => window.dispatchEvent(new CustomEvent('study-level-changed', { detail: $el.value })))">
-                <option value="">Izaberi Godinu Studija</option>
+                <option value="">Izaberi godinu studija</option>
                 @foreach($nivoStudija as $nivo)
                   <option value="{{ $nivo->id }}" 
                     x-bind:disabled="parseInt(studyYear) > 4 && '{{ $nivo->naziv }}' !== 'Master'"
@@ -174,7 +184,7 @@
                 <div x-data="{ visible: false }" @faculty-changed.window="visible = ($event.detail === 'FIT')" x-show="visible" style="display: none;">
                     <button type="button" @click="$dispatch('open-tor-modal')"
                         class="bg-green-600 hover:bg-green-700 text-white text-sm font-semibold px-3 py-1 rounded shadow transform transition hover:scale-105">
-                        Pošalji ToR
+                        Unesi TOR
                     </button>
                 </div>
             </x-subject-selector>
@@ -182,7 +192,7 @@
           </div>
         </div>
 
-        <div class="flex justify-end mt-6">
+        <div class="w-full flex justify-end mt-6">
           <button type="submit"
             class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg shadow-lg transform transition hover:scale-105">
             Dodaj Studenta

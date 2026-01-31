@@ -8,8 +8,8 @@
 
     @if ($errors->any())
         <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-            <strong class="font-bold">OOOpaaaa!</strong>
-            <span class="block">Desili su se neki problemi sa unosima:</span>
+            <strong class="font-bold">Greška!</strong>
+            <span class="block">Došlo je do greške pri unosu:</span>
             <ul class="mt-2 list-disc list-inside">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -37,7 +37,7 @@
 
         <div class="bg-white shadow-sm rounded-xl overflow-hidden border border-gray-200">
             <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
-                <h2 class="text-lg font-semibold text-gray-800">Lista Korisnika</h2>
+                <h2 class="text-lg font-semibold text-gray-800">Lista korisnika</h2>
                 <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">{{ count($users) }} Ukupno</span>
             </div>
 
@@ -46,7 +46,7 @@
                     <thead class="bg-gray-50">
                         <tr>
 
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ime</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tip</th>
                             <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Radnje</th>
@@ -85,7 +85,7 @@
                                     @if((int)$user->type === 1)
                                         <a href="{{ route('users.subjects.index', $user->id) }}"
                                            class="text-green-600 hover:text-green-900 bg-green-50 hover:bg-green-100 px-3 py-1 rounded-md transition-colors inline-block">
-                                            Pregled Predmeta
+                                            Pregled predmeta
                                         </a>
                                     @endif
 
@@ -138,7 +138,7 @@
                 </div>
 
                 <div class="mb-4">
-                    <label for="password" class="block text-gray-700 font-medium mb-1">Šifra opet</label>
+                    <label for="password" class="block text-gray-700 font-medium mb-1">Potvrdi šifru</label>
                       <input type="password" id="password_confirmation" name="password_confirmation"
                            class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500">
                 </div>

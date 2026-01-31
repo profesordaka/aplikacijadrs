@@ -12,9 +12,15 @@ use Illuminate\Support\Facades\Log;
 
 class StudentController extends Controller
 {
-  public function index()
+  public function index(Request $request)
   {
-    $students = Student::with(['nivoStudija', 'fakulteti'])->orderBy('created_at', 'desc')->get();
+    $query = Student::with(['nivoStudija', 'fakulteti']);
+
+    if ($request->has('status') && in_array($request->status, ['mobilnost', 'prepis'])) {
+        $query->where('status', $request->status);
+    }
+    
+    $students = $query->orderBy('created_at', 'desc')->get();
     $nivoStudija = NivoStudija::all();
     $fakulteti = Fakultet::all();
 
@@ -57,6 +63,7 @@ class StudentController extends Controller
       'predmeti' => 'array',
       'predmeti.*' => 'array', // Each item in predmeti should be an array (e.g., ['grade' => 7])
       'predmeti.*.grade' => 'required|integer|min:6|max:10', // Validate grades if present
+      'status' => 'required|in:mobilnost,prepis',
     ]);
 
     $student = Student::create($validated);
@@ -77,7 +84,7 @@ class StudentController extends Controller
     }
 
     return redirect()->route('students.index')
-      ->with('success', 'Student dodat usjpešno!');
+      ->with('success', 'Student created successfully!');
   }
 
   public function edit($id)
@@ -126,6 +133,7 @@ class StudentController extends Controller
       'predmeti' => 'array',
       'predmeti.*' => 'array', // Each item in predmeti should be an array (e.g., ['grade' => 7])
       'predmeti.*.grade' => 'required|integer|min:6|max:10', // Validate grades if present
+      'status' => 'required|in:mobilnost,prepis',
     ]);
 
     $student->update($validated);
@@ -152,7 +160,7 @@ class StudentController extends Controller
     }
 
     return redirect()->route('students.index')
-      ->with('success', 'Student izmijenjen uspješno!');
+      ->with('success', 'Student uspješno izmijenjen!');
   }
 
   public function destroy($id)
@@ -174,7 +182,7 @@ class StudentController extends Controller
     $student->delete();
 
     return redirect()->route('students.index')
-      ->with('success', 'Student obrisan!');
+      ->with('success', 'Student deleted successfully!');
   }
 
   public function uploadTor(Request $request, int $id, TorImportService $importService)
@@ -241,7 +249,7 @@ class StudentController extends Controller
               $student->predmeti()->syncWithoutDetaching($syncData);
           }
 
-          $msg = "ToR poslan. Usklađeno $matchedCount predmeta od ukupno $totalCount .";
+          $msg = "ToR processed. Matched $matchedCount out of $totalCount courses.";
           if (count($missedSubjects) > 0) {
               $msg .= " Missed: " . count($missedSubjects) . ". Check logs for details.";
           }
@@ -251,7 +259,7 @@ class StudentController extends Controller
 
       } catch (\Exception $e) {
           Log::error('ToR Upload Error: ' . $e->getMessage());
-          return back()->with('error', 'Neuspješno poslat TOR fajl: ' . $e->getMessage());
+          return back()->with('error', 'Failed to process ToR file: ' . $e->getMessage());
       }
   }
 
